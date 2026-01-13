@@ -42,6 +42,32 @@ export default class Ship {
         }
     }
 
+    hitCheck(position) {
+        let hit = false;
+        for (let i = 0; i < this.#coordinateList.length; i++) {
+            let thisPos = this.#coordinateList[i];
+
+            if (position[0] === thisPos[0] && position[1] === thisPos[1]) {
+                hit = true;
+                break;
+            }
+        }
+
+        // If hit, update number of hits and check if this is sunk
+        if (hit) {
+            this.#numberOfHits++;
+            this.#sinkCheck();
+        }
+        
+        return hit;
+    }
+
+    #sinkCheck() {
+        if (this.#numberOfHits === this.#length) {
+            this.#isSunk = true;
+        }
+    }
+
     getNumberOfHits() {
         return this.#numberOfHits;
     }

@@ -29,6 +29,25 @@ describe("Ship tests", ()=> {
                 expect(()=>{let ship = new Ship([1,2], [3,4])}).toThrow();
             });
         });
+    });
+
+    describe("Hitting ships", () => {
+        let ship = new Ship([2, 4], [2, 6]);
         
+        test("Successful hit", () => {
+            expect(ship.hitCheck([2, 5])).toBe(true);
+            expect(ship.getNumberOfHits()).toBe(1);
+        });
+
+        test("Miss", () => {
+            expect(ship.hitCheck([2, 7])).toBe(false);
+            expect(ship.getNumberOfHits()).toBe(1); // Hit from previous test is still there, this doesn't add a new one
+        });
+
+        test("Successful hits lead to sunk status", () => {
+            ship.hitCheck([2,4]);
+            ship.hitCheck([2,6]);
+            expect(ship.getIsSunk()).toBe(true);
+        });
     });
 });
