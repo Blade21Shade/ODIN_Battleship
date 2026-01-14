@@ -62,11 +62,55 @@ export default class Gameboard {
         this.#ships.push(ship);
     }
 
+    fireAtBoard(position) {
+        let x = position[0];
+        let y = position[1];
+        if (x < 0 || x > this.#maxPosition ||
+            y < 0 || y > this.#maxPosition
+        ) {
+            throw new Error("Given position isn't inside the board's bounds");
+        }
+
+        let boardHitVal = this.#board[x][y];
+
+        if (boardHitVal !== 0) {
+            throw new Error("Given position has already been fired at");
+        }
+
+        let hitVal = -1; // Miss value
+        for (let i = 0; i < this.#ships.length; i++) {
+            let ship = this.#ships[i];
+            let hit = ship.hitCheck([x,y]);
+            if (hit) {
+                hitVal = 1; // Hit value
+                break;
+            }
+        }
+
+        this.#board[x][y] = hitVal;
+
+        return hitVal;
+    }
+
     getShipList() {
         return this.#ships;
     }
 
     clearShipList() {
         this.#ships.length = 0;
+    }
+
+    resetBoardHits() {
+        for (let i = 0; i < this.#board.length; i++) {
+            let row = this.#board[i];
+            for (let j = 0; j < this.#board.length; j++) {
+                row[j] = 0;
+            }
+        }
+    }
+
+    resetBoard() {
+        this.clearShipList();
+        this.resetBoardHits();
     }
 }

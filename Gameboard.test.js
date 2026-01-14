@@ -4,7 +4,7 @@ describe("Gameboard tests", () => {
     let testBoard = new Gameboard(10);
 
     afterEach(()=> {
-        testBoard.clearShipList();
+        testBoard.resetBoard();
     });
 
     describe("Ship placement tests", () => {
@@ -38,6 +38,28 @@ describe("Gameboard tests", () => {
                 expect(()=>{testBoard.placeShip([3,4], [5,4])}).toThrow();
             });
         });
+    });
+
+    describe("Fire at board tests", () => {
+        test("Hit", () => {
+            testBoard.placeShip([3, 5], [3, 7]);
+            expect(testBoard.fireAtBoard([3,6])).toBe(1);
+        });
+
+        test("Miss", () => {
+            expect(testBoard.fireAtBoard([3,6])).toBe(-1);
+        });
+
+        describe("Error tests", () => {
+            test("Position outside the board's bounds", () => {
+                expect(()=>{testBoard.fireAtBoard([20,20])}).toThrow();
+            });
+            
+            test("Fire at position already marked", () => {
+                testBoard.fireAtBoard([3,6]);
+                expect(()=>{testBoard.fireAtBoard([3,6])}).toThrow();
+            }); 
+        }); 
     });
 
 });
