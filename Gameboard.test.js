@@ -1,4 +1,4 @@
-import Gameboard from "./Gameboard"
+import Gameboard from "./Gameboard.js"
 
 describe("Gameboard tests", () => {
     let testBoard = new Gameboard(10);
@@ -60,6 +60,45 @@ describe("Gameboard tests", () => {
                 expect(()=>{testBoard.fireAtBoard([3,6])}).toThrow();
             }); 
         }); 
+    });
+
+    describe("Check if all ships are sunk", () => {
+        describe("One ship", () => {
+            test("All ships are sunk: return true", () => {
+                testBoard.placeShip([0, 0],[0, 1]);
+                testBoard.fireAtBoard([0,0]);
+                testBoard.fireAtBoard([0,1]); // fireAtBoard calls checkIfAllShipsSunk(), so it should be true at this point
+                expect(testBoard.checkIfAllShipsSunk()).toBe(true); // checkIfAllShipsSunk() can still be manually called
+            });
+
+            test("Not all ships are sunk: return false", () => {
+                testBoard.placeShip([0, 0],[0, 1]);
+                testBoard.fireAtBoard([0,0]);
+                expect(testBoard.checkIfAllShipsSunk()).toBe(false);
+            });
+        });
+
+        describe("Two ships", () => {
+            test("All ships are sunk: return true", () => {
+                testBoard.placeShip([0, 0],[0, 1]); // Ship 1
+                testBoard.placeShip([5, 5],[5, 6]); // Ship 2
+                testBoard.fireAtBoard([0,0]);
+                testBoard.fireAtBoard([0,1]); // Ship 1 sunk
+                testBoard.fireAtBoard([5,5]);
+                testBoard.fireAtBoard([5,6]); // Ship 2 sunk
+                expect(testBoard.checkIfAllShipsSunk()).toBe(true);
+            });
+
+            test("Not all ships are sunk: return false", () => {
+                testBoard.placeShip([0, 0],[0, 1]); // Ship 1
+                testBoard.placeShip([5, 5],[5, 6]); // Ship 2
+                testBoard.fireAtBoard([0,0]);
+                testBoard.fireAtBoard([0,1]); // Ship 1 sunk
+                testBoard.fireAtBoard([5,5]); // Ship 2 still un-sunk
+                expect(testBoard.checkIfAllShipsSunk()).toBe(false);
+            });
+        });
+        
     });
 
 });

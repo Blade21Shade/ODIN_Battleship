@@ -4,9 +4,10 @@ export default class Gameboard {
     // Becomes a 2D array in the constructor
     // 0s haven't been fired at, -1 is miss, 1 is hit
     #board = [];
-    
+
     #maxPosition = 0;
     #ships = [];
+    #allShipsSunk = false;
 
     constructor(size) {
         this.#maxPosition = size;
@@ -88,12 +89,33 @@ export default class Gameboard {
         }
 
         this.#board[x][y] = hitVal;
+        this.checkIfAllShipsSunk();
 
         return hitVal;
     }
 
+    checkIfAllShipsSunk() {
+        let allSunk = true;
+        for (const ship of this.#ships) {
+            if (ship.getIsSunk() === false) {
+                allSunk = false;
+                break;
+            }
+        }
+
+        if (allSunk) {
+            this.#allShipsSunk = true;
+        }
+
+        return this.#allShipsSunk;
+    }
+
     getShipList() {
         return this.#ships;
+    }
+
+    getAllShipsSunk() {
+        return this.#allShipsSunk;
     }
 
     clearShipList() {
@@ -112,5 +134,6 @@ export default class Gameboard {
     resetBoard() {
         this.clearShipList();
         this.resetBoardHits();
+        this.#allShipsSunk = false;
     }
 }
