@@ -1,4 +1,51 @@
-.header {
-    height: 20vh;
+body {
+    margin: 0px;
+}
+
+.header, .footer {
+    margin: 5px;
+
+    box-sizing: border-box;
+    
+    height: calc(10vh - 10px);
     border: 2px solid black;
+}
+
+.boardArea {
+    height: 80vh;
+    width: 80%;
+
+    justify-self: center;
+    justify-items: center;
+
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 100%;
+}
+
+.board {
+    aspect-ratio: 1; /* To force a square shape*/
+    height: 100%;
+    background-color: lightblue;
+
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+}
+
+.cell {
+    border: 1px solid black;
+}
+
+.cell.hit {
+    background-color: red;
+}
+
+.cell.miss {
+    background-color: white;
+}
+
+.cell.foe:hover {
+    background-color: lightcoral;
 }
