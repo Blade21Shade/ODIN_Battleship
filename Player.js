@@ -4,4 +4,8 @@ export default class Player {
     constructor(playerBoard) {
         this.playerBoard = playerBoard;
     }
+
+    setPlayerBoard(board) {
+        this.playerBoard = board;
+    }
 }
