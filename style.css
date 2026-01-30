@@ -49,3 +49,7 @@ body {
 .cell.foe:hover {
     background-color: lightcoral;
 }
+
+.cell.ship {
+    background-color: black;
+}
