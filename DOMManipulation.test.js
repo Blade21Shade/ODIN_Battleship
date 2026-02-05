@@ -20,8 +20,25 @@ describe("DOMManipulation tests", () => {
 
         // Setup the boards for use
         for (let i = 0; i < 100; i++) {
-            board1.appendChild(cell.cloneNode());
-            board2.appendChild(cell.cloneNode());
+            let clone = cell.cloneNode();
+            clone.classList.toggle("friend");
+            clone.id = `board1-cell${i}`;
+            board1.appendChild(clone);
+
+            clone = cell.cloneNode();
+            clone.classList.toggle("foe");
+            clone.id = `board2-cell${i}`;
+            board2.appendChild(clone);
+        }
+
+        function setupFriendFoeCells() {
+            for (let i = 0; i < 100; i++) {
+                board1.children[i].classList.remove("miss", "hit", "ship");
+                board2.children[i].classList.remove("miss", "hit");
+
+                board1.children[i].classList.add("friend");
+                board2.children[i].classList.add("foe");
+            }
         }
 
         // Variables the tests can use 
@@ -46,10 +63,7 @@ describe("DOMManipulation tests", () => {
 
         // Reset the board cell's to a clean classList for the next test
         afterEach(() => {
-            for (let i = 0; i < 100; i++) {
-                board1.children[i].classList.remove("miss", "hit", "friend", "foe", "ship");
-                board2.children[i].classList.remove("miss", "hit", "friend", "foe", "ship");
-            }
+            setupFriendFoeCells();
         });
 
         describe("Fill board-element tests", () => {
@@ -120,65 +134,65 @@ describe("DOMManipulation tests", () => {
 
                 describe("Foe board tests", () => {
                     test("Just Shots", () => {
-                        fillBoardElementShots(board1Array, FRIEND_OR_FOE.FOE, BOARD_NUMBER.ONE);
+                        fillBoardElementShots(board1Array, FRIEND_OR_FOE.FOE, BOARD_NUMBER.TWO);
 
                         // Left values in board1Array
-                        expect(board1.children[0].className).toBe("cell hit");
-                        expect(board1.children[11].className).toBe("cell hit");
+                        expect(board2.children[0].className).toBe("cell hit");
+                        expect(board2.children[11].className).toBe("cell hit");
 
                         // Right not-edge
-                        expect(board1.children[7].className).toBe("cell hit");
-                        expect(board1.children[17].className).toBe("cell hit");
+                        expect(board2.children[7].className).toBe("cell hit");
+                        expect(board2.children[17].className).toBe("cell hit");
 
                         // Right edge
-                        expect(board1.children[9].className).toBe("cell miss");
-                        expect(board1.children[19].className).toBe("cell miss");
+                        expect(board2.children[9].className).toBe("cell miss");
+                        expect(board2.children[19].className).toBe("cell miss");
                     });
 
                     test("Just Ships - don't show ships", () => {
-                        fillBoardElementShips(shipCoordinates1, FRIEND_OR_FOE.FOE, BOARD_NUMBER.ONE);
+                        fillBoardElementShips(shipCoordinates1, FRIEND_OR_FOE.FOE, BOARD_NUMBER.TWO);
 
-                        // Ships - since this test is done without the call to fillBoardElementShots, the foe class isn't present on the cells
-                        expect(board1.children[1].className).toBe("cell");
-                        expect(board1.children[2].className).toBe("cell");
+                        // Ships - shouldn't show
+                        expect(board2.children[1].className).toBe("cell foe");
+                        expect(board2.children[2].className).toBe("cell foe");
 
-                        expect(board1.children[8].className).toBe("cell");
-                        expect(board1.children[18].className).toBe("cell");
+                        expect(board2.children[8].className).toBe("cell foe");
+                        expect(board2.children[18].className).toBe("cell foe");
 
-                        expect(board1.children[7].className).toBe("cell");
-                        expect(board1.children[17].className).toBe("cell");
+                        expect(board2.children[7].className).toBe("cell foe");
+                        expect(board2.children[17].className).toBe("cell foe");
                     });
 
                     test("Shots then Ships - don't show ships", () => {
-                        fillBoardElementShots(board1Array, FRIEND_OR_FOE.FOE, BOARD_NUMBER.ONE);
-                        fillBoardElementShips(shipCoordinates1, FRIEND_OR_FOE.FOE, BOARD_NUMBER.ONE);
+                        fillBoardElementShots(board1Array, FRIEND_OR_FOE.FOE, BOARD_NUMBER.TWO);
+                        fillBoardElementShips(shipCoordinates1, FRIEND_OR_FOE.FOE, BOARD_NUMBER.TWO);
 
                         // Ships - since this is at the foe board, these shouldn't be marked with ship
-                        expect(board1.children[1].className).toBe("cell foe");
-                        expect(board1.children[2].className).toBe("cell foe");
+                        expect(board2.children[1].className).toBe("cell foe");
+                        expect(board2.children[2].className).toBe("cell foe");
 
-                        expect(board1.children[8].className).toBe("cell foe");
-                        expect(board1.children[18].className).toBe("cell foe");
+                        expect(board2.children[8].className).toBe("cell foe");
+                        expect(board2.children[18].className).toBe("cell foe");
 
                         // Shot-ship; these two should be marked hit when there is a conflict between hit and ship spaces
-                        expect(board1.children[7].className).toBe("cell hit");
-                        expect(board1.children[17].className).toBe("cell hit");
+                        expect(board2.children[7].className).toBe("cell hit");
+                        expect(board2.children[17].className).toBe("cell hit");
                     });
 
                     test("Ships then Shots - don't show ships", () => {
-                        fillBoardElementShots(board1Array, FRIEND_OR_FOE.FOE, BOARD_NUMBER.ONE);
-                        fillBoardElementShips(shipCoordinates1, FRIEND_OR_FOE.FOE, BOARD_NUMBER.ONE);
+                        fillBoardElementShots(board1Array, FRIEND_OR_FOE.FOE, BOARD_NUMBER.TWO);
+                        fillBoardElementShips(shipCoordinates1, FRIEND_OR_FOE.FOE, BOARD_NUMBER.TWO);
 
                         // Ships
-                        expect(board1.children[1].className).toBe("cell foe");
-                        expect(board1.children[2].className).toBe("cell foe");
+                        expect(board2.children[1].className).toBe("cell foe");
+                        expect(board2.children[2].className).toBe("cell foe");
 
-                        expect(board1.children[8].className).toBe("cell foe");
-                        expect(board1.children[18].className).toBe("cell foe");
+                        expect(board2.children[8].className).toBe("cell foe");
+                        expect(board2.children[18].className).toBe("cell foe");
 
                         // Shot-ship; these two should be marked hit when there is a conflict between hit and ship spaces
-                        expect(board1.children[7].className).toBe("cell hit");
-                        expect(board1.children[17].className).toBe("cell hit");
+                        expect(board2.children[7].className).toBe("cell hit");
+                        expect(board2.children[17].className).toBe("cell hit");
                     });
                 });
             });

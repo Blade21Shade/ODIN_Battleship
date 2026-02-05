@@ -36,8 +36,15 @@ function initializeBoardElements() {
     cell.classList.toggle("cell");
 
     for (let i = 0; i < 100; i++) {
-        board1.appendChild(cell.cloneNode());
-        board2.appendChild(cell.cloneNode());
+        let clone = cell.cloneNode();
+        clone.classList.toggle("friend");
+        clone.id = `board1-cell${i}`;
+        board1.appendChild(clone);
+
+        clone = cell.cloneNode();
+        clone.classList.toggle("foe");
+        clone.id = `board2-cell${i}`;
+        board2.appendChild(clone);
     }
 }
 
@@ -46,8 +53,8 @@ function resetBoardElementsCells() {
     let board2 = grabBoardElement(BOARD_NUMBER.TWO);
 
     for (let i = 0; i < 100; i++) {
-        clearCellClassList(board1.children[i]);
-        clearCellClassList(board2.children[i]);
+        resetCellClassList(board1.children[i], FRIEND_OR_FOE.FRIEND);
+        resetCellClassList(board2.children[i], FRIEND_OR_FOE.FOE);
     }
 }
 
@@ -65,9 +72,11 @@ function fillBoardElementShots(boardArray, friendOrFoe, boardNumber) {
             let hitVal = row[j];
             switch(hitVal) {
                 case -1: // Miss
+                    thisCell.classList.remove("friend", "foe");
                     thisCell.classList.toggle("miss");
                     break;
                 case 1: // Hit
+                    thisCell.classList.remove("friend", "foe");
                     thisCell.classList.toggle("hit");
                     break;
                 default: // Not shot at
@@ -76,7 +85,7 @@ function fillBoardElementShots(boardArray, friendOrFoe, boardNumber) {
                             thisCell.classList.toggle("friend");
                         } 
                     } else {
-                        thisCell.classList.toggle("foe");
+                        thisCell.classList.add("foe");
                     }
             }
             cellNumber++;
@@ -134,10 +143,19 @@ function clearCellClassList(cell) {
     cell.classList.remove("miss", "hit", "friend", "foe", "ship");
 }
 
+function resetCellClassList(cell, friendOrFoe) {
+    cell.classList.remove("miss", "hit", "friend", "foe", "ship");
+    if (friendOrFoe === FRIEND_OR_FOE.FRIEND) {
+        cell.classList.add("friend");
+    } else {
+        cell.classList.add("foe");
+    }
+}
+
 function friendOrFoeValidityCheck(friendOrFoe) {
     if (friendOrFoe !== FRIEND_OR_FOE.FRIEND && friendOrFoe !== FRIEND_OR_FOE.FOE) {
         throw new Error("Invalid friend or foe option given")
     }
 }
 
-export {FRIEND_OR_FOE, BOARD_NUMBER, initializeBoardElements, resetBoardElementsCells, fillBoardElementShots, fillBoardElementShips}
+export {FRIEND_OR_FOE, BOARD_NUMBER, initializeBoardElements, resetBoardElementsCells, fillBoardElementShots, fillBoardElementShips, grabBoardElement}
