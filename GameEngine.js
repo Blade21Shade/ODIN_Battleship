@@ -37,18 +37,16 @@ function initializeGameState() {
 
 /**
  * Attempts to get the idNumber from a cell on the "shoot at" board
- * @param {Event} event The event who's target is the cell in the DOM
- * @returns cell is marked as foe: The idNumber of the cell
+ * @param {Element} cell The cell to extract the ID from
+ * @returns cell marked as foe: The idNumber of the cell
  * @returns cell isn't marked as foe: -1 
  */
-function getIDNumberOfClickedCell(event) {
-    let clickedElement = event.target;
-    let idString = "";
+function getIDNumberOfClickedCell(cell) {
     let idNum = -1;
 
     // Only evaluate cells which haven't been shot at
-    if (clickedElement.classList.contains("cell") && clickedElement.classList.contains("foe")) {
-        idString = clickedElement.id;
+    if (cell.classList.contains("cell") && cell.classList.contains("foe")) {
+        let idString = cell.id;
         
         // Cell id's are in the form: boardX-cellYZ ; YZ can be < 10, in which case it only has one character for the number
         if (isNaN(idString.at(-2))) { // If the second to last character isn't a number only grab the last character

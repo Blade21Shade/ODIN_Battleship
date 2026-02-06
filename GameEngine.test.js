@@ -94,32 +94,19 @@ describe("GameEngine tests", () => {
         targetEleBadClassList.classList.add("cell", "friend");
         // No ID as tests should fail at the classList
 
-        // Elements to represent the clicked element in the DOM
-        let clickedEle2Numbers = {
-            target: targetEle2Numbers
-        }
-
-        let clickedEle1Number = {
-            target: targetEle1Number
-        }
-
-        let clickedEleBadClassList = {
-            target: targetEleBadClassList
-        }
-
         describe("Pass tests", () => {
             test("Cell number: 5", () => {
-                expect(getIDNumberOfClickedCell(clickedEle1Number)).toBe(5);
+                expect(getIDNumberOfClickedCell(targetEle1Number)).toBe(5);
             });
             
             test("Cell number: 23", () => {
-                expect(getIDNumberOfClickedCell(clickedEle2Numbers)).toBe(23);
+                expect(getIDNumberOfClickedCell(targetEle2Numbers)).toBe(23);
             });
         }); 
 
         describe("Clean-fail tests\nThese tests return a value, but that value represents a fail", ()=> {
             test("Bad classList - bad classes still return a value: -1", () => {
-                expect(getIDNumberOfClickedCell(clickedEleBadClassList)).toBe(-1);
+                expect(getIDNumberOfClickedCell(targetEleBadClassList)).toBe(-1);
             });
         });
 
