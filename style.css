@@ -50,6 +50,10 @@ body {
     background-color: lightcoral;
 }
 
+.cell.friend:hover {
+    background-color: lightgreen;
+}
+
 .cell.ship {
     background-color: black;
 }
