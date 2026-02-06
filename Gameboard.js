@@ -9,6 +9,10 @@ export default class Gameboard {
     #ships = [];
     #allShipsSunk = false;
 
+    /**
+     * Creates a board size #x# where # is the size variable - all positions start as 0 for "not shot at"
+     * @param {number} size The dimension for the game board, creates a square
+     */
     constructor(size) {
         this.#maxPosition = size;
         // Rows
@@ -23,6 +27,11 @@ export default class Gameboard {
         }
     }
 
+    /**
+     * Puts a ship in the ships container if both positions are within the bounds of the board and the ship doesn't overlap with coordinates of other ships 
+     * @param {[number, number]} startPos The starting position (coordinate) of the ship 
+     * @param {[number, number]} endPos The end position (coordinate) of the ship
+     */
     placeShip(startPos, endPos) {
         // Check if either position is outside the board's size
         if (startPos[0] < 0 || startPos[0] > this.#maxPosition ||
@@ -63,6 +72,11 @@ export default class Gameboard {
         this.#ships.push(ship);
     }
 
+    /**
+     * Fires a shot at the board if the position is within the bounds of the board and that position hasn't already been shot at; sets that board position to 1 if hit, or -1 if miss
+     * @param {[number, number]} position The position to fire at on this board
+     * @returns A value based on hit status of the shot: 1 for hit, -1 for miss
+     */
     fireAtBoard(position) {
         let x = position[0];
         let y = position[1];
@@ -94,6 +108,10 @@ export default class Gameboard {
         return hitVal;
     }
 
+    /**
+     * Checks whether all ships on the board are sunk; if so sets allShipsSunk and returns true, if not returns false
+     * @returns True if all ships have been sunk, or false if not
+     */
     checkIfAllShipsSunk() {
         let allSunk = true;
         for (const ship of this.#ships) {
@@ -122,6 +140,9 @@ export default class Gameboard {
         this.#ships.length = 0;
     }
 
+    /**
+     * Resets the board so each entry is 0, the "not shot at" status
+     */
     resetBoardHits() {
         for (let i = 0; i < this.#board.length; i++) {
             let row = this.#board[i];
@@ -131,6 +152,9 @@ export default class Gameboard {
         }
     }
 
+    /**
+     * Resets a board to it's state when created by the constructor
+     */
     resetBoard() {
         this.clearShipList();
         this.resetBoardHits();
