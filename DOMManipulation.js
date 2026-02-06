@@ -1,8 +1,14 @@
+/**
+ * Holds the values that functions expect in friendOrFoe arguments
+ */
 const FRIEND_OR_FOE = {
     FRIEND: "friend",
     FOE: "foe"
 }
 
+/**
+ * Holds the values that functions expect in boardNumber arguments
+ */
 const BOARD_NUMBER = {
     ONE: 1,
     TWO: 2
@@ -11,6 +17,11 @@ const BOARD_NUMBER = {
 Object.freeze(FRIEND_OR_FOE);
 Object.freeze(BOARD_NUMBER);
 
+/**
+ * Gets one of the board elements from the DOM
+ * @param {BOARD_NUMBER} boardNumber Which board to grab, 1 or 2
+ * @returns The DOM element for that board
+ */
 function grabBoardElement(boardNumber) {
     let boardEle;
     if (boardNumber === BOARD_NUMBER.ONE) {
@@ -23,6 +34,9 @@ function grabBoardElement(boardNumber) {
     return boardEle;
 }
 
+/**
+ * Fills the board elements with cells - cells have an ID and if a child of board1 the "friend" class, or "foe" for board2
+ */
 function initializeBoardElements() {
     let board1 = grabBoardElement(BOARD_NUMBER.ONE);
     let board2 = grabBoardElement(BOARD_NUMBER.TWO);
@@ -48,6 +62,9 @@ function initializeBoardElements() {
     }
 }
 
+/**
+ * Resets each board's cells to only have the "cell" class and "friend" or "foe" class based on parent board
+ */
 function resetBoardElementsCells() {
     let board1 = grabBoardElement(BOARD_NUMBER.ONE);
     let board2 = grabBoardElement(BOARD_NUMBER.TWO);
@@ -58,6 +75,12 @@ function resetBoardElementsCells() {
     }
 }
 
+/**
+ * Marks cells on the DOM board for boardNumber by entries in the board array with the "hit", "miss", "friend", or "foe" classes - Can be called before or after fillBoardElementShips
+ * @param {[[number]]} boardArray The 2D array to parse to place shots on the board; entries should be 1 for hit, 0 for not-shot-at, -1 for miss; the array should be 10x10
+ * @param {FRIEND_OR_FOE} friendOrFoe Whether this is for the friend or foe board
+ * @param {BOARD_NUMBER} boardNumber The board number for the DOM board which should be affected
+ */
 function fillBoardElementShots(boardArray, friendOrFoe, boardNumber) {
     const boardElement = grabBoardElement(boardNumber);
     friendOrFoeValidityCheck(friendOrFoe);
@@ -93,6 +116,12 @@ function fillBoardElementShots(boardArray, friendOrFoe, boardNumber) {
     }
 }
 
+/**
+ * Marks cells on the DOM board for boardNumber by entries in positionsOfShips with the the "ship" class - Can be called before or after fillBoardElementShots
+ * @param {[[[number, number]]]} positionsOfShips A 3D array hold coordinates of ships; the outer array holds ships; each ship holds an array of coordinates; each coordinate is a pair of numbers
+ * @param {FRIEND_OR_FOE} friendOrFoe Whether this is for the friend or foe board - NOTE: This function will only process when "friend" is given
+ * @param {BOARD_NUMBER} boardNumber The board number for the DOM board which should be affected
+ */
 function fillBoardElementShips(positionsOfShips, friendOrFoe, boardNumber) {
     const boardElement = grabBoardElement(boardNumber);
     friendOrFoeValidityCheck(friendOrFoe);
@@ -139,10 +168,19 @@ function fillBoardElementShips(positionsOfShips, friendOrFoe, boardNumber) {
     }
 }
 
+/**
+ * Removes all non-cell classes from a cell
+ * @param {Element} cell The cell to remove classes from
+ */
 function clearCellClassList(cell) {
     cell.classList.remove("miss", "hit", "friend", "foe", "ship");
 }
 
+/**
+ * Removes all non-cell classes from a cell, then adds the "friend" or "foe" class based on friendOrFoe 
+ * @param {Element} cell The cell to reset classes for 
+ * @param {FRIEND_OR_FOE} friendOrFoe What board this cell belongs to 
+ */
 function resetCellClassList(cell, friendOrFoe) {
     cell.classList.remove("miss", "hit", "friend", "foe", "ship");
     if (friendOrFoe === FRIEND_OR_FOE.FRIEND) {
@@ -152,6 +190,10 @@ function resetCellClassList(cell, friendOrFoe) {
     }
 }
 
+/**
+ * Checks whether friendOrFoe matches either entry in FRIEND_OR_FOE - if it doesn't match, throw an error
+ * @param {FRIEND_OR_FOE} friendOrFoe The string to check
+ */
 function friendOrFoeValidityCheck(friendOrFoe) {
     if (friendOrFoe !== FRIEND_OR_FOE.FRIEND && friendOrFoe !== FRIEND_OR_FOE.FOE) {
         throw new Error("Invalid friend or foe option given")
