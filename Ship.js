@@ -4,6 +4,11 @@ export default class Ship {
     #length = 0;
     #coordinateList = [];
 
+    /**
+     * Creates a ship from the given coordinates - within the coordinates, either the x or y position has to be the same for both of them
+     * @param {[number, number]} startCoordinate The coordinate to start building the ship's coordinate list from
+     * @param {[number, number]} endCoordinate The coordinate to stop (inclusive) building the ship's coordinate list
+     */
     constructor(startCoordinate, endCoordinate) {
         if (startCoordinate[0] !== endCoordinate[0] && startCoordinate[1] !== endCoordinate[1]) {
             throw new Error("Ships must be aligned vertically or horizontally: invalid coordinates given to constructor")
@@ -42,6 +47,11 @@ export default class Ship {
         }
     }
 
+    /**
+     * Checks whether the given position will hit the ship -  if so, increments the private variable for tracking hits
+     * @param {[number, number]} position The position to check if it is in the ship's coordinate list
+     * @returns True if the hit was successful, or false if not
+     */
     hitCheck(position) {
         let hit = false;
         for (let i = 0; i < this.#coordinateList.length; i++) {
