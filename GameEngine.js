@@ -4,7 +4,7 @@ import Player from "./Player.js"
 import * as DOMManipulation from "./DOMManipulation.js"
 
 let gameBoardSize;
-let playerTurn;
+let playerTurn; // // Swaps between 1 and 2 to control game actions
 
 let player1Board;
 let player2Board;
@@ -15,14 +15,14 @@ let player2;
 let board1Element;
 let board2Element;
 
-let preventProcessing = false;
+let preventProcessing = false; // When a game action is taken, this is set to prevent players from continuing to click and causing potential logic issues
 
 /**
  * Sets up variables needed for the game to run and initial DOM setup
  */
 function initializeGameState() {
     gameBoardSize = 10;
-    playerTurn = 1; // Swaps between 1 and 2
+    playerTurn = 1;
 
     player1Board = new Gameboard(gameBoardSize);
     player2Board = new Gameboard(gameBoardSize);
@@ -130,7 +130,7 @@ function gameplayEventListenerCallback(event) {
 
 /**
  * Causes the next game step to occur: either end the game, or swap players and continue
- * @param {Gameboard} board
+ * @param {Gameboard} board The board to check to see if all ships have been sunk on it
  */
 function triggerNextGameStep(board) {
     let allShipsSunk = board.getAllShipsSunk();
@@ -160,6 +160,8 @@ function triggerNextGameStep(board) {
  */
 function endGame() {
 
+    playerTurn = 1;
+    preventProcessing = false;
 }
 
 
