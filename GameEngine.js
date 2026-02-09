@@ -35,6 +35,7 @@ function initializeGameState() {
     board2Element = DOMManipulation.grabBoardElement(2); // Shows the opposing player's board without ships and the active player's shots
 
     DOMManipulation.initializeBoardElements();
+    DOMManipulation.initializePlayerButtons();
 }
 
 /**

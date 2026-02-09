@@ -11,6 +11,17 @@ body {
     border: 2px solid black;
 }
 
+.footer {
+    display: grid;
+
+    grid-template-columns: 10% 10%;
+    grid-template-rows: 100%;
+    gap: 3%;
+
+    align-items: center;
+    justify-content: center;
+}
+
 .boardArea {
     height: 80vh;
     width: 80%;
@@ -56,4 +67,8 @@ body {
 
 .cell.ship {
     background-color: black;
+}
+
+#hideBoardsButton, #swapPlayersButton {
+    height: 40%
 }

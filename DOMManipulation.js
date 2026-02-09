@@ -14,8 +14,17 @@ const BOARD_NUMBER = {
     TWO: 2
 }
 
+/**
+ * Holds the values functions expect in buttonName arguments
+ */
+const BUTTON_NAMES = {
+    SWAP_PLAYERS: "swapPlayers",
+    HIDE_BOARDS: "hideBoards"
+}
+
 Object.freeze(FRIEND_OR_FOE);
 Object.freeze(BOARD_NUMBER);
+Object.freeze(BUTTON_NAMES);
 
 /**
  * Gets one of the board elements from the DOM
@@ -32,6 +41,17 @@ function grabBoardElement(boardNumber) {
         throw new Error("Invalid board number given, must be 1 or 2");
     }
     return boardEle;
+}
+
+function grabPlayerButton(buttonName) {
+    let btnEle;
+    if (buttonName === BUTTON_NAMES.HIDE_BOARDS) {
+        btnEle = document.querySelector("#hideBoardsButton");
+    } else if (buttonName === BUTTON_NAMES.SWAP_PLAYERS) {
+        btnEle = document.querySelector("#swapPlayersButton");
+    }
+
+    return btnEle;
 }
 
 /**
@@ -60,6 +80,40 @@ function initializeBoardElements() {
         clone.id = `board2-cell${i}`;
         board2.appendChild(clone);
     }
+}
+
+function initializePlayerButtons() {
+    let swapButton = grabPlayerButton(BUTTON_NAMES.SWAP_PLAYERS);
+    let hideButton = grabPlayerButton(BUTTON_NAMES.HIDE_BOARDS);
+
+    swapButton.disabled = true;
+    hideButton.disabled = true;
+
+    hideButton.title = "Click this after you've fired a shot to make all cells ocean, this way the other player can't see your board";
+    swapButton.title = "Click this once you are in front of the computer so you can unhide your board\nThis is to prevent accidentally double clicking the hide button"
+}
+
+function swapHideButtonText(hideOrUnhide) {
+    let hideButton = grabPlayerButton(BUTTON_NAMES.HIDE_BOARDS);
+
+    if (hideOrUnhide === "hide") {
+        hideButton.innerText = "Hide boards";
+        hideButton.title = "Click this after you've fired a shot to make all cells ocean, this way the other player can't see your board";
+
+    } else if (hideOrUnhide === "unhide") {
+        hideButton.innerText = "Un-hide boards";
+        hideButton.title = "Click this to reveal your board so you can fire a shot at your opponent";
+    }
+}
+
+function enableButton(buttonName) {
+    let btn = grabPlayerButton(buttonName);
+    btn.disabled = false;
+}
+
+function disableButton(buttonName) {
+    let btn = grabPlayerButton(buttonName);
+    btn.disabled = true;
 }
 
 /**
@@ -200,4 +254,4 @@ function friendOrFoeValidityCheck(friendOrFoe) {
     }
 }
 
-export {FRIEND_OR_FOE, BOARD_NUMBER, initializeBoardElements, resetBoardElementsCells, fillBoardElementShots, fillBoardElementShips, grabBoardElement}
+export {FRIEND_OR_FOE, BOARD_NUMBER, BUTTON_NAMES, initializeBoardElements, initializePlayerButtons, resetBoardElementsCells, fillBoardElementShots, fillBoardElementShips, grabBoardElement}
