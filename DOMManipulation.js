@@ -19,7 +19,8 @@ const BOARD_NUMBER = {
  */
 const BUTTON_NAMES = {
     SWAP_PLAYERS: "swapPlayers",
-    HIDE_BOARDS: "hideBoards"
+    HIDE_BOARDS: "hideBoards",
+    REVEAL_BOARDS: "revealBoards"
 }
 
 Object.freeze(FRIEND_OR_FOE);
@@ -43,12 +44,19 @@ function grabBoardElement(boardNumber) {
     return boardEle;
 }
 
+/**
+ * Gets a button from the DOM with the given name
+ * @param {BUTTON_NAMES} buttonName The name of the button to grab 
+ * @returns The DOM element for that button
+ */
 function grabPlayerButton(buttonName) {
     let btnEle;
     if (buttonName === BUTTON_NAMES.HIDE_BOARDS) {
         btnEle = document.querySelector("#hideBoardsButton");
     } else if (buttonName === BUTTON_NAMES.SWAP_PLAYERS) {
         btnEle = document.querySelector("#swapPlayersButton");
+    } else if (buttonName === BUTTON_NAMES.REVEAL_BOARDS) {
+        btnEle = document.querySelector("#revealBoardsButton");
     }
 
     return btnEle;
@@ -82,35 +90,36 @@ function initializeBoardElements() {
     }
 }
 
+/**
+ * Sets the player buttons to their original state
+ */
 function initializePlayerButtons() {
     let swapButton = grabPlayerButton(BUTTON_NAMES.SWAP_PLAYERS);
     let hideButton = grabPlayerButton(BUTTON_NAMES.HIDE_BOARDS);
+    let revealButton = grabPlayerButton(BUTTON_NAMES.REVEAL_BOARDS);
 
     swapButton.disabled = true;
     hideButton.disabled = true;
+    revealButton.disabled = true;
 
-    hideButton.title = "Click this after you've fired a shot to make all cells ocean, this way the other player can't see your board";
-    swapButton.title = "Click this once you are in front of the computer so you can unhide your board\nThis is to prevent accidentally double clicking the hide button"
+    hideButton.title = "Click this after you've fired a shot to make all cells ocean";
+    swapButton.title = "Click this to swap the boards so the next player can take their turn";
+    revealButton.title = "Click this to reveal your board so you can fire a shot at your opponent";
 }
 
-function swapHideButtonText(hideOrUnhide) {
-    let hideButton = grabPlayerButton(BUTTON_NAMES.HIDE_BOARDS);
-
-    if (hideOrUnhide === "hide") {
-        hideButton.innerText = "Hide boards";
-        hideButton.title = "Click this after you've fired a shot to make all cells ocean, this way the other player can't see your board";
-
-    } else if (hideOrUnhide === "unhide") {
-        hideButton.innerText = "Un-hide boards";
-        hideButton.title = "Click this to reveal your board so you can fire a shot at your opponent";
-    }
-}
-
+/**
+ * Enables a button
+ * @param {BUTTON_NAMES} buttonName The name of the button to enable 
+ */
 function enableButton(buttonName) {
     let btn = grabPlayerButton(buttonName);
     btn.disabled = false;
 }
 
+/**
+ * Disables a button
+ * @param {BUTTON_NAMES} buttonName The name of the button to disable 
+ */
 function disableButton(buttonName) {
     let btn = grabPlayerButton(buttonName);
     btn.disabled = true;
@@ -254,4 +263,4 @@ function friendOrFoeValidityCheck(friendOrFoe) {
     }
 }
 
-export {FRIEND_OR_FOE, BOARD_NUMBER, BUTTON_NAMES, initializeBoardElements, initializePlayerButtons, resetBoardElementsCells, fillBoardElementShots, fillBoardElementShips, grabBoardElement}
+export {FRIEND_OR_FOE, BOARD_NUMBER, BUTTON_NAMES, initializeBoardElements, initializePlayerButtons, resetBoardElementsCells, fillBoardElementShots, fillBoardElementShips, grabBoardElement, enableButton, disableButton}
