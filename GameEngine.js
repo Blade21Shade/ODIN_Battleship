@@ -2,40 +2,13 @@ import Ship from "./Ship.js"
 import Gameboard from "./Gameboard.js"
 import Player from "./Player.js"
 import * as DOMManipulation from "./DOMManipulation.js"
-
-let gameBoardSize;
-let playerTurn; // // Swaps between 1 and 2 to control game actions
-
-let player1Board;
-let player2Board;
-
-let player1;
-let player2;
-
-let board1Element;
-let board2Element;
+import * as GameState from "./GameState.js"
+import * as UIState from "./UIState.js"
 
 let preventProcessing = false; // When a game action is taken, this is set to prevent players from continuing to click and causing potential logic issues
 
-/**
- * Sets up variables needed for the game to run and initial DOM setup
- */
-function initializeGameState() {
-    gameBoardSize = 10;
-    playerTurn = 1;
-
-    player1Board = new Gameboard(gameBoardSize);
-    player2Board = new Gameboard(gameBoardSize);
-
-    player1 = new Player(player1Board);
-    player2 = new Player(player2Board);
-
-    // These do not map to player1 and player2, they change based on the current player
-    board1Element = DOMManipulation.grabBoardElement(1); // Show the active player's board with their ships and shots from the opposing player
-    board2Element = DOMManipulation.grabBoardElement(2); // Shows the opposing player's board without ships and the active player's shots
-
-    DOMManipulation.initializeBoardElements();
-    DOMManipulation.initializePlayerButtons();
+function getPreventProcessing() {
+    return preventProcessing;
 }
 
 /**
@@ -97,6 +70,68 @@ function processIDNumberOnBoard(idNum, board) {
     return clickCouldBeProcessed;
 }
 
+function enableButtonEventListeners() {
+    let hideBoardsButton = UIState.getHideBoardsButton();
+    let swapPlayersButton = UIState.getSwapPlayersButton();
+    let revealBoardsButton = UIState.getRevealBoardsButton();
+    
+    hideBoardsButton.addEventListener("click", hideBoardsCallback);
+    swapPlayersButton.addEventListener("click", swapPlayersCallback);
+    revealBoardsButton.addEventListener("click", revealBoardsCallback);
+}
+
+function hideBoardsCallback() {
+    DOMManipulation.resetBoardElementsCells();
+    DOMManipulation.enableButton(DOMManipulation.BUTTON_NAMES.SWAP_PLAYERS);
+    DOMManipulation.disableButton(DOMManipulation.BUTTON_NAMES.HIDE_BOARDS);
+}
+
+function swapPlayersCallback() {
+    DOMManipulation.enableButton(DOMManipulation.BUTTON_NAMES.REVEAL_BOARDS);
+    DOMManipulation.disableButton(DOMManipulation.BUTTON_NAMES.SWAP_PLAYERS);
+
+    GameState.switchPlayerTurn();
+}
+
+function revealBoardsCallback() {
+    // Get the shots and ships needed to fill the DOM
+    let ships = [];
+    let friendShipsPositionsArray = []; // The current player's ships array
+    let friendShotsPositionsArray = []; // The shot board of the current player; shots at the current player
+    let foeShotsPositionsArray = []; // The shot board of the opposing player; shots at the opposing player
+    
+    // Get the player boards
+    let player1Board = GameState.getPlayer1Board();
+    let player2Board = GameState.getPlayer2Board();
+    let playerTurn = GameState.getPlayerTurn();
+
+    if (playerTurn === 1) {
+        ships = player1Board.getShipList();
+        friendShotsPositionsArray = player1Board.getBoard();
+        foeShotsPositionsArray = player2Board.getBoard();
+    } else {
+        ships = player2Board.getShipList();
+        friendShotsPositionsArray = player2Board.getBoard();
+        foeShotsPositionsArray = player1Board.getBoard();
+    }
+
+    for (const ship of ships) {
+        let coords = ship.getCoordinateList();
+        friendShipsPositionsArray.push(coords);
+    }
+
+    // Fill the DOM
+    DOMManipulation.fillBoardElementShots(friendShotsPositionsArray, DOMManipulation.FRIEND_OR_FOE.FRIEND, 1);
+    DOMManipulation.fillBoardElementShips(friendShipsPositionsArray, DOMManipulation.FRIEND_OR_FOE.FRIEND, 1);
+
+    DOMManipulation.fillBoardElementShots(foeShotsPositionsArray, DOMManipulation.FRIEND_OR_FOE.FOE, 2);
+
+    // Allow next player to take their turn
+    DOMManipulation.disableButton(DOMManipulation.BUTTON_NAMES.REVEAL_BOARDS);
+    preventProcessing = false; // Allow the current player to make shots against the board
+}
+
+
 /**
  * Adds the gameplay event listener to board2element
  */
@@ -117,9 +152,15 @@ function gameplayEventListenerCallback(event) {
     }
 
     // Process what the click did to the game
-    let board = playerTurn === 1 ? player2Board : player1Board;
+    let board;
+    let playerTurn = GameState.getPlayerTurn();
+    if (playerTurn === 1) {
+        board = GameState.getPlayer2Board();
+    } else {
+        board = GameState.getPlayer1Board();
+    }
 
-    let cellNumberClicked = getIDNumberOfClickedCell(event.target);
+    let cellNumberClicked = getIDNumberOfClickedCell(event.target); // target will be a cell within the board
     let couldBeProcessed = processIDNumberOnBoard(cellNumberClicked, board);
     if (couldBeProcessed) {
         triggerNextGameStep(board);
@@ -142,18 +183,8 @@ function triggerNextGameStep(board) {
         return;
     }
 
-    // The game didn't end, setup for player swap
-
-    /**
-     * ? Obfuscate screen so players don't accidentally see each other's boards
-     * Reset each DOM board
-     * Fill DOM boards with information for next player
-     * Swap players
-     */
-
-    // Swap players
-    // playerTurn = playerTurn === 1 ? 2 : 1; // Swap which player is active
-    // preventProcessing = false;
+    // The game didn't end, enable the hide button so the players can start the swap process
+    DOMManipulation.enableButton(DOMManipulation.BUTTON_NAMES.HIDE_BOARDS);
 }
 
 /**
@@ -167,4 +198,4 @@ function endGame() {
 
 
 
-export {getIDNumberOfClickedCell, processIDNumberOnBoard, initializeGameState, enableGameplayEventListener}
+export {getIDNumberOfClickedCell, processIDNumberOnBoard, enableGameplayEventListener, enableButtonEventListeners, revealBoardsCallback, getPreventProcessing}

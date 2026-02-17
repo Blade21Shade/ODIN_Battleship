@@ -2,15 +2,14 @@
  * @jest-environment jsdom
  */
 
-jest.mock("./DOMManipulation", () => ({
-    grabBoardElement: jest.fn(()=>"testVal")
-}));
-
-import { getIDNumberOfClickedCell, processIDNumberOnBoard} from "./GameEngine.js";
+import { getIDNumberOfClickedCell, processIDNumberOnBoard, revealBoardsCallback, getPreventProcessing} from "./GameEngine.js";
 
 import { grabBoardElement } from "./DOMManipulation.js";
 
 import Gameboard from "./Gameboard.js";
+
+import * as GameState from "./GameState.js"
+import * as UIState from "./UIState.js"
 
 // Boards for the tests to use
 const board1 = document.createElement("div");
@@ -70,15 +69,6 @@ afterEach(() => {
     }
 });
 
-beforeEach(() => {
-    let brd1 = document.querySelector("#board1");
-    let brd2 = document.querySelector("#board2");
-
-    grabBoardElement
-    .mockImplementationOnce(()=>brd1)
-    .mockImplementationOnce(()=>brd2);
-});
-
 describe("GameEngine tests", () => {
     describe("getIDNumberOfClickedCell tests", () => {
         // Elements that are evaluated
@@ -129,7 +119,7 @@ describe("GameEngine tests", () => {
             });
             
             test("idNumber: 100; above 0-99 range", () => {
-                expect(processIDNumberOnBoard(23, board1Gameboard)).toBe(false);
+                expect(processIDNumberOnBoard(100, board1Gameboard)).toBe(false);
             });
 
             test("idNumber: 5, 5; attempt to hit already fired at spot", () => {
@@ -137,5 +127,57 @@ describe("GameEngine tests", () => {
                 expect(processIDNumberOnBoard(5, board1Gameboard)).toBe(false);
             });
         }); 
+    });
+
+    describe("revealBoardsCallBack test", ()=> {
+        // This test is integration I believe, but I've never done one before so I'm sure the practice is worth it
+
+        // Variables needed for the function to run; also includes board1 and board2 from the top of the file
+        const revealButton = document.createElement("button"); // This is disabled at the end of this function
+        revealButton.id = "revealBoardsButton";
+
+        // These buttons  aren't relevant to this test, but are necessary for UIState's initialization function to work
+        let swapButton = document.createElement("button");
+        swapButton.id = "swapPlayersButton";
+        let hideButton = document.createElement("button");
+        hideButton.id = "hideBoardsButton";
+
+        document.body.appendChild(revealButton);
+        document.body.appendChild(swapButton);
+        document.body.appendChild(hideButton);
+
+        test("The test", ()=>{
+            // Initializations
+            UIState.initializeUIState();
+            GameState.initializeGameState();
+
+            // Setting up variables for testing
+            let player1Board = GameState.getPlayer1Board();
+            let player2Board = GameState.getPlayer2Board();
+
+            player1Board.placeShip([4, 0], [6, 0]); // board1.children[4-6]
+            player1Board.fireAtBoard([6, 0]); // Hit; board1.children[6]
+            player1Board.fireAtBoard([6, 1]); // Miss; board1.children[16]
+
+            player2Board.fireAtBoard([0,0]); // Miss; at least one shot on this board so it can checked to see the load process working correctly
+
+            // Actual test
+            revealBoardsCallback();
+
+            // Ship
+            expect(board1.children[4].className).toBe("cell ship");
+            expect(board1.children[5].className).toBe("cell ship");
+            expect(board1.children[6].className).toBe("cell hit");
+
+            // Missed shot on board1
+            expect(board1.children[16].className).toBe("cell miss");
+
+            // Missed shot on board2
+            expect(board2.children[0].className).toBe("cell miss");
+
+            // Variable checks
+            expect(getPreventProcessing()).toBe(false);
+            expect(revealButton.disabled).toBe(true);
+        });
     });
 });

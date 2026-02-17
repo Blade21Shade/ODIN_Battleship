@@ -1,3 +1,5 @@
+import * as UIState from "./UIState"
+
 /**
  * Holds the values that functions expect in friendOrFoe arguments
  */
@@ -52,11 +54,11 @@ function grabBoardElement(boardNumber) {
 function grabPlayerButton(buttonName) {
     let btnEle;
     if (buttonName === BUTTON_NAMES.HIDE_BOARDS) {
-        btnEle = document.querySelector("#hideBoardsButton");
+        btnEle = UIState.getHideBoardsButton();
     } else if (buttonName === BUTTON_NAMES.SWAP_PLAYERS) {
-        btnEle = document.querySelector("#swapPlayersButton");
+        btnEle = UIState.getSwapPlayersButton();
     } else if (buttonName === BUTTON_NAMES.REVEAL_BOARDS) {
-        btnEle = document.querySelector("#revealBoardsButton");
+        btnEle = UIState.getRevealBoardsButton();
     }
 
     return btnEle;
@@ -66,8 +68,8 @@ function grabPlayerButton(buttonName) {
  * Fills the board elements with cells - cells have an ID and if a child of board1 the "friend" class, or "foe" for board2
  */
 function initializeBoardElements() {
-    let board1 = grabBoardElement(BOARD_NUMBER.ONE);
-    let board2 = grabBoardElement(BOARD_NUMBER.TWO);
+    let board1 = UIState.getBoard1Element();
+    let board2 = UIState.getBoard2Element();
     
     if (board1.childElementCount !== 0 || board2.childElementCount !== 0) {
         alert("Boards already initialized");
@@ -94,9 +96,9 @@ function initializeBoardElements() {
  * Sets the player buttons to their original state
  */
 function initializePlayerButtons() {
-    let swapButton = grabPlayerButton(BUTTON_NAMES.SWAP_PLAYERS);
-    let hideButton = grabPlayerButton(BUTTON_NAMES.HIDE_BOARDS);
-    let revealButton = grabPlayerButton(BUTTON_NAMES.REVEAL_BOARDS);
+    let swapButton = UIState.getSwapPlayersButton();
+    let hideButton = UIState.getHideBoardsButton();
+    let revealButton = UIState.getRevealBoardsButton();
 
     swapButton.disabled = true;
     hideButton.disabled = true;
@@ -129,8 +131,8 @@ function disableButton(buttonName) {
  * Resets each board's cells to only have the "cell" class and "friend" or "foe" class based on parent board
  */
 function resetBoardElementsCells() {
-    let board1 = grabBoardElement(BOARD_NUMBER.ONE);
-    let board2 = grabBoardElement(BOARD_NUMBER.TWO);
+    let board1 = UIState.getBoard1Element();
+    let board2 = UIState.getBoard2Element();
 
     for (let i = 0; i < 100; i++) {
         resetCellClassList(board1.children[i], FRIEND_OR_FOE.FRIEND);
@@ -263,4 +265,4 @@ function friendOrFoeValidityCheck(friendOrFoe) {
     }
 }
 
-export {FRIEND_OR_FOE, BOARD_NUMBER, BUTTON_NAMES, initializeBoardElements, initializePlayerButtons, resetBoardElementsCells, fillBoardElementShots, fillBoardElementShips, grabBoardElement, enableButton, disableButton}
+export {FRIEND_OR_FOE, BOARD_NUMBER, BUTTON_NAMES, initializeBoardElements, initializePlayerButtons, resetBoardElementsCells, fillBoardElementShots, fillBoardElementShips, grabBoardElement, grabPlayerButton, enableButton, disableButton}

@@ -15,15 +15,16 @@ export default class Gameboard {
      */
     constructor(size) {
         this.#maxPosition = size;
+
         // Rows
         for (let i = 0; i < size; i++) {
-            this.#board.push([]);
-            
-            // Columns
-            let lastArray = this.#board.at(-1);
+            let row = [];
+            // Fill row with column entries
             for (let j = 0; j < size; j++) {
-                lastArray.push(0);
+                row.push(0);
             }
+            
+            this.#board.push(row);
         }
     }
 
@@ -86,7 +87,7 @@ export default class Gameboard {
             throw new Error("Given position isn't inside the board's bounds");
         }
 
-        let boardHitVal = this.#board[x][y];
+        let boardHitVal = this.#board[y][x];
 
         if (boardHitVal !== 0) {
             throw new Error("Given position has already been fired at");
@@ -102,7 +103,7 @@ export default class Gameboard {
             }
         }
 
-        this.#board[x][y] = hitVal;
+        this.#board[y][x] = hitVal;
         this.checkIfAllShipsSunk();
 
         return hitVal;
@@ -126,6 +127,10 @@ export default class Gameboard {
         }
 
         return this.#allShipsSunk;
+    }
+
+    getBoard() {
+        return this.#board;
     }
 
     getShipList() {
