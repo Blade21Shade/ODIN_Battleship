@@ -1,6 +1,6 @@
 import Ship from "./Ship.js"
 
-export default class Gameboard {
+export default class GameBoard {
     // Becomes a 2D array in the constructor
     // 0s haven't been fired at, -1 is miss, 1 is hit
     #board = [];

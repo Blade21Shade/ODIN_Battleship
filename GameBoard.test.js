@@ -1,7 +1,7 @@
-import Gameboard from "./Gameboard.js"
+import GameBoard from "./GameBoard.js"
 
-describe("Gameboard tests", () => {
-    let testBoard = new Gameboard(10);
+describe("GameBoard tests", () => {
+    let testBoard = new GameBoard(10);
 
     afterEach(()=> {
         testBoard.resetBoard();

@@ -6,7 +6,7 @@ import { getIDNumberOfClickedCell, processIDNumberOnBoard, revealBoardsCallback,
 
 import { grabBoardElement } from "./DOMManipulation.js";
 
-import Gameboard from "./Gameboard.js";
+import GameBoard from "./GameBoard.js";
 
 import * as GameState from "./GameState.js"
 import * as UIState from "./UIState.js"
@@ -50,7 +50,7 @@ const board1Array = [
     [0,0,0,0,0,0,0,0,0,0]
 ];
 
-const board1Gameboard = new Gameboard(10);
+const board1GameBoard = new GameBoard(10);
 
 const shipCoordinates1 = [
     [[1,0], [2,0]],
@@ -105,26 +105,26 @@ describe("GameEngine tests", () => {
     describe("processClick tests", () => {
         describe("Pass tests", () => {
             test("idNumber: 5", () => {
-                expect(processIDNumberOnBoard(5, board1Gameboard)).toBe(true); // Click is processed
+                expect(processIDNumberOnBoard(5, board1GameBoard)).toBe(true); // Click is processed
             });
             
             test("idNumber: 23", () => {
-                expect(processIDNumberOnBoard(23, board1Gameboard)).toBe(true); // Click is processed
+                expect(processIDNumberOnBoard(23, board1GameBoard)).toBe(true); // Click is processed
             });
         });
 
         describe("Clean-fail tests - return false", () => {
             test("idNumber: -1; below 0-99 range", () => {
-                expect(processIDNumberOnBoard(-1, board1Gameboard)).toBe(false);
+                expect(processIDNumberOnBoard(-1, board1GameBoard)).toBe(false);
             });
             
             test("idNumber: 100; above 0-99 range", () => {
-                expect(processIDNumberOnBoard(100, board1Gameboard)).toBe(false);
+                expect(processIDNumberOnBoard(100, board1GameBoard)).toBe(false);
             });
 
             test("idNumber: 5, 5; attempt to hit already fired at spot", () => {
-                processIDNumberOnBoard(5, board1Gameboard);
-                expect(processIDNumberOnBoard(5, board1Gameboard)).toBe(false);
+                processIDNumberOnBoard(5, board1GameBoard);
+                expect(processIDNumberOnBoard(5, board1GameBoard)).toBe(false);
             });
         }); 
     });

@@ -1,5 +1,5 @@
 import Ship from "./Ship.js"
-import Gameboard from "./Gameboard.js"
+import GameBoard from "./GameBoard.js"
 import Player from "./Player.js"
 import * as DOMManipulation from "./DOMManipulation.js"
 import * as GameState from "./GameState.js"
@@ -38,7 +38,7 @@ function getIDNumberOfClickedCell(cell) {
 /**
  * Attempts to process the given cell idNumber onto the given board
  * @param {number} idNum The idNumber of a cell
- * @param {Gameboard} board The board to process the idNumber against
+ * @param {GameBoard} board The board to process the idNumber against
  * @returns True if the click was valid (hit or miss), or False if it was invalid
  */
 function processIDNumberOnBoard(idNum, board) {
@@ -172,7 +172,7 @@ function gameplayEventListenerCallback(event) {
 
 /**
  * Causes the next game step to occur: either end the game, or swap players and continue
- * @param {Gameboard} board The board to check to see if all ships have been sunk on it
+ * @param {GameBoard} board The board to check to see if all ships have been sunk on it
  */
 function triggerNextGameStep(board) {
     let allShipsSunk = board.getAllShipsSunk();

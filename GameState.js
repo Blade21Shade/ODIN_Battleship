@@ -1,8 +1,8 @@
 import Ship from "./Ship.js"
-import Gameboard from "./Gameboard.js"
+import GameBoard from "./GameBoard.js"
 import Player from "./Player.js"
 
-let gameBoardSize;
+let GameBoardSize;
 let playerTurn; // Swaps between 1 and 2 to control game actions
 
 let player1Board;
@@ -12,18 +12,18 @@ let player1;
 let player2;
 
 function initializeGameState() {
-    gameBoardSize = 10;
+    GameBoardSize = 10;
     playerTurn = 1;
 
-    player1Board = new Gameboard(gameBoardSize);
-    player2Board = new Gameboard(gameBoardSize);
+    player1Board = new GameBoard(GameBoardSize);
+    player2Board = new GameBoard(GameBoardSize);
 
     player1 = new Player(player1Board);
     player2 = new Player(player2Board);
 }
 
 function getGameBoardSize() {
-    return gameBoardSize;
+    return GameBoardSize;
 }
 
 function getPlayerTurn() {
