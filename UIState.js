@@ -9,6 +9,9 @@ let revealBoardsButton;
 let board1Element; // The active player's board with their ships and shots from the opposing player
 let board2Element; // The opposing player's board without ships and the active player's shots
 
+/**
+ * Assigns each variable to the DOM element it refers to
+ */
 function initializeUIState() {
     board1Element = document.querySelector("#board1");
     board2Element = document.querySelector("#board2");

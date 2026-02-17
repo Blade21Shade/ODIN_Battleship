@@ -70,6 +70,9 @@ function processIDNumberOnBoard(idNum, board) {
     return clickCouldBeProcessed;
 }
 
+/**
+ * Creates an onclick event listener for each of the player buttons using the corresponding callback functions for each button
+ */
 function enableButtonEventListeners() {
     let hideBoardsButton = UIState.getHideBoardsButton();
     let swapPlayersButton = UIState.getSwapPlayersButton();
@@ -80,12 +83,18 @@ function enableButtonEventListeners() {
     revealBoardsButton.addEventListener("click", revealBoardsCallback);
 }
 
+/**
+ * Prepares for player swapping by resetting each DOM board, enabling the swap players button, and disabling the hide boards button (the button this is attached to)
+ */
 function hideBoardsCallback() {
     DOMManipulation.resetBoardElementsCells();
     DOMManipulation.enableButton(DOMManipulation.BUTTON_NAMES.SWAP_PLAYERS);
     DOMManipulation.disableButton(DOMManipulation.BUTTON_NAMES.HIDE_BOARDS);
 }
 
+/**
+ * Switches players, enables the reveal boards button, disables the swap players button (the button this is attached to)
+ */
 function swapPlayersCallback() {
     DOMManipulation.enableButton(DOMManipulation.BUTTON_NAMES.REVEAL_BOARDS);
     DOMManipulation.disableButton(DOMManipulation.BUTTON_NAMES.SWAP_PLAYERS);
@@ -93,6 +102,9 @@ function swapPlayersCallback() {
     GameState.switchPlayerTurn();
 }
 
+/**
+ * Reveals the boards so the now-active player can take their turn, disables the reveal boards button (the button this is attached to) 
+ */
 function revealBoardsCallback() {
     // Get the shots and ships needed to fill the DOM
     let ships = [];

@@ -11,6 +11,9 @@ let player2Board;
 let player1;
 let player2;
 
+/**
+ * Sets each variable to the initial state needed for gameplay to begin
+ */
 function initializeGameState() {
     GameBoardSize = 10;
     playerTurn = 1;
