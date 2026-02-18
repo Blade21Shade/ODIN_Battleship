@@ -87,7 +87,8 @@ export default class GameBoard {
             let ship = this.#ships[i];
             let shipCoords = ship.getCoordinateList();
             for (let j = 0; j < shipCoords.length; j++) {
-                if (coord[0] === shipCoords[0] && coord[1] === shipCoords[1]) {
+                let shipCoord = shipCoords[j];
+                if (coord[0] === shipCoord[0] && coord[1] === shipCoord[1]) {
                     coordsOfRemovedShip = shipCoords;
 
                     // Remove this ship from the board

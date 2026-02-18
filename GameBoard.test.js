@@ -40,6 +40,18 @@ describe("GameBoard tests", () => {
         });
     });
 
+    describe("Remove ship tests", ()=> {
+        test("Remove a placed ship", () => {
+            testBoard.placeShip([0,4], [0,6]);
+            expect(testBoard.removeShipByCoordinate([0,5])).toEqual([[0,4], [0,5], [0,6]]);
+            expect(testBoard.getShipList()).toEqual([]);
+        });
+        test("Remove a coordinate that doesn't match a ship (this does nothing to board)", () => {
+            testBoard.placeShip([0,4], [0, 6]);
+            expect(testBoard.removeShipByCoordinate([0,0])).toEqual([]);
+        });
+    });
+
     describe("Fire at board tests", () => {
         test("Hit", () => {
             testBoard.placeShip([3, 5], [3, 7]);
