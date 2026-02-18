@@ -3,8 +3,14 @@ import * as GameEngine from "./GameEngine.js";
 import * as GameState from "./GameState.js"
 import * as UIState from "./UIState.js"
 
+initialize();
+
 // Initialize the game state and DOM
-GameState.initializeGameState();
-UIState.initializeUIState();
-DOMManipulation.initializeBoardElements();
-DOMManipulation.initializePlayerButtons();
+function initialize() {
+    GameState.initializeGameState();
+    UIState.initializeUIState();
+    DOMManipulation.initializeBoardElements();
+    DOMManipulation.initializePlayerButtons();
+}
+
+export {initialize}

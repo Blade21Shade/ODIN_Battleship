@@ -1,4 +1,4 @@
-import * as UIState from "./UIState"
+import * as UIState from "./UIState.js"
 
 /**
  * Holds the values that functions expect in friendOrFoe arguments
