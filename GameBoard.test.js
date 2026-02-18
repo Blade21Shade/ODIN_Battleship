@@ -17,25 +17,25 @@ describe("GameBoard tests", () => {
             describe("Out of bounds", () => {
                 // The checks for the start and end coords are the same, so just use start coords for the tests
                 test("Start coord, below min X: [-1, 0], [4, 0]", () => {
-                    expect(()=>{testBoard.placeShip([-1, 0], [4, 0])}).toThrow();
+                    expect(testBoard.placeShip([-1, 0], [4, 0])).toBe(false);
                 });
 
                 test("Start coord, above max X: [12, 0], [8, 0]", () => {
-                    expect(()=>{testBoard.placeShip([12, 0], [8, 0])}).toThrow();
+                    expect(testBoard.placeShip([12, 0], [8, 0])).toBe(false);
                 });
 
                 test("Start coord, below min Y: [0, -1], [0, 4]", () => {
-                    expect(()=>{testBoard.placeShip([0, -1], [0, 4])}).toThrow();
+                    expect(testBoard.placeShip([0, -1], [0, 4])).toBe(false);
                 });
 
                 test("Start coord, above max Y: [0, 12], [0, 8]", () => {
-                    expect(()=>{testBoard.placeShip([0, 12], [0, 8])}).toThrow();
+                    expect(testBoard.placeShip([0, 12], [0, 8])).toBe(false);
                 });
             });
 
             test("Overlapping: [4,4][4,6] && [3,4][5,4]", () => {
                 testBoard.placeShip([4,4], [4,6]);
-                expect(()=>{testBoard.placeShip([3,4], [5,4])}).toThrow();
+                expect(testBoard.placeShip([3,4], [5,4])).toBe(false);
             });
         });
     });
@@ -64,12 +64,12 @@ describe("GameBoard tests", () => {
 
         describe("Error tests", () => {
             test("Position outside the board's bounds", () => {
-                expect(()=>{testBoard.fireAtBoard([20,20])}).toThrow();
+                expect(testBoard.fireAtBoard([20,20])).toBe(0);
             });
             
             test("Fire at position already marked", () => {
                 testBoard.fireAtBoard([3,6]);
-                expect(()=>{testBoard.fireAtBoard([3,6])}).toThrow();
+                expect(testBoard.fireAtBoard([3,6])).toBe(0);
             }); 
         }); 
     });

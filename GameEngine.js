@@ -57,16 +57,11 @@ function processIDNumberOnBoard(idNum, board) {
     let coord = [x,y];
 
     // Actual processing
-    let hitVal = -10;
-    try {
-        hitVal = board.fireAtBoard(coord);
-        if (hitVal === -1 || hitVal === 1) { // Hit or miss
-            clickCouldBeProcessed = true;
-        }
-    } catch (error) {
-        return clickCouldBeProcessed; // If fireAtBoard() receives a coordinate that has already been shot at it throws an error, in which case do nothing
+    let hitVal = 0;
+    hitVal = board.fireAtBoard(coord);
+    if (hitVal === -1 || hitVal === 1) { // Hit or miss
+        clickCouldBeProcessed = true;
     }
-
     return clickCouldBeProcessed;
 }
 

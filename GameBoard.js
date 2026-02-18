@@ -34,13 +34,15 @@ export default class GameBoard {
      * @param {[number, number]} endPos The end position (coordinate) of the ship
      */
     placeShip(startPos, endPos) {
+        let couldBePlaced = false;
+        
         // Check if either position is outside the board's size
         if (startPos[0] < 0 || startPos[0] > this.#maxPosition ||
             startPos[1] < 0 || startPos[1] > this.#maxPosition || 
             endPos[0] < 0 || endPos[0] > this.#maxPosition ||
             endPos[1] < 0 || endPos[1] > this.#maxPosition
         ) {
-            throw new Error("Ships must be placed within the board's boundaries: received out of bounds position");
+            return couldBePlaced;
         }
 
         let ship = new Ship(startPos, endPos);
@@ -66,11 +68,13 @@ export default class GameBoard {
         }
 
         if (overlap) {
-            throw new Error("Ships cannot overlap: received ship coords that overlap with another ship")
+            return couldBePlaced;
         }
 
         // Within bounds and not overlapping any other ships: valid placement
         this.#ships.push(ship);
+        couldBePlaced = true;
+        return couldBePlaced;
     }
 
     /**
@@ -104,24 +108,28 @@ export default class GameBoard {
     /**
      * Fires a shot at the board if the position is within the bounds of the board and that position hasn't already been shot at; sets that board position to 1 if hit, or -1 if miss
      * @param {[number, number]} position The position to fire at on this board
-     * @returns A value based on hit status of the shot: 1 for hit, -1 for miss
+     * @returns A value based on hit status of the shot: 1 for hit, -1 for miss, 0 for invalid shot
      */
     fireAtBoard(position) {
+        // Used to indicate if the shot was a hit, miss, or invalid
+        let hitVal = 0;
+        
+        // Out of bounds check
         let x = position[0];
         let y = position[1];
         if (x < 0 || x > this.#maxPosition ||
             y < 0 || y > this.#maxPosition
         ) {
-            throw new Error("Given position isn't inside the board's bounds");
+            return hitVal;
         }
 
+        // Check if this position has already been fired at
         let boardHitVal = this.#board[y][x];
-
         if (boardHitVal !== 0) {
-            throw new Error("Given position has already been fired at");
+            return hitVal;
         }
 
-        let hitVal = -1; // Miss value
+        hitVal = -1; // Miss value
         for (let i = 0; i < this.#ships.length; i++) {
             let ship = this.#ships[i];
             let hit = ship.hitCheck([x,y]);
