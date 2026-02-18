@@ -74,6 +74,33 @@ export default class GameBoard {
     }
 
     /**
+     * Removes a ship containing the given coord from the board 
+     * @param {[number, number]} coord An [x,y] position of the ship which needs to be removed 
+     * @returns The coordinate list of the ship that was removed, or an empty array if the coordinate wasn't in any ship on the board
+     */
+    removeShipByCoordinate(coord) {
+        let coordsOfRemovedShip = [];
+
+        // Search for the ship which contains the given coordinate
+        let length = this.#ships.length;
+        shipLoop: for (let i = 0; i < length; i++) {
+            let ship = this.#ships[i];
+            let shipCoords = ship.getCoordinateList();
+            for (let j = 0; j < shipCoords.length; j++) {
+                if (coord[0] === shipCoords[0] && coord[1] === shipCoords[1]) {
+                    coordsOfRemovedShip = shipCoords;
+
+                    // Remove this ship from the board
+                    this.#ships.splice(i, 1);
+                    break shipLoop;
+                }
+            }
+        }
+
+        return coordsOfRemovedShip;
+    }
+
+    /**
      * Fires a shot at the board if the position is within the bounds of the board and that position hasn't already been shot at; sets that board position to 1 if hit, or -1 if miss
      * @param {[number, number]} position The position to fire at on this board
      * @returns A value based on hit status of the shot: 1 for hit, -1 for miss
