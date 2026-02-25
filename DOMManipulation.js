@@ -1,4 +1,5 @@
 import * as UIState from "./UIState.js"
+import * as Tools from "./Tools.js"
 
 /**
  * Holds the values that functions expect in friendOrFoe arguments
@@ -234,6 +235,62 @@ function fillBoardElementShips(positionsOfShips, friendOrFoe, boardNumber) {
 }
 
 /**
+ * Add the placeShip handlers to the "friend" board
+ */
+function enablePlaceShipHandlers() {
+    let board1Element = UIState.getBoard1Element();
+    board1Element.addEventListener("mouseover", addPlaceShipClassHandler);
+    board1Element.addEventListener("mouseout", removePlaceShipClassHandler);
+}
+
+/**
+ * Removes the placeShip handlers from the "friend" board
+ */
+function disablePlaceShipHandlers() {
+    let board1Element = UIState.getBoard1Element();
+    board1Element.removeEventListener("mouseover", addPlaceShipClassHandler);
+    board1Element.removeEventListener("mouseout", removePlaceShipClassHandler);
+}
+
+/**
+ * Adds the placeShip class to cells around the event.target; this works alongside Tools' searchDirection and additionalToGetEachDirection variables
+ * @param {Event} event A mouseover event of board1; used to get the cell that was moused over
+ */
+function addPlaceShipClassHandler(event) {
+    let cell = event.target;
+
+    if (cell.className === "cell friend") {
+        let idString = cell.id;
+        let idNumber = Tools.getIDNumberFromIDString(idString);
+        let idList = Tools.createIDListFromIDNumber(idNumber);
+
+        for (const id of idList) {
+            let thisCell = document.querySelector(`#board1-cell${id}`);
+            thisCell.classList.add("placeShip");
+        }
+    }
+}
+
+/**
+ * Removes the placeShip class from cells around the event.target; this works alongside Tools' searchDirection and additionalToGetEachDirection variables
+ * @param {Event} event A mouseover event of board1; used to get the cell that was moused over
+ */
+function removePlaceShipClassHandler(event) {
+    let cell = event.target;
+
+    if (cell.classList.contains("placeShip")) {
+        let idString = cell.id;
+        let idNumber = Tools.getIDNumberFromIDString(idString);
+        let idList = Tools.createIDListFromIDNumber(idNumber);
+
+        for (const id of idList) {
+            let thisCell = document.querySelector(`#board1-cell${id}`);
+            thisCell.classList.remove("placeShip");
+        }
+    }
+}
+
+/**
  * Removes all non-cell classes from a cell
  * @param {Element} cell The cell to remove classes from
  */
@@ -265,4 +322,4 @@ function friendOrFoeValidityCheck(friendOrFoe) {
     }
 }
 
-export {FRIEND_OR_FOE, BOARD_NUMBER, BUTTON_NAMES, initializeBoardElements, initializePlayerButtons, resetBoardElementsCells, fillBoardElementShots, fillBoardElementShips, grabBoardElement, grabPlayerButton, enableButton, disableButton}
+export {FRIEND_OR_FOE, BOARD_NUMBER, BUTTON_NAMES, initializeBoardElements, initializePlayerButtons, resetBoardElementsCells, fillBoardElementShots, fillBoardElementShips, grabBoardElement, grabPlayerButton, enableButton, disableButton, enablePlaceShipHandlers, disablePlaceShipHandlers, addPlaceShipClassHandler, removePlaceShipClassHandler}

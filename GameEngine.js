@@ -4,6 +4,7 @@ import Player from "./Player.js"
 import * as DOMManipulation from "./DOMManipulation.js"
 import * as GameState from "./GameState.js"
 import * as UIState from "./UIState.js"
+import * as Tools from "./Tools.js"
 
 let preventProcessing = false; // When a game action is taken, this is set to prevent players from continuing to click and causing potential logic issues
 
@@ -23,13 +24,7 @@ function getIDNumberOfClickedCell(cell) {
     // Only evaluate cells which haven't been shot at
     if (cell.classList.contains("cell") && cell.classList.contains("foe")) {
         let idString = cell.id;
-        
-        // Cell id's are in the form: boardX-cellYZ ; YZ can be < 10, in which case it only has one character for the number
-        if (isNaN(idString.at(-2))) { // If the second to last character isn't a number only grab the last character
-            idNum = Number(idString.at(-1));
-        } else {
-            idNum = Number(idString.at(-2) + idString.at(-1));
-        }
+        idNum = Tools.getIDNumberFromIDString(idString);
     }
 
     return idNum;

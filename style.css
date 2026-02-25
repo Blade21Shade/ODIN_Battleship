@@ -65,6 +65,10 @@ body {
     background-color: lightgreen;
 }
 
+.cell.friend.placeShip {
+    background-color: rgb(136, 136, 136);
+}
+
 .cell.ship {
     background-color: black;
 }

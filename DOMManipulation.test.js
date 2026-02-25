@@ -2,70 +2,74 @@
  * @jest-environment jsdom
  */
 
-import { fillBoardElementShots, fillBoardElementShips, FRIEND_OR_FOE, BOARD_NUMBER } from "./DOMManipulation";
+import { fillBoardElementShots, fillBoardElementShips, FRIEND_OR_FOE, BOARD_NUMBER, addPlaceShipClassHandler, removePlaceShipClassHandler } from "./DOMManipulation";
+import * as Tools from "./Tools.js";
+
+// Mocking Tools
+jest.mock("./Tools.js");
+
+// Boards for the tests to use
+const board1 = document.createElement("div");
+board1.id = "board1";
+document.body.appendChild(board1);
+
+const board2 = document.createElement("div");
+board2.id = "board2";
+document.body.appendChild(board2);
+
+const cell = document.createElement("div");
+cell.classList.add("cell");
+
+// Setup the boards for use
+for (let i = 0; i < 100; i++) {
+    let clone = cell.cloneNode();
+    clone.classList.toggle("friend");
+    clone.id = `board1-cell${i}`;
+    board1.appendChild(clone);
+
+    clone = cell.cloneNode();
+    clone.classList.toggle("foe");
+    clone.id = `board2-cell${i}`;
+    board2.appendChild(clone);
+}
+
+function setupFriendFoeCells() {
+    for (let i = 0; i < 100; i++) {
+        board1.children[i].classList.remove("miss", "hit", "ship", "placeShip");
+        board2.children[i].classList.remove("miss", "hit");
+
+        board1.children[i].classList.add("friend");
+        board2.children[i].classList.add("foe");
+    }
+}
+
+// Variables the tests can use 
+const board1Array = [
+    [1,0,0,0,0,0,0,1,0,-1],
+    [0,1,0,0,0,0,0,1,0,-1],
+    [0,0,0,0,0,0,0,0,0,0], // This row and below are unused, they are present so fillBoardElement() still works
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0]
+];
+
+const shipCoordinates1 = [
+    [[1,0], [2,0]],
+    [[7,0], [7,1]],
+    [[8,0], [8,1]]
+];
+
+// Reset the board cell's to a clean classList for the next test
+afterEach(() => {
+    setupFriendFoeCells();
+});
 
 describe("DOMManipulation tests", () => {
     describe("Board tests", () => {
-        // Boards for the tests to use
-        const board1 = document.createElement("div");
-        board1.id = "board1";
-        document.body.appendChild(board1);
-        
-        const board2 = document.createElement("div");
-        board2.id = "board2";
-        document.body.appendChild(board2);
-
-        const cell = document.createElement("div");
-        cell.classList.add("cell");
-
-        // Setup the boards for use
-        for (let i = 0; i < 100; i++) {
-            let clone = cell.cloneNode();
-            clone.classList.toggle("friend");
-            clone.id = `board1-cell${i}`;
-            board1.appendChild(clone);
-
-            clone = cell.cloneNode();
-            clone.classList.toggle("foe");
-            clone.id = `board2-cell${i}`;
-            board2.appendChild(clone);
-        }
-
-        function setupFriendFoeCells() {
-            for (let i = 0; i < 100; i++) {
-                board1.children[i].classList.remove("miss", "hit", "ship");
-                board2.children[i].classList.remove("miss", "hit");
-
-                board1.children[i].classList.add("friend");
-                board2.children[i].classList.add("foe");
-            }
-        }
-
-        // Variables the tests can use 
-        const board1Array = [
-            [1,0,0,0,0,0,0,1,0,-1],
-            [0,1,0,0,0,0,0,1,0,-1],
-            [0,0,0,0,0,0,0,0,0,0], // This row and below are unused, they are present so fillBoardElement() still works
-            [0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0]
-        ];
-
-        const shipCoordinates1 = [
-            [[1,0], [2,0]],
-            [[7,0], [7,1]],
-            [[8,0], [8,1]]
-        ];
-
-        // Reset the board cell's to a clean classList for the next test
-        afterEach(() => {
-            setupFriendFoeCells();
-        });
-
         describe("Fill board-element tests", () => {
             describe("Pass tests", () => {
                 describe("Friend board tests", () => {
@@ -198,6 +202,91 @@ describe("DOMManipulation tests", () => {
             });
             
             
+        });
+    });
+
+    describe("shipPlace class tests", () => {
+        // Variable setup
+        Tools.setAdditionalToGetEachDirection(1);
+        Tools.setSearchDirection(Tools.DIRECTION.HORIZONTAL);
+        
+        // Mock setup
+        Tools.getIDNumberFromIDString.mockReturnValue(); // This call doesn't matter, but pretending it is expensive is good for practice with mocking
+        Tools.createIDListFromIDNumber.mockReturnValue([14, 15, 16]); // This mock's return value is used in both functions, so its value does matter
+        
+        // Variables needed for tests to use as input
+        let cell = {
+            className: "cell friend",
+            id: "boardX-cell15",
+            classList: { 
+                contains(searchFor) { // This is needed for the remove function because it uses cell.classList.contains() in its logic
+                    let classes = cell.className.split(" ");
+                    for (const c of classes) {
+                        if (c === searchFor) {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+            }
+           
+        }
+        
+        let event = {target: cell}
+
+        afterEach(()=> {
+            cell.className = "cell friend";
+            cell.id = "boardX-cell15";
+        })
+
+        describe("Add class tests", () => {
+            test("Simple pass test", () => {
+                addPlaceShipClassHandler(event);
+
+                // Cells should have the placeShip class
+                expect(board1.children[14].className).toBe("cell friend placeShip");
+                expect(board1.children[15].className).toBe("cell friend placeShip");
+                expect(board1.children[16].className).toBe("cell friend placeShip");
+            });
+
+            test("Bad className test", () => {
+                cell.className = "bad className";
+
+                addPlaceShipClassHandler(event);
+
+                // Cells shouldn't have the placeShip class due to a bad className
+                expect(board1.children[14].className).toBe("cell friend");
+                expect(board1.children[15].className).toBe("cell friend");
+                expect(board1.children[16].className).toBe("cell friend");
+            });
+
+        });
+
+        describe("Remove class tests", () => {
+            test("Simple pass test", () => {
+                // Setup for removing the placeShip class from cells
+                board1.children[14].classList.add("placeShip");
+                board1.children[15].classList.add("placeShip");
+                board1.children[15].classList.add("placeShip");
+                cell.className = "cell friend placeShip"; // The target cell needs the placeShip class for this function to work
+                
+                removePlaceShipClassHandler(event);
+               
+                // The placeShip class should be removed
+                expect(board1.children[14].className).toBe("cell friend");
+                expect(board1.children[15].className).toBe("cell friend");
+                expect(board1.children[16].className).toBe("cell friend");
+            });
+
+            test("Call on cell without placeShip class", () => {
+                removePlaceShipClassHandler(event);
+               
+                // These cells should be unaffected by the function call
+                expect(board1.children[14].className).toBe("cell friend");
+                expect(board1.children[15].className).toBe("cell friend");
+                expect(board1.children[16].className).toBe("cell friend");
+            });
         });
     });
 });
