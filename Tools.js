@@ -10,7 +10,7 @@ Object.freeze(DIRECTION);
 
 // These are used when creating ID lists to determine the direction to grab IDs and the number in each direction to grab
 let searchDirection = DIRECTION.HORIZONTAL;
-let additionalToGetEachDirection = 0; // A value of 0 is a special case to represent a 2-cell ship
+let additionalToGetEachDirection = 1; // A value of 0 is a special case to represent a 2-cell ship
 
 /**
  * Sets the placement direction of ships, can only be "horizontal" or "vertical"
@@ -19,6 +19,17 @@ let additionalToGetEachDirection = 0; // A value of 0 is a special case to repre
 function setSearchDirection(direction) {
     if (direction === DIRECTION.VERTICAL || direction === DIRECTION.HORIZONTAL) {
         searchDirection = direction;
+    }
+}
+
+/**
+ * Switches searchDirection to horizontal if it is currently vertical, or vertical if it is currently horizontal 
+ */
+function switchSearchDirection() {
+    if (searchDirection === DIRECTION.VERTICAL) {
+        searchDirection = DIRECTION.HORIZONTAL;
+    } else {
+        searchDirection = DIRECTION.VERTICAL
     }
 }
 
@@ -149,4 +160,4 @@ function createIDListFromIDNumber(idNum) {
     return idList;
 }
 
-export {DIRECTION, setAdditionalToGetEachDirection, setSearchDirection, getAdditionalToGetEachDirection, getSearchDirection, createIDListFromIDNumber, getIDNumberFromIDString}
+export {DIRECTION, setAdditionalToGetEachDirection, setSearchDirection, getAdditionalToGetEachDirection, getSearchDirection, createIDListFromIDNumber, getIDNumberFromIDString, switchSearchDirection}
