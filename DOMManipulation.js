@@ -241,6 +241,7 @@ function enablePlaceShipHandlers() {
     let board1Element = UIState.getBoard1Element();
     board1Element.addEventListener("mouseover", addPlaceShipClassHandler);
     board1Element.addEventListener("mouseout", removePlaceShipClassHandler);
+    board1Element.addEventListener("wheel", wheelEventHandler);
 }
 
 /**
@@ -250,6 +251,7 @@ function disablePlaceShipHandlers() {
     let board1Element = UIState.getBoard1Element();
     board1Element.removeEventListener("mouseover", addPlaceShipClassHandler);
     board1Element.removeEventListener("mouseout", removePlaceShipClassHandler);
+    board1Element.removeEventListener("wheel", wheelEventHandler);
 }
 
 /**
@@ -288,6 +290,16 @@ function removePlaceShipClassHandler(event) {
             thisCell.classList.remove("placeShip");
         }
     }
+}
+
+/**
+ * Switches the placement direction of ships so users can place them horizontally or vertically
+ * @param {Event} event The wheel event from board1
+ */
+function wheelEventHandler(event) {
+    removePlaceShipClassHandler(event);
+    Tools.switchSearchDirection();
+    addPlaceShipClassHandler(event);
 }
 
 /**

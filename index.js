@@ -6,8 +6,6 @@ import * as Tools from "./Tools.js"
 
 initialize();
 DOMManipulation.enablePlaceShipHandlers();
-Tools.setAdditionalToGetEachDirection(1);
-Tools.setSearchDirection(DOMManipulation.DIRECTION.HORIZONTAL);
 
 // Initialize the game state and DOM
 function initialize() {
