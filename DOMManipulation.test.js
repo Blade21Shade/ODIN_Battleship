@@ -6,7 +6,26 @@ import { fillBoardElementShots, fillBoardElementShips, FRIEND_OR_FOE, BOARD_NUMB
 import * as Tools from "./Tools.js";
 
 // Mocking Tools
-jest.mock("./Tools.js");
+// Below is what would be needed to mock some functions, but not all of them
+// This would be useful if the functions would need to be mocked many times in different tests
+// This wouldn't be as useful if you just need to mock each once (like my case), in which case jest.spyOn() can be more useful and require less writing
+
+// jest.mock("./Tools.js", () => {
+//     // Needed for functions not labeled in the returned object to function normally
+//     const originalModule = jest.requireActual("./Tools.js");
+
+//     // Mocking
+//     return {
+//         __esModule: true,
+//         ...originalModule,
+//         Tools.getIDNumberFromIDString: jest.fn(),
+//         Tools.createIDListFromIDNumber: jest.fn() 
+//     }
+// });
+
+// Inside tests, you would write the following
+// Tools.getIDNumberFromIDString.mockReturnValue(); 
+// Tools.createIDListFromIDNumber.mockReturnValue([14, 15, 16]); 
 
 // Boards for the tests to use
 const board1 = document.createElement("div");
@@ -211,9 +230,14 @@ describe("DOMManipulation tests", () => {
         Tools.setSearchDirection(Tools.DIRECTION.HORIZONTAL);
         
         // Mock setup
-        Tools.getIDNumberFromIDString.mockReturnValue(); // This call doesn't matter, but pretending it is expensive is good for practice with mocking
-        Tools.createIDListFromIDNumber.mockReturnValue([14, 15, 16]); // This mock's return value is used in both functions, so its value does matter
+        // spyOn() allows you to mock very specific things without having to do a jest.mock() call at the top of the file; see notes up there!
+        jest.spyOn(Tools, "getIDNumberFromIDString").mockReturnValue(); // This call doesn't matter, but pretending it is expensive is good for practice with mocking
+        jest.spyOn(Tools, "createIDListFromIDNumber").mockReturnValue([14, 15, 16]); // This mock's return value is used in both functions, so its value does matter
         
+        // These mocks would be needed for the jest.mock() version of mocking
+        // Tools.getIDNumberFromIDString.mockReturnValue(); 
+        // Tools.createIDListFromIDNumber.mockReturnValue([14, 15, 16]); 
+
         // Variables needed for tests to use as input
         let cell = {
             className: "cell friend",

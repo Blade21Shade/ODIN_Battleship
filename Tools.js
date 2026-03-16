@@ -160,4 +160,35 @@ function createIDListFromIDNumber(idNum) {
     return idList;
 }
 
-export {DIRECTION, setAdditionalToGetEachDirection, setSearchDirection, getAdditionalToGetEachDirection, getSearchDirection, createIDListFromIDNumber, getIDNumberFromIDString, switchSearchDirection}
+/**
+ * Creates a coordinate for a GameBoard that correlates to an idNumber of a DOM cell.
+ * Note that coordinate [0,0] is in the top left of the grid and increasing y values go down the grid, not up it.
+ * This means larger idNumbers are further down the grid.
+ * @param {number} idNum The idNum of the DOM cell
+ * @returns The coordinate corresponding to idNum
+ */
+function createCoordinateFromIDNumber(idNum) {
+    // The 'one's' value of the idNum because x, the 'ten's' value becomes y
+    let x = idNum % 10;
+    let y = Math.floor(idNum/10);
+    
+    let coord = [x,y];
+    return coord;
+}
+
+/**
+ * Creates an idNumber for a DOM cell that correlates to a GameBoard coordinate.
+ * Note that coordinate [0,0] is in the top left of the grid and increasing y values go down the grid, not up it.
+ * This means larger idNumbers are further down the grid.
+ * @param {[number, number]} coord The coordinate of a GameBoard 
+ * @returns The idNum corresponding to the coordinate
+ */
+function createIDNumberFromCoordinate(coord) {
+    let ones = coord[0];
+    let tens = coord[1];
+
+    let idNum = tens * 10 + ones;
+    return idNum;
+}
+
+export {DIRECTION, setAdditionalToGetEachDirection, setSearchDirection, getAdditionalToGetEachDirection, getSearchDirection, createIDListFromIDNumber, getIDNumberFromIDString, switchSearchDirection, createCoordinateFromIDNumber, createIDNumberFromCoordinate}

@@ -202,17 +202,7 @@ function fillBoardElementShips(positionsOfShips, friendOrFoe, boardNumber) {
     for (let i = 0; i < positionsOfShips.length; i++) {
         let aShipsPositions = positionsOfShips[i];
         for (const position of aShipsPositions) {
-            let x = position[0];
-            let y = position[1];
-
-            /** Update the cell this coordinate belongs to
-             * This assumes y starts at the top of the board, not the bottom
-             * This is to be consistent with how arrays print with console.log: the first entry in the first array is in the top left of the print
-             * This is also how children are added to the board, with the first being in the top left
-             * Every 10 child elements is a new grid-row, by using the column position y and multiplying it by 10 we find which grid-row this coordinate belongs to
-             * x is then used to find the offset within that row, which is the normal x position
-             */
-            let cellNumber = x + (y*10);
+            let cellNumber = Tools.createIDNumberFromCoordinate(position);
 
             if (cellNumber > 99 || cellNumber < 0) {
                 throw new Error("Position outside of range for valid positions in shipPositionsArray")
@@ -232,6 +222,21 @@ function fillBoardElementShips(positionsOfShips, friendOrFoe, boardNumber) {
             cell.classList.toggle("ship");
         }
     }
+}
+
+/**
+ * 
+ * @param {[[[number, number]]]} friendShipsCoordinatesArray An array of friend ship's coordinates, correlates to fillBoardElementShips()'s positionsOfShips argument
+ * @param {[[number]]} friendShotsCoordinatesArray An array of friend shots, correlates to fillBoardElementShots()'s boardArray
+ * @param {[[number]]} foeShotsCoordinatesArray An array of foe shots, correlates to fillBoardElementShots()'s boardArray
+ */
+function fillBoardElementsAll(friendShipsCoordinatesArray, friendShotsCoordinatesArray, foeShotsCoordinatesArray) {
+    // Friend ships and shots
+    DOMManipulation.fillBoardElementShots(friendShipsCoordinatesArray, DOMManipulation.FRIEND_OR_FOE.FRIEND, 1);
+    DOMManipulation.fillBoardElementShips(friendShotsCoordinatesArray, DOMManipulation.FRIEND_OR_FOE.FRIEND, 1);
+
+    // Foe shots
+    DOMManipulation.fillBoardElementShots(foeShotsCoordinatesArray, DOMManipulation.FRIEND_OR_FOE.FOE, 2);
 }
 
 /**
@@ -334,4 +339,4 @@ function friendOrFoeValidityCheck(friendOrFoe) {
     }
 }
 
-export {FRIEND_OR_FOE, BOARD_NUMBER, BUTTON_NAMES, initializeBoardElements, initializePlayerButtons, resetBoardElementsCells, fillBoardElementShots, fillBoardElementShips, grabBoardElement, grabPlayerButton, enableButton, disableButton, enablePlaceShipHandlers, disablePlaceShipHandlers, addPlaceShipClassHandler, removePlaceShipClassHandler}
+export {FRIEND_OR_FOE, BOARD_NUMBER, BUTTON_NAMES, initializeBoardElements, initializePlayerButtons, resetBoardElementsCells, fillBoardElementShots, fillBoardElementShips, grabBoardElement, grabPlayerButton, enableButton, disableButton, enablePlaceShipHandlers, disablePlaceShipHandlers, addPlaceShipClassHandler, removePlaceShipClassHandler, fillBoardElementsAll}

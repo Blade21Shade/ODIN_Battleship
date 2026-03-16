@@ -1,4 +1,4 @@
-import {getIDNumberFromIDString, createIDListFromIDNumber, setAdditionalToGetEachDirection, setSearchDirection, DIRECTION} from "./Tools"
+import {getIDNumberFromIDString, createIDListFromIDNumber, setAdditionalToGetEachDirection, setSearchDirection, DIRECTION, createCoordinateFromIDNumber, createIDNumberFromCoordinate} from "./Tools"
 
 describe("Tools tests", () => {
     describe("getIDNumberFromIDString tests", () => {
@@ -118,6 +118,42 @@ describe("Tools tests", () => {
                     expect(createIDListFromIDNumber(cellID)).toEqual([90, 80, 70]);
                 });
             });
+        });
+    });
+
+    describe("createCoordinateFromIDNumber tests", () => {
+        test("Ones digit only: 5 -> [5, 0]", () => {
+            expect(createCoordinateFromIDNumber(5)).toEqual([5, 0]);
+        });
+
+        test("Tens digit only: 20 -> [0, 2]", () => {
+            expect(createCoordinateFromIDNumber(20)).toEqual([0, 2]);
+        });
+        
+        test("0: 0 -> [0, 0]", () => {
+            expect(createCoordinateFromIDNumber(0)).toEqual([0, 0]);
+        });
+
+        test("Ones and tens digits: 52 -> [2, 5]", () => {
+            expect(createCoordinateFromIDNumber(52)).toEqual([2, 5])
+        });
+    });
+
+    describe("createIDNumberFromCoordinate tests", () => {
+        test("[0, 0] -> 0", () => {
+            expect(createIDNumberFromCoordinate([0, 0])).toBe(0);
+        });
+
+        test("[0, 5] -> 50", () => {
+            expect(createIDNumberFromCoordinate([0, 5])).toBe(50);
+        });
+
+        test("[5, 0] -> 5", () => {
+            expect(createIDNumberFromCoordinate([5, 0])).toBe(5);
+        });
+
+        test("[5, 2] -> 25", () => {
+            expect(createIDNumberFromCoordinate([5, 2])).toBe(25);
         });
     });
 });
