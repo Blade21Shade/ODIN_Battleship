@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { fillBoardElementShots, fillBoardElementShips, FRIEND_OR_FOE, BOARD_NUMBER, addPlaceShipClassHandler, removePlaceShipClassHandler } from "./DOMManipulation";
+import { fillBoardElementShots, fillBoardElementShips, FRIEND_OR_FOE, BOARD_NUMBER, addPlaceShipClassHandler, removePlaceShipClassHandler, addShipClassToIDList, removeShipClassFromIDList } from "./DOMManipulation";
 import * as Tools from "./Tools.js";
 
 // Mocking Tools
@@ -310,6 +310,51 @@ describe("DOMManipulation tests", () => {
                 expect(board1.children[14].className).toBe("cell friend");
                 expect(board1.children[15].className).toBe("cell friend");
                 expect(board1.children[16].className).toBe("cell friend");
+            });
+        });
+    });
+
+    describe("Add/remove 'ship' class to/from idList tests", () => {
+        describe("addShipClassToIDList tests", () => {
+            test("Simple pass", () => {
+                let idList = [5, 6, 7];
+                addShipClassToIDList(idList);
+
+                expect(board1.children[5].className).toBe("cell ship");
+                expect(board1.children[6].className).toBe("cell ship");
+                expect(board1.children[7].className).toBe("cell ship");
+            });
+
+            test("ID beyond board limit (above and below)", () => {
+                let idList = [500, -1];
+                addShipClassToIDList(idList);
+                // expect: No errors to occur
+            });
+            
+        });
+
+        describe("removeShipClassFromIDList tests", () => {
+            test("Simple pass", () => {
+                board1.children[5].classList.add("ship");
+                board1.children[6].classList.add("ship");
+                board1.children[7].classList.add("ship");
+
+                board1.children[5].classList.remove("friend");
+                board1.children[6].classList.remove("friend");
+                board1.children[7].classList.remove("friend");
+
+                let idList = [5, 6, 7];
+                removeShipClassFromIDList(idList);
+
+                expect(board1.children[5].className).toBe("cell friend");
+                expect(board1.children[6].className).toBe("cell friend");
+                expect(board1.children[7].className).toBe("cell friend");
+            });
+
+            test("ID beyond board limit (above and below)", () => {
+                let idList = [500, -1];
+                removeShipClassFromIDList(idList);
+                // expect: No errors to occur
             });
         });
     });

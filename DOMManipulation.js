@@ -298,6 +298,38 @@ function removePlaceShipClassHandler(event) {
 }
 
 /**
+ * Adds the 'ship' class to cells with IDs in idList
+ * This function is meant to be used when users initially place ships to be more efficient than reloading the entire DOM board every ship placement. 
+ * @param {[[number, number]]} idList The idList of cells to add the ship class to
+ */
+function addShipClassToIDList(idList) {
+    for (const id of idList) {
+        if (id < 0 || id > 99) {
+            continue;
+        }
+        let cell = document.querySelector(`#board1-cell${id}`);
+        cell.classList.remove("friend");
+        cell.classList.add("ship");
+    }
+}
+
+/**
+ * Removes the 'ship' class from cells with IDs in idList.
+ * This function is meant to be used when users initially place ships to be more efficient than reloading the entire DOM board every ship placement. 
+ * @param {[[number, number]]} idList The idList of cells to remove the ship class from
+ */
+function removeShipClassFromIDList(idList) {
+    for (const id of idList) {
+        if (id < 0 || id > 99) {
+            continue;
+        }
+        let cell = document.querySelector(`#board1-cell${id}`);
+        cell.classList.remove("ship");
+        cell.classList.add("friend");
+    }
+}
+
+/**
  * Switches the placement direction of ships so users can place them horizontally or vertically
  * @param {Event} event The wheel event from board1
  */
@@ -339,4 +371,4 @@ function friendOrFoeValidityCheck(friendOrFoe) {
     }
 }
 
-export {FRIEND_OR_FOE, BOARD_NUMBER, BUTTON_NAMES, initializeBoardElements, initializePlayerButtons, resetBoardElementsCells, fillBoardElementShots, fillBoardElementShips, grabBoardElement, grabPlayerButton, enableButton, disableButton, enablePlaceShipHandlers, disablePlaceShipHandlers, addPlaceShipClassHandler, removePlaceShipClassHandler, fillBoardElementsAll}
+export {FRIEND_OR_FOE, BOARD_NUMBER, BUTTON_NAMES, initializeBoardElements, initializePlayerButtons, resetBoardElementsCells, fillBoardElementShots, fillBoardElementShips, grabBoardElement, grabPlayerButton, enableButton, disableButton, enablePlaceShipHandlers, disablePlaceShipHandlers, addPlaceShipClassHandler, removePlaceShipClassHandler, fillBoardElementsAll, addShipClassToIDList, removeShipClassFromIDList}

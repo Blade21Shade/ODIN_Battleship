@@ -1,18 +1,143 @@
 import * as DOMManipulation from "./DOMManipulation.js"
 import * as GameEngine from "./GameEngine.js";
 import * as GameState from "./GameState.js"
+import GameBoard from "./GameBoard.js"
 import * as UIState from "./UIState.js"
 import * as Tools from "./Tools.js"
 
-initialize();
-DOMManipulation.enablePlaceShipHandlers();
-
-// Initialize the game state and DOM
+/** 
+ * Initialize the game state and DOM
+ */
 function initialize() {
     GameState.initializeGameState();
     UIState.initializeUIState();
     DOMManipulation.initializeBoardElements();
     DOMManipulation.initializePlayerButtons();
+}
+
+/** 
+ * Functionality for testing index.html with Live Preview is enabled through calling this.
+ * This function should be deleted once the project is finished  
+ */ 
+function testingNeeds() {
+    DOMManipulation.enablePlaceShipHandlers();
+    enablePlaceShipClickHandlers();
+}
+
+function enablePlaceShipClickHandlers() {
+    let board1Element = UIState.getBoard1Element();
+    board1Element.addEventListener("click", placeShipClick);
+    board1Element.addEventListener("contextmenu", removeShipClick);
+}
+
+function disablePlaceShipClickHandlers() {
+    let board1Element = UIState.getBoard1Element();
+    board1Element.removeEventListener("click", placeShipClick);
+    board1Element.removeEventListener("contextmenu", removeShipClick);
+}
+
+/**
+ * Attempts to place a ship onto the active player's GameBoard. If placement is valid, the DOM is updated to match.
+ * @param {Event} event A click event from the user attempting to place a ship
+ */
+function placeShipClick(event) {
+    let cell = event.target;
+
+    // Get the idList for this ship
+    let idString = cell.id;
+    let idNumber = Tools.getIDNumberFromIDString(idString);
+    let idList = Tools.createIDListFromIDNumber(idNumber);
+
+    // Check if the length of idList matches the expected length 
+    let expectedLength = false;
+    let additionalReach = Tools.getAdditionalToGetEachDirection();
+    if (additionalReach === 0) { // Special case
+        if (idList.length === 2) {
+            expectedLength = true;
+        }
+    } else {
+        if (idList.length === 1 + additionalReach*2) {
+            expectedLength = true;
+        }
+    }
+
+    // If the length was invalid, do nothing
+    // This will occur if the user tries to click when part of their ship goes beyond an edge of the board
+    if (!expectedLength) {
+        return;
+    }
+    
+    // Get the board to place on
+    let playerTurn = GameState.getPlayerTurn();
+    /**
+     * @type {GameBoard}
+     */
+    let boardToPlaceOn;
+    if (playerTurn === 1) {
+        boardToPlaceOn = GameState.getPlayer1Board();
+    } else {
+        boardToPlaceOn = GameState.getPlayer2Board();
+    }
+
+    // Get the coordinates to place at
+    let start = Tools.createCoordinateFromIDNumber(idList.at(-1)); // ID lists are created in such a way that the last two entries represent the ends of a ship
+    let end = Tools.createCoordinateFromIDNumber(idList.at(-2));
+
+    // Attempt the actual placement
+    let couldBePlaced = boardToPlaceOn.placeShip(start, end);
+
+    if (!couldBePlaced) {
+        return;
+    }
+
+    // Ship placed, update the DOM
+    DOMManipulation.removePlaceShipClassHandler(event);
+    DOMManipulation.addShipClassToIDList(idList);
+}
+
+/**
+ * Attempts to remove a ship from the active player's GameBoard. If removal was valid, the DOM is updated to match.
+ * @param {Event} event A 'contextmenu' event from the user attempting to right-click a ship
+ */
+function removeShipClick(event) {
+    let cell = event.target;
+
+    // If the right-clicked cell doesn't contain the ship class, don't do anything
+    if (!cell.classList.contains("ship")) {
+        return;
+    }
+
+    // Ship, get the idList for it
+    let idString = cell.id;
+    let idNumber = Tools.getIDNumberFromIDString(idString);
+
+    // Remove from the GameBoard
+    // Get the board to remove from
+    let playerTurn = GameState.getPlayerTurn();
+    /**
+     * @type {GameBoard}
+     */
+    let boardToPlaceOn;
+    if (playerTurn === 1) {
+        boardToPlaceOn = GameState.getPlayer1Board();
+    } else {
+        boardToPlaceOn = GameState.getPlayer2Board();
+    }
+
+    // Remove the ship
+    let coord = Tools.createCoordinateFromIDNumber(idNumber);
+    let removedCoords = boardToPlaceOn.removeShipByCoordinate(coord);
+    
+    // Create an idList from the removed coordinates
+    let idList = [];
+    for (const coord of removedCoords) {
+        let id = Tools.createIDNumberFromCoordinate(coord);
+        idList.push(id);
+    }
+
+    // Ship removed, update the DOM
+    DOMManipulation.removeShipClassFromIDList(idList);
+    DOMManipulation.addPlaceShipClassHandler(event);
 }
 
 /**
@@ -113,4 +238,4 @@ function revealBoardsCallback() {
     GameState.setShotTakenThisTurn(false);
 }
 
-export {initialize}
+export {initialize, testingNeeds, placeShipClick, removeShipClick}
