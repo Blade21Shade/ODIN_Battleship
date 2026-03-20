@@ -32,6 +32,7 @@ export default class GameBoard {
      * Puts a ship in the ships container if both positions are within the bounds of the board and the ship doesn't overlap with coordinates of other ships 
      * @param {[number, number]} startPos The starting position (coordinate) of the ship 
      * @param {[number, number]} endPos The end position (coordinate) of the ship
+     * @returns true if the ship could be placed, false if it couldn't (overlapping another ship or out of bounds)
      */
     placeShip(startPos, endPos) {
         let couldBePlaced = false;
