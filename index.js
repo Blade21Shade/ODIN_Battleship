@@ -1,4 +1,4 @@
-import * as DOMManipulation from "./DOMManipulation.js"
+import DOMManipulation from "./DOMManipulation.js"
 import * as GameEngine from "./GameEngine.js";
 import * as GameState from "./GameState.js"
 import GameBoard from "./GameBoard.js"
@@ -210,7 +210,7 @@ function disableButtonEventListeners() {
  * Prepares for player swapping by resetting each DOM board, enabling the swap players button, and disabling the hide boards button (the button this is attached to)
  */
 function hideBoardsCallback() {
-    DOMManipulation.resetBoardElementsCells();
+    DOMManipulation.resetBoardElements();
     DOMManipulation.enableButton(DOMManipulation.BUTTON_NAMES.SWAP_PLAYERS);
     DOMManipulation.disableButton(DOMManipulation.BUTTON_NAMES.HIDE_BOARDS);
 }
