@@ -3,22 +3,22 @@ import Ship from "./Ship";
 describe("Ship tests", ()=> {
     describe("Creating ships", ()=> {
         describe("Pass tests", ()=> {
-            test("Horizontal, starts higher than end: [0,5], [0,2] -> [ [0,5], [0,4], [0,3], [0,2] ]", () => {
+            test("Horizontal, first position higher: [0,5], [0,2] -> [ [0,2], [0,3], [0,4], [0,5] ]", () => {
                 let ship = new Ship([0,5], [0,2]);
-                expect(ship.getCoordinateList()).toEqual([[0,5], [0,4], [0,3], [0,2]]);
+                expect(ship.getCoordinateList()).toEqual([[0,2], [0,3], [0,4], [0,5]]);
             });
 
-            test("Horizontal, starts lower than end: [0,2], [0,5] -> [ [0,2], [0,3], [0,4], [0,5] ]", () => {
+            test("Horizontal, second position higher: [0,2], [0,5] -> [ [0,2], [0,3], [0,4], [0,5] ]", () => {
                 let ship = new Ship([0,2], [0,5]);
                 expect(ship.getCoordinateList()).toEqual([[0,2], [0,3], [0,4], [0,5]]);
             });
 
-            test("Vertical, starts higher than end: [5,0], [2,0] -> [ [5,0], [4,0], [3,0], [2,0] ]", () => {
+            test("Vertical, first position higher: [5,0], [2,0] -> [ [2,0], [3,0], [4,0], [5,0] ]", () => {
                 let ship = new Ship([5,0], [2,0]);
-                expect(ship.getCoordinateList()).toEqual([[5,0], [4,0], [3,0], [2,0]]);
+                expect(ship.getCoordinateList()).toEqual([[2,0], [3,0], [4,0], [5,0]]);
             });
 
-            test("Vertical, starts lower than end: [2,0], [5,0] -> [ [2,0], [3,0], [4,0], [5,0] ]", () => {
+            test("Vertical, second position higher: [2,0], [5,0] -> [ [2,0], [3,0], [4,0], [5,0] ]", () => {
                 let ship = new Ship([2,0], [5,0]);
                 expect(ship.getCoordinateList()).toEqual([[2,0], [3,0], [4,0], [5,0]]);
             });

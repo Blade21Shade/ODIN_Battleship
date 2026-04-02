@@ -5,44 +5,52 @@ export default class Ship {
     #coordinateList = [];
 
     /**
-     * Creates a ship from the given coordinates - within the coordinates, either the x or y position has to be the same for both of them
-     * @param {[number, number]} startCoordinate The coordinate to start building the ship's coordinate list from
-     * @param {[number, number]} endCoordinate The coordinate to stop (inclusive) building the ship's coordinate list
+     * Creates a ship from the given coordinates
+     * - The coordinates must have the same X or Y coordinate as Ships must lay vertically or horizontally
+     * - Ex: [2, A], [2, C] for a horizontally laid ship with X = 2
+     * - Ships are always created from the lower of the two coordinates to the higher, order doesn't matter
+     * - EX: Ships created with [2, A], [2, C] OR [2, C], [2, A] will both have the following coordinate list: [[2, A], [2, B], [2, C]]
+     * @param {[number, number]} firstEndCoordinate The coordinate of one end of the ship
+     * @param {[number, number]} secondEndCoordinate The coordinate of the other end of the ship
      */
-    constructor(startCoordinate, endCoordinate) {
-        if (startCoordinate[0] !== endCoordinate[0] && startCoordinate[1] !== endCoordinate[1]) {
+    constructor(firstEndCoordinate, secondEndCoordinate) {
+        if (firstEndCoordinate[0] !== secondEndCoordinate[0] && firstEndCoordinate[1] !== secondEndCoordinate[1]) {
             throw new Error("Ships must be aligned vertically or horizontally: invalid coordinates given to constructor")
         }
-        
-        this.#coordinateList.push(startCoordinate);
-        this.#length++;
 
-        // Fill coordinate list after figuring out which direction to go to get from startCoordinate to endCoordinate
-        if (startCoordinate[0] === endCoordinate[0]) { // Horizontally laid
-            let x = startCoordinate[0];
-            if (startCoordinate[1] > endCoordinate[1]) {
-                for (let i = startCoordinate[1] - 1; i >= endCoordinate[1]; i--) {
-                    this.#coordinateList.push([x,i]);
-                    this.#length++;
-                }
+        // Fill coordinate list after figuring out which direction to go
+        // This will always created ships from the "lower" value to the "higher" value, not necessarily the firstEnd to secondEnd
+        let lower;
+        let higher;
+        if (firstEndCoordinate[0] === secondEndCoordinate[0]) { // Horizontally laid
+            if (firstEndCoordinate[1] < secondEndCoordinate[1]) {
+                lower = firstEndCoordinate[1];
+                higher = secondEndCoordinate[1];
             } else {
-                for (let i = startCoordinate[1] + 1; i <= endCoordinate[1]; i++) {
-                    this.#coordinateList.push([x,i]);
-                    this.#length++;
-                }
+                lower = secondEndCoordinate[1];
+                higher = firstEndCoordinate[1];
+            }
+
+            let x = firstEndCoordinate[0];
+
+            for (let i = lower; i <= higher; i++) {
+                this.#coordinateList.push([x,i]);
+                this.#length++;
             }
         } else { // Vertically laid
-            let y = startCoordinate[1];
-            if (startCoordinate[0] > endCoordinate[0]) {
-                for (let i = startCoordinate[0] - 1; i >= endCoordinate[0]; i--) {
-                    this.#coordinateList.push([i,y]);
-                    this.#length++;
-                }
+            if (firstEndCoordinate[0] < secondEndCoordinate[0]) {
+                lower = firstEndCoordinate[0];
+                higher = secondEndCoordinate[0];
             } else {
-                for (let i = startCoordinate[0] + 1; i <= endCoordinate[0]; i++) {
-                    this.#coordinateList.push([i,y]);
-                    this.#length++;
-                }
+                lower = secondEndCoordinate[0];
+                higher = firstEndCoordinate[0];
+            }
+
+            let y = firstEndCoordinate[1];
+
+            for (let i = lower; i <= higher; i++) {
+                this.#coordinateList.push([i,y]);
+                this.#length++;
             }
         }
     }
