@@ -1,12 +1,15 @@
-import * as DOMManipulation from "./DOMManipulation.js"
-
 // Buttons the players will use when swapping who can see the screen
+/** @type {HTMLButtonElement} */
 let hideBoardsButton;
+/** @type {HTMLButtonElement} */
 let swapPlayersButton; // Logical swap for player clarity
+/** @type {HTMLButtonElement} */
 let revealBoardsButton;
 
 // These do not map to player1 and player2, they change based on the current player
+/** @type {HTMLDivElement} */
 let board1Element; // The active player's board with their ships and shots from the opposing player
+/** @type {HTMLDivElement} */
 let board2Element; // The opposing player's board without ships and the active player's shots
 
 /**

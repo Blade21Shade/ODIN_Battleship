@@ -2,6 +2,7 @@ export default class Ship {
     #isSunk = false;
     #numberOfHits = 0;
     #length = 0;
+    /** @type {Number[][]} */
     #coordinateList = [];
 
     /**

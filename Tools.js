@@ -1,12 +1,10 @@
 /**
  * Holds the values functions expect in horizontalOrVertical arguments
  */
-const DIRECTION = {
+const DIRECTION = Object.freeze({
     VERTICAL: "vertical",
     HORIZONTAL: "horizontal"
-}
-
-Object.freeze(DIRECTION);
+});
 
 // These are used when creating ID lists to determine the direction to grab IDs and the number in each direction to grab
 let searchDirection = DIRECTION.HORIZONTAL;
@@ -14,7 +12,7 @@ let additionalToGetEachDirection = 1; // A value of 0 is a special case to repre
 
 /**
  * Sets the placement direction of ships, can only be "horizontal" or "vertical"
- * @param {UIState.DIRECTION} direction The direction to place ships 
+ * @param {DIRECTION} direction The direction to place ships 
  */
 function setSearchDirection(direction) {
     if (direction === DIRECTION.VERTICAL || direction === DIRECTION.HORIZONTAL) {
@@ -33,6 +31,9 @@ function switchSearchDirection() {
     }
 }
 
+/**
+ * @returns {DIRECTION}
+ */
 function getSearchDirection() {
     return searchDirection;
 }
