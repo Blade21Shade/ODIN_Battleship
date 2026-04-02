@@ -3,9 +3,11 @@ import Ship from "./Ship.js"
 export default class GameBoard {
     // Becomes a 2D array in the constructor
     // 0s haven't been fired at, -1 is miss, 1 is hit
+    /** @type {Number[][]} */
     #board = [];
 
     #maxPosition = 0;
+    /** @type {Ship[]} */
     #ships = [];
     #allShipsSunk = false;
 
@@ -30,37 +32,37 @@ export default class GameBoard {
 
     /**
      * Puts a ship in the ships container if both positions are within the bounds of the board and the ship doesn't overlap with coordinates of other ships 
-     * @param {[number, number]} startPos The starting position (coordinate) of the ship 
-     * @param {[number, number]} endPos The end position (coordinate) of the ship
+     * @param {[number, number]} firstEndCoordinate The first end coordinate of the ship
+     * @param {[number, number]} secondEndCoordinate The second end coordinate of the ship
      * @returns true if the ship could be placed, false if it couldn't (overlapping another ship or out of bounds)
      */
-    placeShip(startPos, endPos) {
+    placeShip(firstEndCoordinate, secondEndCoordinate) {
         let couldBePlaced = false;
         
         // Check if either position is outside the board's size
-        if (startPos[0] < 0 || startPos[0] > this.#maxPosition ||
-            startPos[1] < 0 || startPos[1] > this.#maxPosition || 
-            endPos[0] < 0 || endPos[0] > this.#maxPosition ||
-            endPos[1] < 0 || endPos[1] > this.#maxPosition
+        if (firstEndCoordinate[0] < 0 || firstEndCoordinate[0] > this.#maxPosition ||
+            firstEndCoordinate[1] < 0 || firstEndCoordinate[1] > this.#maxPosition || 
+            secondEndCoordinate[0] < 0 || secondEndCoordinate[0] > this.#maxPosition ||
+            secondEndCoordinate[1] < 0 || secondEndCoordinate[1] > this.#maxPosition
         ) {
             return couldBePlaced;
         }
 
-        let ship = new Ship(startPos, endPos);
+        let newShip = new Ship(firstEndCoordinate, secondEndCoordinate);
 
-        // See if this ship overlaps with any other ships already placed
+        // See if the new ship overlaps with any already placed ships
         let overlap = false;
-        let shipCoords = ship.getCoordinateList();
+        let newShipCoords = newShip.getCoordinateList();
         overlapLoop: for (let i = 0; i < this.#ships.length; i++) {
-            let storedShipCoords = this.#ships[i].getCoordinateList();
+            let placedShipCoords = this.#ships[i].getCoordinateList();
 
-            for (let j = 0; j < shipCoords.length; j++) {
-                let shipCoord = shipCoords[j];
+            for (let j = 0; j < newShipCoords.length; j++) {
+                let newCoord = newShipCoords[j];
 
-                for (let k = 0; k < storedShipCoords.length; k++) {
-                    let storedCoord = storedShipCoords[k];
+                for (let k = 0; k < placedShipCoords.length; k++) {
+                    let placedCoord = placedShipCoords[k];
 
-                    if (shipCoord[0] === storedCoord[0] && shipCoord[1] === storedCoord[1]) {
+                    if (newCoord[0] === placedCoord[0] && newCoord[1] === placedCoord[1]) {
                         overlap = true;
                         break overlapLoop;
                     }
@@ -73,7 +75,7 @@ export default class GameBoard {
         }
 
         // Within bounds and not overlapping any other ships: valid placement
-        this.#ships.push(ship);
+        this.#ships.push(newShip);
         couldBePlaced = true;
         return couldBePlaced;
     }
@@ -84,6 +86,7 @@ export default class GameBoard {
      * @returns The coordinate list of the ship that was removed, or an empty array if the coordinate wasn't in any ship on the board
      */
     removeShipByCoordinate(coord) {
+        /** @type {Number[][]} */
         let coordsOfRemovedShip = [];
 
         // Search for the ship which contains the given coordinate

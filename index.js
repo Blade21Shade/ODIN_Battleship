@@ -114,9 +114,7 @@ function removeShipClick(event) {
     // Remove from the GameBoard
     // Get the board to remove from
     let playerTurn = GameState.getPlayerTurn();
-    /**
-     * @type {GameBoard}
-     */
+    /** @type {GameBoard} */
     let boardToPlaceOn;
     if (playerTurn === 1) {
         boardToPlaceOn = GameState.getPlayer1Board();
