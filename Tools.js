@@ -8,7 +8,7 @@ const DIRECTION = Object.freeze({
 
 // These are used when creating ID lists to determine the direction to grab IDs and the number in each direction to grab
 let searchDirection = DIRECTION.HORIZONTAL;
-let additionalToGetEachDirection = 1; // A value of 0 is a special case to represent a 2-cell ship
+let workingShipLength = 4;
 
 /**
  * Sets the placement direction of ships, can only be "horizontal" or "vertical"
@@ -38,18 +38,15 @@ function getSearchDirection() {
     return searchDirection;
 }
 
-/**
- * Sets additionalToGetEachDirection.
- * This variable is used to get IDs in each direction from a given ID, meaning each increase is 2 more IDs.
- * This variable has a special case of 0, in which case 1 additional ID is grabbed, not 0.
- * @param {Number} number The number of cell IDs you wish to get in each direction 
- */
-function setAdditionalToGetEachDirection(number) {
-    additionalToGetEachDirection = number;
+function setWorkingShipLength(length) {
+    if (length < 2 || length > 5) {
+        throw new Error("Working ship length must be inclusively between 2 and 5, a number outside that range was given");
+    }
+    workingShipLength = length;
 }
 
-function getAdditionalToGetEachDirection() {
-    return additionalToGetEachDirection;
+function getWorkingShipLength() {
+    return workingShipLength;
 }
 
 /**
@@ -76,10 +73,11 @@ function getIDNumberFromIDString(idString) {
 }
 
 /**
- * Creates a list of ID numbers starting from the given number and using the class level variables searchDirection and additionalToGetEachDirection.
- * An additionalToGetEachDirection value of 0 is a special case and will return a list of length 2, assuming both are in a valid ID range
+ * Creates a list of ID numbers starting from the given ID number
+ * - This uses the variables searchDirection and workingShipLength of this file to create the IDList
  * @param {Number} idNum The ID number to create the ID list from
- * @returns An array of cell ID numbers; if additionalToGetEachDirection != 0, valid lists have an odd length
+ * @returns An array of cell ID numbers
+ * - If an ID would be out of range of overflow, the array length will be different than workingShipLength
  */
 function createIDListFromIDNumber(idNum) {
     let idList = [];
@@ -87,31 +85,57 @@ function createIDListFromIDNumber(idNum) {
     if (idNum < 0 || idNum > 99) {
         return idList;
     }
-    
+
+    // Create the idList
     idList.push(idNum);
+    addIDsToEachSideOfIDList(idNum, idList);
 
-    // Check used when using the horizontal direction; ensures all IDs in the list are in the same 10s range
-    let tensCheck = Math.floor(idNum / 10);
-    // A vertical check isn't needed because overflowing/underflow-ing values would be outside the range of the board
+    // The IDs will be in a weird order at this point due to how the loop for adding IDs works, sort them for simplicity
+    return idList.sort((a, b)=> {
+        let toReturn;
+        if (a < b) {
+            toReturn = -1;
+        } else if (a === b) { // Should never happen
+            toReturn = 0;
+        } else {
+            toReturn = 1;
+        }
 
-    // Add more IDs to the idList based on the additional steps specified, only IDs in the valid 0-99 range are added
-    /** Note: The order IDs are added to idList is specific
-     * The base ID is added first
-     * From there, the more ID is added, and then the less ID, assuming both are valid
-     * This produces a pattern in idList
-     * [B] -> [B, M1, L1] -> [B, M1, L1, M2, L2] -> ...
-     * The list will only include IDs in the valid range, so you would receive [B, M1, L1, L2] if the M2 value was out of range
+        return toReturn;
+    });
+}
+
+function addIDsToEachSideOfIDList(baseID, idList) {
+    // Ships being placed horizontally all need to be in the same row
+    // So this value is checked against to ensure IDs added to idList are in the same row as baseID
+    let tensCheck = Math.floor(baseID / 10);
+    // Ships being placed vertically can only have invalid values if those values would be outside the bounds of the board
+    // That's already checked normally, so no special check is needed
+    
+    // Determine the number of IDs that need to be added to each side of the base ID
+    let numberToAddToEachSide;
+    if (workingShipLength % 2 === 0) {
+        // This results in the ship having a length 1 less than needed, which is corrected at the end of the process
+        numberToAddToEachSide = (workingShipLength - 2) / 2; // -2 accounts for the 2-cell sized ship which needs 0 on each side
+    } else {
+        numberToAddToEachSide = (workingShipLength - 1) / 2; // -1 makes this an even number, which / 2 then turns into a valid int
+    }
+    
+    // Add more IDs to the idList, only IDs in the valid 0-99 range are added
+    /**
+     * This adds IDs to the list in a sort of weird order because the for loop does more and less at the same time
+     * Assuming all valid IDs, they are added as [baseID, more1, less1, more2, less2] etc.
      */
-    for (let amount = 1; amount <= additionalToGetEachDirection; amount++) {
-        let more;
-        let less;
-
+    let more = baseID;
+    let less = baseID;
+    for (let i = 1; i <= numberToAddToEachSide; i++) {
         // more and less are calculated and evaluated differently depending on the given direction
         if (searchDirection === DIRECTION.HORIZONTAL) {
-            more = idNum + amount;
-            less = idNum - amount;
+            more += 1;
+            less -= 1;
             
             if (more < 100) {
+                // This tens check ensures that IDs are in the same 10s range, which prevents wrapping
                 if (Math.floor(more / 10) === tensCheck) {
                     idList.push(more);
                 }
@@ -123,8 +147,8 @@ function createIDListFromIDNumber(idNum) {
                 }
             }
         } else if (searchDirection === DIRECTION.VERTICAL) {
-            more = idNum + (amount * 10);
-            less = idNum - (amount * 10);
+            more += 10;
+            less -= 10;
 
             if (more < 100) {
                 idList.push(more);
@@ -135,13 +159,11 @@ function createIDListFromIDNumber(idNum) {
             }
         }
     }
-    
-    // Handle the additionalToGetEachDirection special case of 0 (This is meant to be used with 2-cell sized ships)
-    if (additionalToGetEachDirection === 0) {
-        let more;
 
+    // Ships with an even length need an additional ID added to their list
+    if (workingShipLength % 2 === 0) {
         if (searchDirection === DIRECTION.HORIZONTAL) {
-            more = idNum + 1;
+            more += 1;
 
             if (more < 100) {
                 if (Math.floor(more / 10) === tensCheck) {
@@ -150,15 +172,13 @@ function createIDListFromIDNumber(idNum) {
             }
 
         } else if (searchDirection === DIRECTION.VERTICAL) {
-            more = idNum + 10;
+            more += 10;
 
             if (more < 100) {
                 idList.push(more);
             }
         }
     }
-
-    return idList;
 }
 
 /**
@@ -192,4 +212,4 @@ function createIDNumberFromCoordinate(coord) {
     return idNum;
 }
 
-export {DIRECTION, setAdditionalToGetEachDirection, setSearchDirection, getAdditionalToGetEachDirection, getSearchDirection, createIDListFromIDNumber, getIDNumberFromIDString, switchSearchDirection, createCoordinateFromIDNumber, createIDNumberFromCoordinate}
+export {DIRECTION, setWorkingShipLength, setSearchDirection, getWorkingShipLength, getSearchDirection, createIDListFromIDNumber, addIDsToEachSideOfIDList, getIDNumberFromIDString, switchSearchDirection, createCoordinateFromIDNumber, createIDNumberFromCoordinate}

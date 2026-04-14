@@ -87,7 +87,7 @@ describe("index tests", () => {
             jest.clearAllMocks();
             
             Tools.getIDNumberFromIDString.mockReturnValue(25);
-            Tools.createIDListFromIDNumber.mockReturnValue([25, 26, 24]); // IDLists are created in this format
+            Tools.createIDListFromIDNumber.mockReturnValue([24, 25, 26]);
             Tools.getAdditionalToGetEachDirection.mockReturnValue(1);
             Tools.createCoordinateFromIDNumber.mockReturnValueOnce([4, 2]).mockReturnValueOnce([6, 2]);
 

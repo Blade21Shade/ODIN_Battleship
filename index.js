@@ -48,22 +48,12 @@ function placeShipClick(event) {
     let idNumber = Tools.getIDNumberFromIDString(idString);
     let idList = Tools.createIDListFromIDNumber(idNumber);
 
-    // Check if the length of idList matches the expected length 
-    let expectedLength = false;
-    let additionalReach = Tools.getAdditionalToGetEachDirection();
-    if (additionalReach === 0) { // Special case
-        if (idList.length === 2) {
-            expectedLength = true;
-        }
-    } else {
-        if (idList.length === 1 + additionalReach*2) {
-            expectedLength = true;
-        }
-    }
+    // Check if the length of idList matches the expected length
+    let workingLength = Tools.getWorkingShipLength();
 
     // If the length was invalid, do nothing
     // This will occur if the user tries to click when part of their ship goes beyond an edge of the board
-    if (!expectedLength) {
+    if (workingLength != idList.length) {
         return;
     }
     
@@ -80,8 +70,8 @@ function placeShipClick(event) {
     }
 
     // Get the coordinates to place at
-    let start = Tools.createCoordinateFromIDNumber(idList.at(-1)); // ID lists are created in such a way that the last two entries represent the ends of a ship
-    let end = Tools.createCoordinateFromIDNumber(idList.at(-2));
+    let start = Tools.createCoordinateFromIDNumber(idList[0]);
+    let end = Tools.createCoordinateFromIDNumber(idList.at(-1));
 
     // Attempt the actual placement
     let couldBePlaced = boardToPlaceOn.placeShip(start, end);
@@ -136,6 +126,8 @@ function removeShipClick(event) {
     // Ship removed, update the DOM
     DOMManipulation.removeShipClassFromIDList(idList);
     DOMManipulation.addPlaceShipClassHandler(event);
+
+    // Send the length of the coordinates to DOMManipulation/UIState so DIVs and buttons can be updated 
 }
 
 /**
