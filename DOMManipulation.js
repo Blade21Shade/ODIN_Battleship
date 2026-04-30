@@ -23,7 +23,11 @@ const BOARD_NUMBER = Object.freeze({
 const BUTTON_NAMES = Object.freeze({
     SWAP_PLAYERS: "swapPlayers",
     HIDE_BOARDS: "hideBoards",
-    REVEAL_BOARDS: "revealBoards"
+    REVEAL_BOARDS: "revealBoards",
+    SELECT5: "select5LengthShip",
+    SELECT4: "select4LengthShip",
+    SELECT3: "select3LengthShip",
+    SELECT2: "select2LengthShip"
 });
 
 const DOMManipulation = {
@@ -58,16 +62,31 @@ const DOMManipulation = {
     grabButtonElement(buttonName) {
         /** @type {HTMLButtonElement} */
         let btnEle;
-        if (buttonName === BUTTON_NAMES.HIDE_BOARDS) {
-            btnEle = UIState.getHideBoardsButton();
-        } else if (buttonName === BUTTON_NAMES.SWAP_PLAYERS) {
-            btnEle = UIState.getSwapPlayersButton();
-        } else if (buttonName === BUTTON_NAMES.REVEAL_BOARDS) {
-            btnEle = UIState.getRevealBoardsButton();
-        } else {
-            throw new Error("Invalid button name given");
+        switch(buttonName) {
+            case BUTTON_NAMES.HIDE_BOARDS:
+                btnEle = UIState.getHideBoardsButton();
+                break;
+            case BUTTON_NAMES.SWAP_PLAYERS:
+                btnEle = UIState.getSwapPlayersButton();
+                break;
+            case BUTTON_NAMES.REVEAL_BOARDS:
+                btnEle = UIState.getRevealBoardsButton();
+                break;
+            case BUTTON_NAMES.SELECT5:
+                btnEle = UIState.getSelect5LengthShipButton();
+                break;
+            case BUTTON_NAMES.SELECT4:
+                btnEle = UIState.getSelect4LengthShipButton();
+                break;
+            case BUTTON_NAMES.SELECT3:
+                btnEle = UIState.getSelect3LengthShipButton();
+                break;
+            case BUTTON_NAMES.SELECT2:
+                btnEle = UIState.getSelect2LengthShipButton();
+                break;
+            default: // Invalid name given
+                throw new Error("Invalid button name given");
         }
-
         return btnEle;
     },
 
@@ -128,6 +147,13 @@ const DOMManipulation = {
      * Sets the player buttons to their original state
      */
     initializePlayerButtons() {
+        // Header buttons - at the moment they don't need adjustments on initialization, but I'm keeping these calls here in case they do in the future
+        // let select5LengthShipButton = UIState.getSelect5LengthShipButton();
+        // let select4LengthShipButton = UIState.getSelect4LengthShipButton();
+        // let select3LengthShipButton = UIState.getSelect3LengthShipButton();
+        // let select2LengthShipButton = UIState.getSelect2LengthShipButton();
+
+        // Footer buttons
         let swapButton = UIState.getSwapPlayersButton();
         let hideButton = UIState.getHideBoardsButton();
         let revealButton = UIState.getRevealBoardsButton();

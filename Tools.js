@@ -39,6 +39,10 @@ function getSearchDirection() {
 }
 
 function setWorkingShipLength(length) {
+    if (typeof length !== "number") {
+        throw new Error(`Length must be a number, some other type was given`);
+    }
+    
     if (length < 2 || length > 5) {
         throw new Error("Working ship length must be inclusively between 2 and 5, a number outside that range was given");
     }

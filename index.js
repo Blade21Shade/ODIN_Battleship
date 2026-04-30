@@ -20,8 +20,50 @@ function initialize() {
  * This function should be deleted once the project is finished  
  */ 
 function testingNeeds() {
-    DOMManipulation.enablePlaceShipHandlers();
+    DOMManipulation.enablePlaceShipBoardHandlers();
+    enableSelectShipLengthButtonHandlers();
     enablePlaceShipClickHandlers();
+}
+
+/**
+ * Enables event listeners for the buttons used to select ship lengths when players are placing ships
+ */
+function enableSelectShipLengthButtonHandlers() {
+    let length2 = UIState.getSelect2LengthShipButton();
+    let length3 = UIState.getSelect3LengthShipButton();
+    let length4 = UIState.getSelect4LengthShipButton();
+    let length5 = UIState.getSelect5LengthShipButton();
+
+    length2.addEventListener("click", selectXLengthShipButtonHandler);
+    length3.addEventListener("click", selectXLengthShipButtonHandler);
+    length4.addEventListener("click", selectXLengthShipButtonHandler);
+    length5.addEventListener("click", selectXLengthShipButtonHandler);
+}
+
+/**
+ * Disables event listeners for the buttons used to select ship lengths when players are placing ships
+ */
+function disableSelectShipLengthButtonHandlers() {
+    let length2 = UIState.getSelect2LengthShipButton();
+    let length3 = UIState.getSelect3LengthShipButton();
+    let length4 = UIState.getSelect4LengthShipButton();
+    let length5 = UIState.getSelect5LengthShipButton();
+
+    length2.removeEventListener("click", selectXLengthShipButtonHandler);
+    length3.removeEventListener("click", selectXLengthShipButtonHandler);
+    length4.removeEventListener("click", selectXLengthShipButtonHandler);
+    length5.removeEventListener("click", selectXLengthShipButtonHandler);
+}
+
+/**
+ * Updates Tools' workingShipLength variable to the value of the clicked button
+ * @param {MouseEvent} event A click event on one of the 'selectXLengthShip' buttons 
+ */
+function selectXLengthShipButtonHandler(event) {
+    let btnID = event.target.id;
+    let lengthValue = btnID[6]; // These buttons have ids with the format 'selectXLengthShipButton'
+
+    Tools.setWorkingShipLength(Number(lengthValue));
 }
 
 function enablePlaceShipClickHandlers() {
@@ -228,4 +270,4 @@ function revealBoardsCallback() {
     GameState.setShotTakenThisTurn(false);
 }
 
-export {initialize, testingNeeds, placeShipClick, removeShipClick}
+export {initialize, testingNeeds, placeShipClick, removeShipClick, enableSelectShipLengthButtonHandlers, disableSelectShipLengthButtonHandlers, selectXLengthShipButtonHandler}

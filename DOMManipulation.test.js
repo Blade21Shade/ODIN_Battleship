@@ -39,7 +39,24 @@ const board2 = document.createElement("div");
 board2.id = "board2";
 document.body.appendChild(board2);
 
-// Buttons for tests to use
+// Update-ship-length buttons for test to use
+const select5LengthShipButton = document.createElement("button");
+select5LengthShipButton.id = "select5LengthShipButton";
+document.body.appendChild(select5LengthShipButton);
+
+const select4LengthShipButton = document.createElement("button");
+select4LengthShipButton.id = "select4LengthShipButton";
+document.body.appendChild(select4LengthShipButton);
+
+const select3LengthShipButton = document.createElement("button");
+select3LengthShipButton.id = "select3LengthShipButton";
+document.body.appendChild(select3LengthShipButton);
+
+const select2LengthShipButton = document.createElement("button");
+select2LengthShipButton.id = "select2LengthShipButton";
+document.body.appendChild(select2LengthShipButton);
+
+// Player-step buttons for tests to use
 const hideBoardsButton = document.createElement("div");
 hideBoardsButton.id = "hideBoardsButton";
 document.body.appendChild(hideBoardsButton);
@@ -74,6 +91,10 @@ function fillBoardsTestUtility() {
 // Mocking for UIstate
 UIState.getBoard1Element.mockReturnValue(board1);
 UIState.getBoard2Element.mockReturnValue(board2);
+UIState.getSelect5LengthShipButton.mockReturnValue(select5LengthShipButton);
+UIState.getSelect4LengthShipButton.mockReturnValue(select4LengthShipButton);
+UIState.getSelect3LengthShipButton.mockReturnValue(select3LengthShipButton);
+UIState.getSelect2LengthShipButton.mockReturnValue(select2LengthShipButton);
 UIState.getHideBoardsButton.mockReturnValue(hideBoardsButton);
 UIState.getRevealBoardsButton.mockReturnValue(revealBoardsButton);
 UIState.getSwapPlayersButton.mockReturnValue(swapPlayersButton);
@@ -470,7 +491,7 @@ describe("DOMManipulation tests", () => {
 
     describe("placeShip class tests", () => {
         // Variable setup
-        Tools.setAdditionalToGetEachDirection(1);
+        Tools.setWorkingShipLength(3);
         Tools.setSearchDirection(Tools.DIRECTION.HORIZONTAL);
         
         // Mock setup
