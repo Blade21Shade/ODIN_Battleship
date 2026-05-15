@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { fillBoardElementShots, fillBoardElementShips, fillBoardElementsAll, FRIEND_OR_FOE, BOARD_NUMBER, BUTTON_NAMES, addPlaceShipClassHandler, removePlaceShipClassHandler, addShipClassToIDList, removeShipClassFromIDList, grabBoardElement, grabButtonElement, initializeBoardElements, resetBoardElements, initializePlayerButtons, enablePlaceShipHandlers, disablePlaceShipHandlers, wheelEventHandler, resetCellClassList, friendOrFoeValidityCheck} from "./DOMManipulation";
+import { fillBoardElementShots, fillBoardElementShips, fillBoardElementsAll, FRIEND_OR_FOE, BOARD_NUMBER, BUTTON_NAMES, addPlaceShipClassHandler, removePlaceShipClassHandler, addShipClassToIDList, removeShipClassFromIDList, grabBoardElement, grabButtonElement, initializeBoardElements, resetBoardElements, initializePlayerButtons, enablePlaceShipHandlers, disablePlaceShipHandlers, wheelEventHandler, resetCellClassList, friendOrFoeValidityCheck, incrementSelectLengthSpanValue, decrementSelectLengthSpanValue, getSpanFromUIState} from "./DOMManipulation";
 import DOMManipulation from "./DOMManipulation.js"; // This is so I can use spyOn() for testing fillBoardElementsAll
 import * as Tools from "./Tools.js";
 import * as UIState from "./UIState.js";
@@ -56,6 +56,27 @@ const select2LengthShipButton = document.createElement("button");
 select2LengthShipButton.id = "select2LengthShipButton";
 document.body.appendChild(select2LengthShipButton);
 
+// Update-ship-length spans
+const select5LengthShipSpan = document.createElement("span");
+select5LengthShipSpan.id = "select5LengthShipSpan";
+select5LengthShipSpan.innerText = "1";
+document.body.appendChild(select5LengthShipSpan);
+
+const select4LengthShipSpan = document.createElement("span");
+select4LengthShipSpan.id = "select4LengthShipSpan";
+select5LengthShipSpan.innerText = "1";
+document.body.appendChild(select4LengthShipSpan);
+
+const select3LengthShipSpan = document.createElement("span");
+select3LengthShipSpan.id = "select3LengthShipSpan";
+select5LengthShipSpan.innerText = "1";
+document.body.appendChild(select3LengthShipSpan);
+
+const select2LengthShipSpan = document.createElement("span");
+select2LengthShipSpan.id = "select2LengthShipSpan";
+select5LengthShipSpan.innerText = "1";
+document.body.appendChild(select2LengthShipSpan);
+
 // Player-step buttons for tests to use
 const hideBoardsButton = document.createElement("div");
 hideBoardsButton.id = "hideBoardsButton";
@@ -91,10 +112,17 @@ function fillBoardsTestUtility() {
 // Mocking for UIstate
 UIState.getBoard1Element.mockReturnValue(board1);
 UIState.getBoard2Element.mockReturnValue(board2);
+
 UIState.getSelect5LengthShipButton.mockReturnValue(select5LengthShipButton);
 UIState.getSelect4LengthShipButton.mockReturnValue(select4LengthShipButton);
 UIState.getSelect3LengthShipButton.mockReturnValue(select3LengthShipButton);
 UIState.getSelect2LengthShipButton.mockReturnValue(select2LengthShipButton);
+
+UIState.getSelect5LengthShipSpan.mockReturnValue(select5LengthShipSpan);
+UIState.getSelect4LengthShipSpan.mockReturnValue(select4LengthShipSpan);
+UIState.getSelect3LengthShipSpan.mockReturnValue(select3LengthShipSpan);
+UIState.getSelect2LengthShipSpan.mockReturnValue(select2LengthShipSpan);
+
 UIState.getHideBoardsButton.mockReturnValue(hideBoardsButton);
 UIState.getRevealBoardsButton.mockReturnValue(revealBoardsButton);
 UIState.getSwapPlayersButton.mockReturnValue(swapPlayersButton);
@@ -653,7 +681,7 @@ describe("DOMManipulation tests", () => {
         });
     });
 
-    describe("Grab element tests", () => {
+    describe("Grab/Get element tests", () => {
         describe("grabBoardElement tests", () => {
             describe("Pass tests", () => {
                 test("board1", () => {
@@ -696,6 +724,65 @@ describe("DOMManipulation tests", () => {
                 test("invalid button name throws", () => {
                     expect(()=>{grabButtonElement("invalid")}).toThrow();
                 });
+            });
+        });
+
+        describe("getSpanFromUIState tests", () => {
+            test("Pass", () => {
+                let span = getSpanFromUIState(2);
+                expect(span.id).toBe("select2LengthShipSpan");
+
+                span = getSpanFromUIState(3);
+                expect(span.id).toBe("select3LengthShipSpan");
+
+                span = getSpanFromUIState(4);
+                expect(span.id).toBe("select4LengthShipSpan");
+
+                span = getSpanFromUIState(5);
+                expect(span.id).toBe("select5LengthShipSpan");
+            });
+
+            test("Fail: Number out of range", () => {
+                // Below
+                expect(()=>{getSpanFromUIState(1)}).toThrow();
+
+                // Above
+                expect(()=>{getSpanFromUIState(6)}).toThrow();
+            });
+
+        });
+    });
+
+    describe("Span value increment/decrement tests", () => {
+        beforeAll(()=>{
+            select2LengthShipSpan.innerText = 1;
+        });
+
+        afterEach(()=>{
+            select2LengthShipSpan.innerText = 1;
+        });
+        
+        describe("incrementSelectLengthSpanValue tests", () => {
+            test("Pass test", () => {
+                incrementSelectLengthSpanValue(2);
+                expect(select2LengthShipSpan.innerText).toBe(2);
+            });
+
+            test("Fail test: Span's innerText isn't a number", () => {
+                select2LengthShipSpan.innerText = "bad";
+                expect(()=>{incrementSelectLengthSpanValue(2)}).toThrow();
+            });
+        });
+
+        describe("decrementSelectLengthSpanValue tests", () => {
+            test("Pass test", () => {
+                decrementSelectLengthSpanValue(2);
+                expect(select2LengthShipSpan.innerText).toBe(0);
+            });
+
+            test("Fail test: Span's innerText isn't a number", () => {
+                select2LengthShipSpan.innerText = "bad";
+                expect(()=>{decrementSelectLengthSpanValue(2)}).toThrow();
             });
         });
     });

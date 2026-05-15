@@ -1,6 +1,7 @@
 import DOMManipulation from "./DOMManipulation.js"
 import * as GameEngine from "./GameEngine.js";
 import * as GameState from "./GameState.js"
+import * as GameSetup from "./GameSetup.js"
 import GameBoard from "./GameBoard.js"
 import * as UIState from "./UIState.js"
 import * as Tools from "./Tools.js"
@@ -11,6 +12,7 @@ import * as Tools from "./Tools.js"
 function initialize() {
     GameState.initializeGameState();
     UIState.initializeUIState();
+    GameSetup.initializeOrReset();
     DOMManipulation.initializeBoardElements();
     DOMManipulation.initializePlayerButtons();
 }
@@ -20,156 +22,9 @@ function initialize() {
  * This function should be deleted once the project is finished  
  */ 
 function testingNeeds() {
-    DOMManipulation.enablePlaceShipBoardHandlers();
-    enableSelectShipLengthButtonHandlers();
-    enablePlaceShipClickHandlers();
-}
-
-/**
- * Enables event listeners for the buttons used to select ship lengths when players are placing ships
- */
-function enableSelectShipLengthButtonHandlers() {
-    let length2 = UIState.getSelect2LengthShipButton();
-    let length3 = UIState.getSelect3LengthShipButton();
-    let length4 = UIState.getSelect4LengthShipButton();
-    let length5 = UIState.getSelect5LengthShipButton();
-
-    length2.addEventListener("click", selectXLengthShipButtonHandler);
-    length3.addEventListener("click", selectXLengthShipButtonHandler);
-    length4.addEventListener("click", selectXLengthShipButtonHandler);
-    length5.addEventListener("click", selectXLengthShipButtonHandler);
-}
-
-/**
- * Disables event listeners for the buttons used to select ship lengths when players are placing ships
- */
-function disableSelectShipLengthButtonHandlers() {
-    let length2 = UIState.getSelect2LengthShipButton();
-    let length3 = UIState.getSelect3LengthShipButton();
-    let length4 = UIState.getSelect4LengthShipButton();
-    let length5 = UIState.getSelect5LengthShipButton();
-
-    length2.removeEventListener("click", selectXLengthShipButtonHandler);
-    length3.removeEventListener("click", selectXLengthShipButtonHandler);
-    length4.removeEventListener("click", selectXLengthShipButtonHandler);
-    length5.removeEventListener("click", selectXLengthShipButtonHandler);
-}
-
-/**
- * Updates Tools' workingShipLength variable to the value of the clicked button
- * @param {MouseEvent} event A click event on one of the 'selectXLengthShip' buttons 
- */
-function selectXLengthShipButtonHandler(event) {
-    let btnID = event.target.id;
-    let lengthValue = btnID[6]; // These buttons have ids with the format 'selectXLengthShipButton'
-
-    Tools.setWorkingShipLength(Number(lengthValue));
-}
-
-function enablePlaceShipClickHandlers() {
-    let board1Element = UIState.getBoard1Element();
-    board1Element.addEventListener("click", placeShipClick);
-    board1Element.addEventListener("contextmenu", removeShipClick);
-}
-
-function disablePlaceShipClickHandlers() {
-    let board1Element = UIState.getBoard1Element();
-    board1Element.removeEventListener("click", placeShipClick);
-    board1Element.removeEventListener("contextmenu", removeShipClick);
-}
-
-/**
- * Attempts to place a ship onto the active player's GameBoard. If placement is valid, the DOM is updated to match.
- * @param {Event} event A click event from the user attempting to place a ship
- */
-function placeShipClick(event) {
-    let cell = event.target;
-
-    // Get the idList for this ship
-    let idString = cell.id;
-    let idNumber = Tools.getIDNumberFromIDString(idString);
-    let idList = Tools.createIDListFromIDNumber(idNumber);
-
-    // Check if the length of idList matches the expected length
-    let workingLength = Tools.getWorkingShipLength();
-
-    // If the length was invalid, do nothing
-    // This will occur if the user tries to click when part of their ship goes beyond an edge of the board
-    if (workingLength != idList.length) {
-        return;
-    }
-    
-    // Get the board to place on
-    let playerTurn = GameState.getPlayerTurn();
-    /**
-     * @type {GameBoard}
-     */
-    let boardToPlaceOn;
-    if (playerTurn === 1) {
-        boardToPlaceOn = GameState.getPlayer1Board();
-    } else {
-        boardToPlaceOn = GameState.getPlayer2Board();
-    }
-
-    // Get the coordinates to place at
-    let start = Tools.createCoordinateFromIDNumber(idList[0]);
-    let end = Tools.createCoordinateFromIDNumber(idList.at(-1));
-
-    // Attempt the actual placement
-    let couldBePlaced = boardToPlaceOn.placeShip(start, end);
-
-    if (!couldBePlaced) {
-        return;
-    }
-
-    // Ship placed, update the DOM
-    DOMManipulation.removePlaceShipClassHandler(event);
-    DOMManipulation.addShipClassToIDList(idList);
-}
-
-/**
- * Attempts to remove a ship from the active player's GameBoard. If removal was valid, the DOM is updated to match.
- * @param {Event} event A 'contextmenu' event from the user attempting to right-click a ship
- */
-function removeShipClick(event) {
-    let cell = event.target;
-
-    // If the right-clicked cell doesn't contain the ship class, don't do anything
-    if (!cell.classList.contains("ship")) {
-        return;
-    }
-
-    // Ship, get the idList for it
-    let idString = cell.id;
-    let idNumber = Tools.getIDNumberFromIDString(idString);
-
-    // Remove from the GameBoard
-    // Get the board to remove from
-    let playerTurn = GameState.getPlayerTurn();
-    /** @type {GameBoard} */
-    let boardToPlaceOn;
-    if (playerTurn === 1) {
-        boardToPlaceOn = GameState.getPlayer1Board();
-    } else {
-        boardToPlaceOn = GameState.getPlayer2Board();
-    }
-
-    // Remove the ship
-    let coord = Tools.createCoordinateFromIDNumber(idNumber);
-    let removedCoords = boardToPlaceOn.removeShipByCoordinate(coord);
-    
-    // Create an idList from the removed coordinates
-    let idList = [];
-    for (const coord of removedCoords) {
-        let id = Tools.createIDNumberFromCoordinate(coord);
-        idList.push(id);
-    }
-
-    // Ship removed, update the DOM
-    DOMManipulation.removeShipClassFromIDList(idList);
-    DOMManipulation.addPlaceShipClassHandler(event);
-
-    // Send the length of the coordinates to DOMManipulation/UIState so DIVs and buttons can be updated 
+    DOMManipulation.enablePlaceShipHandlers();
+    GameSetup.enableSelectShipLengthButtonHandlers();
+    GameSetup.enableShipPlacementHandlers();
 }
 
 /**
@@ -177,7 +32,7 @@ function removeShipClick(event) {
  */
 function enableShotListener() {
     let board2Element = UIState.getBoard2Element();
-    board2Element.addEventListener("click", shotListener());
+    board2Element.addEventListener("click", shotListener);
 }
 
 /**
@@ -185,7 +40,7 @@ function enableShotListener() {
  */
 function disableShotListener() {
     let board2Element = UIState.getBoard2Element();
-    board2Element.removeEventListener("click", shotListener());
+    board2Element.removeEventListener("click", shotListener);
 }
 
 /**
@@ -270,4 +125,4 @@ function revealBoardsCallback() {
     GameState.setShotTakenThisTurn(false);
 }
 
-export {initialize, testingNeeds, placeShipClick, removeShipClick, enableSelectShipLengthButtonHandlers, disableSelectShipLengthButtonHandlers, selectXLengthShipButtonHandler}
+export {initialize, testingNeeds, shotListener, enableShotListener, disableShotListener}

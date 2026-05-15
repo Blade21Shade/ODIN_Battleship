@@ -24,10 +24,10 @@ const BUTTON_NAMES = Object.freeze({
     SWAP_PLAYERS: "swapPlayers",
     HIDE_BOARDS: "hideBoards",
     REVEAL_BOARDS: "revealBoards",
-    SELECT5: "select5LengthShip",
-    SELECT4: "select4LengthShip",
-    SELECT3: "select3LengthShip",
-    SELECT2: "select2LengthShip"
+    SELECT5: "select5LengthShipButton",
+    SELECT4: "select4LengthShipButton",
+    SELECT3: "select3LengthShipButton",
+    SELECT2: "select2LengthShipButton"
 });
 
 const DOMManipulation = {
@@ -186,6 +186,80 @@ const DOMManipulation = {
     },
 
     /**
+     * Adds the 'selected' class to the button matching the given buttonName
+     * @param {BUTTON_NAMES} buttonName The name of the button as defined in BUTTON_NAMES to add the class to
+     */
+    addSelectedClassToButton(buttonName) {
+        let btn = grabButtonElement(buttonName);
+        btn.classList.add('selected');
+    }, 
+
+    /**
+     * Removes the 'selected' class from the button matching the given buttonName
+     * @param {BUTTON_NAMES} buttonName The name of the button as defined in BUTTON_NAMES to remove the class from
+     */
+    removeSelectedClassFromButton(buttonName) {
+        let btn = grabButtonElement(buttonName);
+        btn.classList.remove('selected');
+    }, 
+
+    /**
+     * Increments the value of the span of a 'select ship length' button
+     * @param {Number} length The length corresponding to the span to increment
+     */
+    incrementSelectLengthSpanValue(length) {
+        let span = getSpanFromUIState(length);
+        let spanNum = Number(span.innerText);
+        if (isNaN(spanNum)) {
+            throw new error("Span value not a number: Invalid game state");
+        }
+
+        span.innerText = ++spanNum;
+    },
+
+    /**
+     * Decrements the value of the span of a 'select ship length' button
+     * @param {Number} length The length corresponding to the span to decrement
+     */
+    decrementSelectLengthSpanValue(length) {
+        let span = getSpanFromUIState(length);
+        let spanNum = Number(span.innerText);
+        if (isNaN(spanNum)) {
+            throw new error("Span value not a number: Invalid game state");
+        }
+
+        span.innerText = --spanNum;
+    },
+
+    /**
+     * Gets a span from the DOM
+     * @param {Number} length The length corresponding to the span to retrieve, can only be 2-5
+     * @returns The span
+     * @throws If a span cannot be found for the given length
+     */
+    getSpanFromUIState(length) {
+        let span;
+        switch(length) {
+            case 2:
+                span = UIState.getSelect2LengthShipSpan();
+                break;
+            case 3:
+                span = UIState.getSelect3LengthShipSpan();
+                break;
+            case 4:
+                span = UIState.getSelect4LengthShipSpan();
+                break;
+            case 5:
+                span = UIState.getSelect5LengthShipSpan();
+                break;
+            default:
+                throw new Error("Invalid length given, only lengths of 2-5 are allowed");
+        }
+
+        return span;
+    },
+
+    /**
      * Marks cells on the DOM board for boardNumber by entries in the board array with the "hit", "miss", "friend", or "foe" classes - Can be called before or after fillBoardElementShips
      * @param {[[number]]} boardArray The 2D array to parse to place shots on the board; entries should be 1 for hit, 0 for not-shot-at, -1 for miss; the array should be 10x10
      * @param {FRIEND_OR_FOE} friendOrFoe Whether this is for the friend or foe board
@@ -318,7 +392,7 @@ const DOMManipulation = {
     },
 
     /**
-     * Adds the placeShip class to cells around the event.target; this works alongside Tools' searchDirection and additionalToGetEachDirection variables
+     * Adds the placeShip class to cells around the event.target
      * @param {MouseEvent} event A mouseover event of board1; used to get the cell that was moused over
      */
     addPlaceShipClassHandler(event) {
@@ -337,7 +411,7 @@ const DOMManipulation = {
     },
 
     /**
-     * Removes the placeShip class from cells around the event.target; this works alongside Tools' searchDirection and additionalToGetEachDirection variables
+     * Removes the placeShip class from cells around the event.target
      * @param {MouseEvent} event A mouseout event of board1; used to get the cell that was moused out
      */
     removePlaceShipClassHandler(event) {
@@ -435,7 +509,7 @@ const DOMManipulation = {
 
 // Exporting all the things inside the object by using the destructure syntax
 // Luckily, the order doesn't matter, JS does: thing = Object.thing
-export const {initializeBoardElements, resetBoardElements, initializePlayerButtons, fillBoardElementShots, fillBoardElementShips, grabBoardElement, grabButtonElement, enableButton, disableButton, enablePlaceShipHandlers, disablePlaceShipHandlers, addPlaceShipClassHandler, removePlaceShipClassHandler, wheelEventHandler, fillBoardElementsAll, addShipClassToIDList, removeShipClassFromIDList, resetCellClassList, friendOrFoeValidityCheck} = DOMManipulation;
+export const {initializeBoardElements, resetBoardElements, initializePlayerButtons, fillBoardElementShots, fillBoardElementShips, grabBoardElement, grabButtonElement, enableButton, disableButton, enablePlaceShipHandlers, disablePlaceShipHandlers, addPlaceShipClassHandler, removePlaceShipClassHandler, wheelEventHandler, fillBoardElementsAll, addShipClassToIDList, removeShipClassFromIDList, resetCellClassList, friendOrFoeValidityCheck, incrementSelectLengthSpanValue, decrementSelectLengthSpanValue, addSelectedClassToButton, removeSelectedClassFromButton, getSpanFromUIState} = DOMManipulation;
 
 export {FRIEND_OR_FOE, BOARD_NUMBER, BUTTON_NAMES} // Named export the Enums as well
 

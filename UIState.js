@@ -8,6 +8,12 @@ let select4LengthShipButton;
 /** @type {HTMLButtonElement} */
 let select5LengthShipButton;
 
+/**
+ * Holds the currently selected button users use to select ship sizes
+ * @type {HTMLButtonElement}
+ */
+let currentlySelectedXLengthShipButton;
+
 // Spans for the buttons the user uses to select ship sizes; these are so the player knows how many ships they need to place
 /** @type {HTMLSpanElement} */
 let select2LengthShipSpan;
@@ -75,19 +81,19 @@ function getBoard2Element() {
 }
 
 function getSelect2LengthShipButton() {
-    return select5LengthShipButton;
+    return select2LengthShipButton;
 }
 
 function getSelect3LengthShipButton() {
-    return select4LengthShipButton;
-}
-
-function getSelect4LengthShipButton() {
     return select3LengthShipButton;
 }
 
+function getSelect4LengthShipButton() {
+    return select4LengthShipButton;
+}
+
 function getSelect5LengthShipButton() {
-    return select2LengthShipButton;
+    return select5LengthShipButton;
 }
 
 function getSelect2LengthShipSpan() {
@@ -106,4 +112,30 @@ function getSelect5LengthShipSpan() {
     return select5LengthShipSpan;
 }
 
-export {initializeUIState, getBoard1Element, getBoard2Element, getHideBoardsButton, getRevealBoardsButton, getSwapPlayersButton, getSelect2LengthShipButton, getSelect3LengthShipButton, getSelect4LengthShipButton, getSelect5LengthShipButton, getSelect2LengthShipSpan, getSelect3LengthShipSpan, getSelect4LengthShipSpan, getSelect5LengthShipSpan}
+function getCurrentlySelectedXLengthShipButtonID() {
+    return currentlySelectedXLengthShipButton.id;
+}
+
+function setCurrentlySelectedXLengthShipButton(length) {
+    let setTo;
+    switch(Number(length)) {
+        case 2:
+            setTo = select2LengthShipButton;
+            break;
+        case 3:
+            setTo = select3LengthShipButton;
+            break;
+        case 4:
+            setTo = select4LengthShipButton;
+            break;
+        case 5:
+            setTo = select5LengthShipButton;
+            break;
+        default:
+            throw new Error("Invalid length given, only lengths of 2-5 are valid");
+    }
+
+    currentlySelectedXLengthShipButton = setTo;
+}
+
+export {initializeUIState, getBoard1Element, getBoard2Element, getHideBoardsButton, getRevealBoardsButton, getSwapPlayersButton, getSelect2LengthShipButton, getSelect3LengthShipButton, getSelect4LengthShipButton, getSelect5LengthShipButton, getSelect2LengthShipSpan, getSelect3LengthShipSpan, getSelect4LengthShipSpan, getSelect5LengthShipSpan, getCurrentlySelectedXLengthShipButtonID, setCurrentlySelectedXLengthShipButton}

@@ -34,6 +34,12 @@ const revealBoardsButton = document.createElement("div");
 revealBoardsButton.id = "revealBoardsButton";
 document.body.appendChild(revealBoardsButton);
 
+// Update-ship-length buttons
+const select5LengthShipButton = document.createElement("button");
+select5LengthShipButton.id = "select5LengthShipButton";
+select5LengthShipButton.className = "";
+document.body.appendChild(select5LengthShipButton);
+
 // Setup the boards for use
 const cell = document.createElement("div");
 cell.classList.add("cell");
