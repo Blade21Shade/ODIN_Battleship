@@ -1,6 +1,5 @@
 import GameBoard from "./GameBoard.js"
 import Player from "./Player.js"
-import Ship from "./Ship.js"
 
 /**
  * @type {Number}
