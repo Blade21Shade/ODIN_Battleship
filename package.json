@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "testDebug": "node --inspect-brk node_modules/.bin/jest --runInBand",
+    "testLog": "node --inspect-brk --trace-gc node_modules/.bin/jest --runInBand --logHeapUsage --detectOpenHandles"
   },
   "repository": {
     "type": "git",
