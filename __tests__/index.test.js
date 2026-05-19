@@ -2,16 +2,16 @@
  * @jest-environment jsdom
  */
 
-import * as index from "./index.js";
-import * as Tools from "./Tools.js";
-import * as GameEngine from "./GameEngine.js";
-import * as DOMManipulation from "./DOMManipulation.js";
-import * as UIState from "./UIState.js";
+import * as index from "../src/index.js";
+import * as Tools from "../src/Tools.js";
+import * as GameEngine from "../src/GameEngine.js";
+import * as DOMManipulation from "../src/DOMManipulation.js";
+import * as UIState from "../src/UIState.js";
 
-jest.mock("./Tools.js");
-jest.mock("./GameEngine.js");
-jest.mock("./DOMManipulation.js");
-jest.mock("./UIState.js");
+jest.mock("../src/Tools.js");
+jest.mock("../src/GameEngine.js");
+jest.mock("../src/DOMManipulation.js");
+jest.mock("../src/UIState.js");
 
 // Boards
 const board1 = document.createElement("div");

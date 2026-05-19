@@ -2,9 +2,9 @@
  * @jest-environment jsdom
  */
 
-import * as Index from "./index.js";
-import * as GameSate from "./GameState.js";
-import * as DOMManipulation from "./DOMManipulation.js";
+import * as Index from "../src/index.js";
+import * as GameSate from "../src/GameState.js";
+import * as DOMManipulation from "../src/DOMManipulation.js";
 
 function resetState() {
     GameSate.initializeGameState();

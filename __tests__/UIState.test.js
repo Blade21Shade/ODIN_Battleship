@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import * as UIState from "./UIState.js" 
+import * as UIState from "../src/UIState.js"
 
 // selectXLengthShipButton elements
 const select2LengthShipButton = document.createElement("button");

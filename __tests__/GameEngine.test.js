@@ -1,8 +1,8 @@
-import { shootAtCoordinate, endGameCheck} from "./GameEngine.js";
+import { shootAtCoordinate, endGameCheck} from "../src/GameEngine.js";
 
-import GameBoard from "./GameBoard.js";
+import GameBoard from "../src/GameBoard.js";
 
-import * as GameState from "./GameState.js"
+import * as GameState from "../src/GameState.js"
 
 // Board to use during tests
 let board1 = new GameBoard(10);

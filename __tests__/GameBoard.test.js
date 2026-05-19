@@ -1,4 +1,4 @@
-import GameBoard from "./GameBoard.js"
+import GameBoard from "../src/GameBoard.js"
 
 describe("GameBoard tests", () => {
     let testBoard = new GameBoard(10);

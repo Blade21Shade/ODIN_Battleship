@@ -2,11 +2,11 @@
  * @jest-environment jsdom
  */
 
-import { fillBoardElementShots, fillBoardElementShips, fillBoardElementsAll, FRIEND_OR_FOE, BOARD_NUMBER, BUTTON_NAMES, addPlaceShipClassHandler, removePlaceShipClassHandler, addShipClassToIDList, removeShipClassFromIDList, grabBoardElement, grabButtonElement, initializeBoardElements, resetBoardElements, initializePlayerButtons, enablePlaceShipHandlers, disablePlaceShipHandlers, wheelEventHandler, resetCellClassList, friendOrFoeValidityCheck, incrementSelectLengthSpanValue, decrementSelectLengthSpanValue, getSpanFromUIState} from "./DOMManipulation";
-import DOMManipulation from "./DOMManipulation.js"; // This is so I can use spyOn() for testing fillBoardElementsAll
-import * as Tools from "./Tools.js";
-import * as UIState from "./UIState.js";
-jest.mock("./UIState.js");
+import { fillBoardElementShots, fillBoardElementShips, fillBoardElementsAll, FRIEND_OR_FOE, BOARD_NUMBER, BUTTON_NAMES, addPlaceShipClassHandler, removePlaceShipClassHandler, addShipClassToIDList, removeShipClassFromIDList, grabBoardElement, grabButtonElement, initializeBoardElements, resetBoardElements, initializePlayerButtons, enablePlaceShipHandlers, disablePlaceShipHandlers, wheelEventHandler, resetCellClassList, friendOrFoeValidityCheck, incrementSelectLengthSpanValue, decrementSelectLengthSpanValue, getSpanFromUIState} from "../src/DOMManipulation";
+import DOMManipulation from "../src/DOMManipulation.js"; // This is so I can use spyOn() for testing fillBoardElementsAll
+import * as Tools from "../src/Tools.js";
+import * as UIState from "../src/UIState.js";
+jest.mock("../src/UIState.js");
 
 // Mocking Tools
 // Below is what would be needed to mock some functions, but not all of them

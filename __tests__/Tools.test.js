@@ -1,4 +1,4 @@
-import {getIDNumberFromIDString, createIDListFromIDNumber, setAdditionalToGetEachDirection, setSearchDirection, DIRECTION, createCoordinateFromIDNumber, createIDNumberFromCoordinate, addIDsToEachSideOfIDList,setWorkingShipLength} from "./Tools"
+import {getIDNumberFromIDString, createIDListFromIDNumber, setAdditionalToGetEachDirection, setSearchDirection, DIRECTION, createCoordinateFromIDNumber, createIDNumberFromCoordinate, addIDsToEachSideOfIDList,setWorkingShipLength} from "../src/Tools"
 
 describe("Tools tests", () => {
     describe("getIDNumberFromIDString tests", () => {

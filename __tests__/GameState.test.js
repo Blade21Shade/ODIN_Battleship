@@ -1,8 +1,8 @@
-import {getShotsAndShipsArrays, initializeGameState} from "./GameState.js"
-import GameBoard from "./GameBoard.js";
-import Ship from "./Ship.js";
+import {getShotsAndShipsArrays, initializeGameState} from "../src/GameState.js"
+import GameBoard from "../src/GameBoard.js";
+import Ship from "../src/Ship.js";
 
-jest.mock("./GameBoard.js");
+jest.mock("../src/GameBoard.js");
 
 let shipList = [
     [[0, 1], [0, 3]],
