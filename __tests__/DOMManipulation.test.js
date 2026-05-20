@@ -64,17 +64,17 @@ document.body.appendChild(select5LengthShipSpan);
 
 const select4LengthShipSpan = document.createElement("span");
 select4LengthShipSpan.id = "select4LengthShipSpan";
-select5LengthShipSpan.innerText = "1";
+select4LengthShipSpan.innerText = "1";
 document.body.appendChild(select4LengthShipSpan);
 
 const select3LengthShipSpan = document.createElement("span");
 select3LengthShipSpan.id = "select3LengthShipSpan";
-select5LengthShipSpan.innerText = "1";
+select3LengthShipSpan.innerText = "1";
 document.body.appendChild(select3LengthShipSpan);
 
 const select2LengthShipSpan = document.createElement("span");
 select2LengthShipSpan.id = "select2LengthShipSpan";
-select5LengthShipSpan.innerText = "1";
+select2LengthShipSpan.innerText = "1";
 document.body.appendChild(select2LengthShipSpan);
 
 // Player-step buttons for tests to use
@@ -784,6 +784,17 @@ describe("DOMManipulation tests", () => {
                 select2LengthShipSpan.innerText = "bad";
                 expect(()=>{decrementSelectLengthSpanValue(2)}).toThrow();
             });
+        });
+    });
+
+    describe("initializeSpanValues tests", () => {
+        test("Base Pass", () => {
+            DOMManipulation.initializeSpanValues();
+
+            expect(select2LengthShipSpan.innerText).toEqual(1);
+            expect(select3LengthShipSpan.innerText).toEqual(2);
+            expect(select4LengthShipSpan.innerText).toEqual(1);
+            expect(select5LengthShipSpan.innerText).toEqual(1);
         });
     });
 

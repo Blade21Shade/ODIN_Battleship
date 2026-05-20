@@ -25,6 +25,36 @@ let numberOfShipsLeftToPlace = [0, 0, 0, 0];
 const MAX_NUMBER = [1, 2, 1, 1];
 
 /**
+ * The number of players that have placed all their ships
+ * - The increment function expects this to never be above 2, so it has an implicit max of 2 as of writing this comment
+ */
+let numberOfPlayersThatHavePlacedAllShips = 0;
+
+/**
+ * Increments numberOfPlayersThatHavePlacedAllShips
+ * @throws If the value of the variable would exceed 2
+ */
+function incrementNumberOfPlayersThatHavePlacedAllShips() {
+    numberOfPlayersThatHavePlacedAllShips++;
+
+    if (numberOfPlayersThatHavePlacedAllShips > 2) {
+        throw new Error("Incremented over maximum number of players");
+    }
+}
+
+function getNumberOfPlayersThatHavePlacedAllShips() {
+    return numberOfPlayersThatHavePlacedAllShips;
+}
+
+/**
+ * Sets numberOfPlayersThatHavePlacedAllShips to 0
+ * - This is designed to be called when a new game needs to start without needing to reload the page
+ */
+function resetNumberOfPlayersThatHavePlacedAllShips() {
+    numberOfPlayersThatHavePlacedAllShips = 0;
+}
+
+/**
  * Sets variables and the DOM to a state ready for ship placement for the current player
  * - This should be called once per player
  */
@@ -36,10 +66,18 @@ function initializeOrReset() {
     DOMManipulation.addSelectedClassToButton(DOMManipulation.BUTTON_NAMES.SELECT5);
     UIState.setCurrentlySelectedXLengthShipButton(5);
     Tools.setWorkingShipLength(5);
+
+    // Update other parts of the DOM for ship placement
+    DOMManipulation.enablePlaceShipHandlers();
+    DOMManipulation.initializeSpanValues();
+    DOMManipulation.enableButton(DOMManipulation.BUTTON_NAMES.SELECT2);
+    DOMManipulation.enableButton(DOMManipulation.BUTTON_NAMES.SELECT3);
+    DOMManipulation.enableButton(DOMManipulation.BUTTON_NAMES.SELECT4);
+    DOMManipulation.enableButton(DOMManipulation.BUTTON_NAMES.SELECT5);
 }
 
 /**
- * Returns the total number of ships left to place
+ * Returns the total number of ships left to place for the current player
  * @returns The sum of ships left to place
  */
 function getNumberOfShipsLeftToPlace() {
@@ -375,4 +413,4 @@ function removeShipClick(event) {
     DOMManipulation.addPlaceShipClassHandler(event);
 }
 
-export {initializeOrReset, getNumberOfShipsLeftToPlace, getNumberOfShipsToPlaceOfGivenLength, incrementNumberOfShipsToPlaceOfLength, incrementThrow, decrementNumberOfShipsToPlaceOfLength, decrementThrow, enableSelectShipLengthButtonHandlers, disableSelectShipLengthButtonHandlers, enableShipPlacementHandlers, disableShipPlacementHandlers, placeShipClick, removeShipClick, processWhenLastShipOfCurrentLengthPlaced, selectXLengthShipButtonHandler, convertLengthToIndexPosition}
+export {initializeOrReset, getNumberOfShipsLeftToPlace, getNumberOfShipsToPlaceOfGivenLength, incrementNumberOfShipsToPlaceOfLength, incrementThrow, decrementNumberOfShipsToPlaceOfLength, decrementThrow, enableSelectShipLengthButtonHandlers, disableSelectShipLengthButtonHandlers, enableShipPlacementHandlers, disableShipPlacementHandlers, placeShipClick, removeShipClick, processWhenLastShipOfCurrentLengthPlaced, selectXLengthShipButtonHandler, convertLengthToIndexPosition, incrementNumberOfPlayersThatHavePlacedAllShips, getNumberOfPlayersThatHavePlacedAllShips, resetNumberOfPlayersThatHavePlacedAllShips}

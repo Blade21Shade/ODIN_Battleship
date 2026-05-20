@@ -232,6 +232,21 @@ const DOMManipulation = {
     },
 
     /**
+     * Initializes span values
+     */
+    initializeSpanValues() {
+        let span2 = getSpanFromUIState(2);
+        let span3 = getSpanFromUIState(3);
+        let span4 = getSpanFromUIState(4);
+        let span5 = getSpanFromUIState(5);
+
+        span2.innerText = 1;
+        span3.innerText = 2;
+        span4.innerText = 1;
+        span5.innerText = 1;
+    },
+
+    /**
      * Gets a span from the DOM
      * @param {Number} length The length corresponding to the span to retrieve, can only be 2-5
      * @returns The span
@@ -509,7 +524,7 @@ const DOMManipulation = {
 
 // Exporting all the things inside the object by using the destructure syntax
 // Luckily, the order doesn't matter, JS does: thing = Object.thing
-export const {initializeBoardElements, resetBoardElements, initializePlayerButtons, fillBoardElementShots, fillBoardElementShips, grabBoardElement, grabButtonElement, enableButton, disableButton, enablePlaceShipHandlers, disablePlaceShipHandlers, addPlaceShipClassHandler, removePlaceShipClassHandler, wheelEventHandler, fillBoardElementsAll, addShipClassToIDList, removeShipClassFromIDList, resetCellClassList, friendOrFoeValidityCheck, incrementSelectLengthSpanValue, decrementSelectLengthSpanValue, addSelectedClassToButton, removeSelectedClassFromButton, getSpanFromUIState} = DOMManipulation;
+export const {initializeBoardElements, resetBoardElements, initializePlayerButtons, fillBoardElementShots, fillBoardElementShips, grabBoardElement, grabButtonElement, enableButton, disableButton, enablePlaceShipHandlers, disablePlaceShipHandlers, addPlaceShipClassHandler, removePlaceShipClassHandler, wheelEventHandler, fillBoardElementsAll, addShipClassToIDList, removeShipClassFromIDList, resetCellClassList, friendOrFoeValidityCheck, incrementSelectLengthSpanValue, decrementSelectLengthSpanValue, addSelectedClassToButton, removeSelectedClassFromButton, getSpanFromUIState, initializeSpanValues} = DOMManipulation;
 
 export {FRIEND_OR_FOE, BOARD_NUMBER, BUTTON_NAMES} // Named export the Enums as well
 

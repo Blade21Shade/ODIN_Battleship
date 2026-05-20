@@ -445,6 +445,11 @@ describe("GameSetup tests", () => {
             expect(DOMManipulation.addSelectedClassToButton.mock.calls[0][0]).toEqual(DOMManipulation.BUTTON_NAMES.SELECT5);
             expect(UIState.setCurrentlySelectedXLengthShipButton.mock.calls[0][0]).toBe(5);
             expect(Tools.setWorkingShipLength.mock.calls[0][0]).toBe(5);
+            expect(DOMManipulation.enablePlaceShipHandlers.mock.calls).toHaveLength(1);
+            expect(DOMManipulation.enableButton.mock.calls[0][0]).toEqual(DOMManipulation.BUTTON_NAMES.SELECT2);
+            expect(DOMManipulation.enableButton.mock.calls[1][0]).toEqual(DOMManipulation.BUTTON_NAMES.SELECT3);
+            expect(DOMManipulation.enableButton.mock.calls[2][0]).toEqual(DOMManipulation.BUTTON_NAMES.SELECT4);
+            expect(DOMManipulation.enableButton.mock.calls[3][0]).toEqual(DOMManipulation.BUTTON_NAMES.SELECT5);
         });
     });
 
@@ -513,5 +518,39 @@ describe("GameSetup tests", () => {
                 expect(()=>{GameSetup.incrementNumberOfShipsToPlaceOfLength(2)}).toThrow();
             })
         });
+    });
+
+    describe("incrementNumberOfPlayersWhoHavePlacedAllShips", () => {
+        afterEach(()=>{
+            GameSetup.resetNumberOfPlayersThatHavePlacedAllShips();
+        });
+        
+        describe("Pass tests", () => {
+            test("Base Pass", () => {
+                GameSetup.incrementNumberOfPlayersThatHavePlacedAllShips();
+
+                expect(GameSetup.getNumberOfPlayersThatHavePlacedAllShips()).toBe(1);
+            });
+
+            test("Increment to 2 works", () => {
+                GameSetup.incrementNumberOfPlayersThatHavePlacedAllShips();
+                GameSetup.incrementNumberOfPlayersThatHavePlacedAllShips();
+
+                expect(GameSetup.getNumberOfPlayersThatHavePlacedAllShips()).toBe(2);
+            });
+        });
+
+        describe("Fail tests", () => {
+            test("Fail: incrementing over 2 throws", () => {
+                // 2 work
+                GameSetup.incrementNumberOfPlayersThatHavePlacedAllShips();
+                GameSetup.incrementNumberOfPlayersThatHavePlacedAllShips(); 
+
+                // 3 is above 2
+                expect(()=>{GameSetup.incrementNumberOfPlayersThatHavePlacedAllShips()}).toThrow();
+            });
+        });
+
+
     });
 });

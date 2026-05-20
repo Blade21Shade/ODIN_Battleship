@@ -38,7 +38,47 @@ document.body.appendChild(revealBoardsButton);
 const select5LengthShipButton = document.createElement("button");
 select5LengthShipButton.id = "select5LengthShipButton";
 select5LengthShipButton.className = "";
+select5LengthShipButton.disabled = false;
 document.body.appendChild(select5LengthShipButton);
+
+const select4LengthShipButton = document.createElement("button");
+select4LengthShipButton.id = "select4LengthShipButton";
+select4LengthShipButton.className = "";
+select4LengthShipButton.disabled = false;
+document.body.appendChild(select4LengthShipButton);
+
+const select3LengthShipButton = document.createElement("button");
+select3LengthShipButton.id = "select3LengthShipButton";
+select3LengthShipButton.className = "";
+select3LengthShipButton.disabled = false;
+document.body.appendChild(select3LengthShipButton);
+
+const select2LengthShipButton = document.createElement("button");
+select2LengthShipButton.id = "select2LengthShipButton";
+select2LengthShipButton.className = "";
+select2LengthShipButton.disabled = false;
+document.body.appendChild(select2LengthShipButton);
+
+// Update-ship-length spans
+const select5LengthShipSpan = document.createElement("span");
+select5LengthShipSpan.id = "select5LengthShipSpan";
+select5LengthShipSpan.innerText = "1";
+document.body.appendChild(select5LengthShipSpan);
+
+const select4LengthShipSpan = document.createElement("span");
+select4LengthShipSpan.id = "select4LengthShipSpan";
+select4LengthShipSpan.innerText = "1";
+document.body.appendChild(select4LengthShipSpan);
+
+const select3LengthShipSpan = document.createElement("span");
+select3LengthShipSpan.id = "select3LengthShipSpan";
+select3LengthShipSpan.innerText = "1";
+document.body.appendChild(select3LengthShipSpan);
+
+const select2LengthShipSpan = document.createElement("span");
+select2LengthShipSpan.id = "select2LengthShipSpan";
+select2LengthShipSpan.innerText = "1";
+document.body.appendChild(select2LengthShipSpan);
 
 // Setup the boards for use
 const cell = document.createElement("div");

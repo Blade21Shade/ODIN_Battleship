@@ -2,9 +2,25 @@ import DOMManipulation from "./DOMManipulation.js"
 import * as GameEngine from "./GameEngine.js";
 import * as GameState from "./GameState.js"
 import * as GameSetup from "./GameSetup.js"
-import GameBoard from "./GameBoard.js"
 import * as UIState from "./UIState.js"
 import * as Tools from "./Tools.js"
+import * as self from "./index.js"
+
+/**
+ * The values that currentState can be set to
+ * - Setup: used when players need to place their ships
+ * - Gameplay: used when players need to take shots at the other's board
+ */
+const SETUP_OR_GAMEPLAY = Object.freeze({
+    SETUP: "setup",
+    GAMEPLAY: "gameplay"
+});
+
+/**
+ * Holds the current state of the program
+ * - Allowed values are held in SETUP_OR_GAMEPLAY
+ */
+let currentState;
 
 /** 
  * Initialize the game state and DOM
@@ -15,6 +31,8 @@ function initialize() {
     GameSetup.initializeOrReset();
     DOMManipulation.initializeBoardElements();
     DOMManipulation.initializePlayerButtons();
+    setCurrentState(SETUP_OR_GAMEPLAY.SETUP);
+    enableSwapProcessButtonEventListeners();
 }
 
 /** 
@@ -22,9 +40,30 @@ function initialize() {
  * This function should be deleted once the project is finished  
  */ 
 function testingNeeds() {
-    DOMManipulation.enablePlaceShipHandlers();
     GameSetup.enableSelectShipLengthButtonHandlers();
     GameSetup.enableShipPlacementHandlers();
+}
+
+/**
+ * Sets currentState
+ * @param {SETUP_OR_GAMEPLAY} setupOrGameplay One of SETUP_OR_GAMEPLAY's values
+ * @throws If given a non SETUP_OR_GAMEPLAY value
+ */
+function setCurrentState(setupOrGameplay) {
+    // If the given value isn't in SETUP_OR_GAMEPLAY, throw
+    if (!Object.values(SETUP_OR_GAMEPLAY).includes(setupOrGameplay)) {
+        invalidStateThrow();
+    }
+
+    currentState = setupOrGameplay;
+}
+
+function getCurrentState() {
+    return currentState;
+}
+
+function invalidStateThrow() {
+    throw new Error("Invalid state given: must be 'setup' or 'gameplay'");
 }
 
 /**
@@ -58,6 +97,8 @@ function shotListener(event) {
 
         if (gameShouldEnd) {
             // End of game logic
+            self.disableSwapProcessButtonEventListeners();
+            // Put up some kind of graphic showing game info !!!
         } else { // Game doesn't end
             // Enable the hide button so the players can start the swap process
             DOMManipulation.enableButton(DOMManipulation.BUTTON_NAMES.HIDE_BOARDS);
@@ -68,9 +109,9 @@ function shotListener(event) {
 }
 
 /**
- * Creates an onclick event listener for each of the player buttons using the corresponding callback functions for each button
+ * Creates an onclick event listener for each of the swap-player-process buttons using the corresponding callback functions for each button
  */
-function enableButtonEventListeners() {
+function enableSwapProcessButtonEventListeners() {
     let hideBoardsButton = UIState.getHideBoardsButton();
     let swapPlayersButton = UIState.getSwapPlayersButton();
     let revealBoardsButton = UIState.getRevealBoardsButton();
@@ -81,9 +122,9 @@ function enableButtonEventListeners() {
 }
 
 /**
- * Removes the onclick event listeners for each of the player buttons
+ * Removes the onclick event listeners from each of the swap-player-process buttons
  */
-function disableButtonEventListeners() {
+function disableSwapProcessButtonEventListeners() {
     let hideBoardsButton = UIState.getHideBoardsButton();
     let swapPlayersButton = UIState.getSwapPlayersButton();
     let revealBoardsButton = UIState.getRevealBoardsButton();
@@ -94,16 +135,31 @@ function disableButtonEventListeners() {
 }
 
 /**
- * Prepares for player swapping by resetting each DOM board, enabling the swap players button, and disabling the hide boards button (the button this is attached to)
+ * Prepares for player swapping
+ * - Resets each DOM board
+ * - Enables the 'swap players' button
+ * - Disables the hide boards button (the button this is attached to)
+ * - Switches currentState to 'gameplay' if both players have placed their ships
  */
 function hideBoardsCallback() {
+    // If in the setup state, update GameSetup, and if both players have placed their ships, switch to gameplay state
+    if (currentState === SETUP_OR_GAMEPLAY.SETUP) {
+        GameSetup.incrementNumberOfPlayersThatHavePlacedAllShips();
+        if (GameSetup.getNumberOfPlayersThatHavePlacedAllShips() === 2) {
+            self.setCurrentState(SETUP_OR_GAMEPLAY.GAMEPLAY);
+            self.enableShotListener();
+        }
+    }
+
     DOMManipulation.resetBoardElements();
     DOMManipulation.enableButton(DOMManipulation.BUTTON_NAMES.SWAP_PLAYERS);
     DOMManipulation.disableButton(DOMManipulation.BUTTON_NAMES.HIDE_BOARDS);
 }
 
 /**
- * Switches players, enables the reveal boards button, disables the swap players button (the button this is attached to)
+ * Switches players
+ * - Enables the reveal boards button
+ * - Disables the swap players button (the button this is attached to)
  */
 function swapPlayersCallback() {
     DOMManipulation.enableButton(DOMManipulation.BUTTON_NAMES.REVEAL_BOARDS);
@@ -113,16 +169,24 @@ function swapPlayersCallback() {
 }
 
 /**
- * Reveals the boards so the now-active player can take their turn, disables the reveal boards button (the button this is attached to) 
+ * Reveals the boards so the now-active player can take their turn
+ * - Disables the reveal boards button (the button this is attached to)
  */
 function revealBoardsCallback() {
-    // Get the board information from GameState and pass it to DOMManipulation so the user can see the boards
-    let {friendShipsArray, friendShotsArray, foeShotsArray} = GameState.getShotsAndShipsArrays();
-    DOMManipulation.fillBoardElementsAll(friendShipsArray, friendShotsArray, foeShotsArray);
-
+    if (currentState === SETUP_OR_GAMEPLAY.SETUP) {
+        // Allow the next player to place their ships
+        GameSetup.initializeOrReset();
+    } else if (currentState === SETUP_OR_GAMEPLAY.GAMEPLAY) {
+        // Get the board information from GameState and pass it to DOMManipulation so the user can see the boards
+        let {friendShipsPositionsArray, friendShotsPositionsArray, foeShotsPositionsArray} = GameState.getShotsAndShipsArrays();
+        DOMManipulation.fillBoardElementsAll(friendShipsPositionsArray, friendShotsPositionsArray, foeShotsPositionsArray);
+        GameState.setShotTakenThisTurn(false);
+    } else {
+        invalidStateThrow();
+    }
+    
     // Allow next player to take their turn
     DOMManipulation.disableButton(DOMManipulation.BUTTON_NAMES.REVEAL_BOARDS);
-    GameState.setShotTakenThisTurn(false);
 }
 
-export {initialize, testingNeeds, shotListener, enableShotListener, disableShotListener}
+export {initialize, testingNeeds, shotListener, enableShotListener, disableShotListener, enableSwapProcessButtonEventListeners, disableSwapProcessButtonEventListeners, SETUP_OR_GAMEPLAY, hideBoardsCallback, swapPlayersCallback, revealBoardsCallback, setCurrentState, getCurrentState}
