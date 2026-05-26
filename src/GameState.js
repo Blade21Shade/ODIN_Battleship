@@ -32,12 +32,20 @@ let player1Board, player2Board;
 let player1, player2;
 
 /**
+ * The numeric representation of the last shot value
+ * - 1 for hit, -1 for miss
+ * @type {Number}
+ */
+let lastShotValue;
+
+/**
  * Sets each variable to the initial state needed for gameplay to begin
  */
 function initializeGameState() {
     gameBoardSize = 10;
     playerTurn = 1;
     shotTakenThisTurn = false;
+    lastShotValue = 0;
 
     player1Board = new GameBoard(gameBoardSize);
     player2Board = new GameBoard(gameBoardSize);
@@ -70,6 +78,33 @@ function getPlayer1() {
 
 function getPlayer2() {
     return player2;
+}
+
+function getLastShotValue() {
+    return lastShotValue;
+}
+
+/**
+ * Sets lastShotValue
+ * @param {number} val The number to set lastShotValue to, must be 1 or -1
+ * @throws If val isn't a number
+ * @throws if val isn't 1 or -1
+ */
+function setLastShotValue(val) {
+    if (typeof val !== "number") {  
+        throw new Error("val must be a Number")
+    }
+
+    switch(val) {
+        case 1:
+        case -1:
+            lastShotValue = val;
+            break;
+        default:
+            throw new Error(`val must be 1 or -1 \nGiven: ${val}`);
+    }
+
+    lastShotValue = val;
 }
 
 function getBoardToShootAt() {
@@ -149,4 +184,4 @@ function getShotsAndShipsArrays() {
     }
 }
 
-export {initializeGameState, getGameBoardSize, getPlayer1, getPlayer2, getPlayer1Board, getPlayer2Board, getPlayerTurn, getBoardToShootAt ,switchPlayerTurn, getShotTakenThisTurn, setShotTakenThisTurn, switchCurrentPlayerState, resetPlayerState, getShotsAndShipsArrays}
+export {initializeGameState, getGameBoardSize, getPlayer1, getPlayer2, getPlayer1Board, getPlayer2Board, getPlayerTurn, getBoardToShootAt ,switchPlayerTurn, getShotTakenThisTurn, setShotTakenThisTurn, switchCurrentPlayerState, resetPlayerState, getShotsAndShipsArrays, setLastShotValue, getLastShotValue}

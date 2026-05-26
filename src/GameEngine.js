@@ -18,6 +18,7 @@ function shootAtCoordinate(coord) {
     let hitVal = board.fireAtBoard(coord);
     if (hitVal !== 0) { // Valid shot (1 for hit or -1 for miss)
         GameState.setShotTakenThisTurn(true); // Prevent player from shooting again this turn
+        GameState.setLastShotValue(hitVal);
     } else { // Invalid shot (this will occur if a player clicks a cell that they've already shot at)
         isValidShot = false;
     }

@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { fillBoardElementShots, fillBoardElementShips, fillBoardElementsAll, FRIEND_OR_FOE, BOARD_NUMBER, BUTTON_NAMES, addPlaceShipClassHandler, removePlaceShipClassHandler, addShipClassToIDList, removeShipClassFromIDList, grabBoardElement, grabButtonElement, initializeBoardElements, resetBoardElements, initializePlayerButtons, enablePlaceShipHandlers, disablePlaceShipHandlers, wheelEventHandler, resetCellClassList, friendOrFoeValidityCheck, incrementSelectLengthSpanValue, decrementSelectLengthSpanValue, getSpanFromUIState} from "../src/DOMManipulation";
+import { fillBoardElementShots, fillBoardElementShips, fillBoardElementsAll, FRIEND_OR_FOE, BOARD_NUMBER, BUTTON_NAMES, addPlaceShipClassHandler, removePlaceShipClassHandler, addShipClassToIDList, removeShipClassFromIDList, grabBoardElement, grabButtonElement, initializeBoardElements, resetBoardElements, initializePlayerButtons, enablePlaceShipHandlers, disablePlaceShipHandlers, wheelEventHandler, resetCellClassList, friendOrFoeValidityCheck, incrementSelectLengthSpanValue, decrementSelectLengthSpanValue, getSpanFromUIState, VALID_CELL_CLASSES, addClassToCell} from "../src/DOMManipulation";
 import DOMManipulation from "../src/DOMManipulation.js"; // This is so I can use spyOn() for testing fillBoardElementsAll
 import * as Tools from "../src/Tools.js";
 import * as UIState from "../src/UIState.js";
@@ -882,4 +882,55 @@ describe("DOMManipulation tests", () => {
         });
     });
 
+    describe("addClassToCell tests", () => {
+        let validitySpy;
+        beforeAll(()=>{
+            validitySpy = jest.spyOn(DOMManipulation, "friendOrFoeValidityCheck").mockReturnValue(true);
+        });
+
+        afterAll(()=>{
+            validitySpy.mockRestore();
+        });
+
+        afterEach(()=>{
+            jest.clearAllMocks();
+        });
+
+        describe("Pass tests", () => {
+            test("Base Pass", () => {
+                addClassToCell(10, "hit", "friend");
+
+                expect(validitySpy.mock.calls).toHaveLength(1); // Always happens
+                expect(board1.children[10].className).toBe("cell hit");
+            });
+
+            test("Foe board can also be marked", () => {
+                addClassToCell(10, "hit", "foe");
+                expect(board2.children[10].className).toBe("cell hit");
+            });
+
+            test("Foe board cannot be marked with 'ship' class", () => {
+                addClassToCell(10, "ship", "foe");
+                expect(board2.children[10].className).toBe("cell foe");
+            });
+
+            test("Already marked cell isn't altered", () => {
+                board1.children[10].className = "cell miss";
+                addClassToCell(10, "hit", "friend");
+
+                expect(board1.children[10].className).toBe("cell miss");
+            });
+        });
+
+        describe("Fail tests: All should throw", () => {
+            test("Class to add isn't a valid class", () => {
+                expect(()=>{addClassToCell(10, "invalid", "friend")}).toThrow();
+            });
+
+            test("Cell number outside valid range", () => {
+                expect(()=>{addClassToCell(-1, "hit", "friend")}).toThrow();
+                expect(()=>{addClassToCell(100, "hit", "friend")}).toThrow();
+            });
+        });
+    });
 });

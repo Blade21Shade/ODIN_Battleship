@@ -28,17 +28,26 @@ describe("GameEngine tests", () => {
             jest.spyOn(GameState, "getShotTakenThisTurn").mockReturnValueOnce(false); // If false at start, the function doesn't work
         });
         
+        beforeAll(() => {
+            jest.spyOn(GameState, "setLastShotValue");
+        });
+
+        afterEach(()=> {
+            jest.clearAllMocks();
+        });
 
         test("Hit", () => {
             expect(shootAtCoordinate([1,0])).toBe(true);
             expect(board1.getBoard()[0][1]).toBe(1); // Hit value
             expect(GameState.getShotTakenThisTurn()).toBe(true);
+            expect(GameState.setLastShotValue.mock.calls[0][0]).toBe(1);
         });
 
         test("Miss", () => {
             expect(shootAtCoordinate([0,0])).toBe(true);
             expect(board1.getBoard()[0][0]).toBe(-1); // Miss value
             expect(GameState.getShotTakenThisTurn()).toBe(true);
+            expect(GameState.setLastShotValue.mock.calls[0][0]).toBe(-1);
         });
 
         test("Already shot at", () => {

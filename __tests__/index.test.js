@@ -91,6 +91,8 @@ describe("index tests", () => {
             beforeAll(() => {
                 Tools.getIDNumberFromIDString.mockReturnValue(25);
                 Tools.createCoordinateFromIDNumber.mockReturnValue([5, 2]);
+
+                GameState.getLastShotValue.mockReturnValue(1);
                 
                 GameEngine.shootAtCoordinate.mockReturnValue(true);
                 GameEngine.endGameCheck.mockReturnValue(false);
@@ -110,12 +112,23 @@ describe("index tests", () => {
                 test("Base Pass", () => {
                     index.shotListener(event);
 
-                    // These three will be the same for each test
+                    // These will be the same for each test
                     expect(Tools.getIDNumberFromIDString.mock.calls[0][0]).toBe("25");
                     expect(Tools.createCoordinateFromIDNumber.mock.calls[0][0]).toBe(25);
                     expect(GameEngine.shootAtCoordinate.mock.calls[0][0]).toEqual([5, 2]);
+                    expect(DOMManipulation.addClassToCell.mock.calls[0][1]).toBe("hit");
+                    expect(DOMManipulation.enableButton.mock.calls).toHaveLength(1);
 
-                    // Base Pass assumes the game doesn't end here, so the switch button is enabled
+                    // Game doesn't end, so the disable call shouldn't have happened
+                    expect(index.disableSwapProcessButtonEventListeners.mock.calls).toHaveLength(0);
+                });
+
+                test("Missed shots pass correct value", () => {
+                    GameState.getLastShotValue.mockReturnValueOnce(-1);
+                    index.shotListener(event);
+
+                    // Game shouldn't end
+                    expect(DOMManipulation.addClassToCell.mock.calls[0][1]).toBe("miss"); // Different class
                     expect(DOMManipulation.enableButton.mock.calls).toHaveLength(1);
 
                     // Game doesn't end, so the disable call shouldn't have happened
@@ -126,33 +139,35 @@ describe("index tests", () => {
                     GameEngine.endGameCheck.mockReturnValueOnce(true);
                     index.shotListener(event);
 
-                    // These three will be the same for each test
-                    expect(Tools.getIDNumberFromIDString.mock.calls[0][0]).toBe("25");
-                    expect(Tools.createCoordinateFromIDNumber.mock.calls[0][0]).toBe(25);
-                    expect(GameEngine.shootAtCoordinate.mock.calls[0][0]).toEqual([5, 2]);
-                    expect(index.disableSwapProcessButtonEventListeners.mock.calls).toHaveLength(1);
-
-                    // Game should end, so the switch button shouldn't be enabled
+                    // Game should end
                     expect(DOMManipulation.enableButton.mock.calls).toHaveLength(0);
+
+                    // Game ends so the disable call should happen
+                    expect(index.disableSwapProcessButtonEventListeners.mock.calls).toHaveLength(1);
                 });
             });
 
-            describe("Soft fail test", () => {
-                test("Invalid shot causes an alert", () => {
-                    let alertSpy = jest.spyOn(window, "alert").mockImplementation(()=>{return});
-                    GameEngine.shootAtCoordinate.mockReturnValueOnce(false);
+            describe("Soft fail tests", () => {
+                let alertSpy;
+                beforeAll(()=>{
+                    GameState.getShotTakenThisTurn.mockReturnValue(false);
+                    GameEngine.shootAtCoordinate.mockReturnValueOnce(false).mockReturnValueOnce(false);
+                    alertSpy = jest.spyOn(window, "alert").mockImplementation(()=>{return});
+                });
 
-                    index.shotListener(event);
-
-                    // These three will be the same for each test
-                    expect(Tools.getIDNumberFromIDString.mock.calls[0][0]).toBe("25");
-                    expect(Tools.createCoordinateFromIDNumber.mock.calls[0][0]).toBe(25);
-                    expect(GameEngine.shootAtCoordinate.mock.calls[0][0]).toEqual([5, 2]);
-
-                    // Expect an alert for the invalid shot
-                    expect(window.alert.mock.calls).toHaveLength(1);
-
+                afterAll(()=>{
                     alertSpy.mockRestore();
+                });
+                
+                test("Invalid shot when a shot has not been taken this turn causes a specific alert message", () => {
+                    index.shotListener(event);
+                    expect(window.alert.mock.calls[0][0]).toEqual("Invalid shot, try another cell!");
+                });
+
+                test("Invalid shot when a shot has been taken this turn causes a specific alert message", () => {
+                    GameState.getShotTakenThisTurn.mockReturnValueOnce(true);
+                    index.shotListener(event);
+                    expect(window.alert.mock.calls[0][0]).toEqual("Shot already taken, switch to next player!");
                 });
             })
         });

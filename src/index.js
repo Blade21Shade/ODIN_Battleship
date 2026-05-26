@@ -1,4 +1,4 @@
-import DOMManipulation from "./DOMManipulation.js"
+import DOMManipulation, { FRIEND_OR_FOE, VALID_CELL_CLASSES, BOARD_NUMBER, BUTTON_NAMES } from "./DOMManipulation.js"
 import * as GameEngine from "./GameEngine.js";
 import * as GameState from "./GameState.js"
 import * as GameSetup from "./GameSetup.js"
@@ -93,8 +93,17 @@ function shotListener(event) {
 
     let wasValidShot = GameEngine.shootAtCoordinate(coord);
     if (wasValidShot) {
+        // Update the DOM board so the player can see the outcome of their shot
+        let shotVal = GameState.getLastShotValue();
+        let hitOrMiss;
+        if (shotVal === 1) {
+            hitOrMiss = VALID_CELL_CLASSES.HIT;
+        } else {
+            hitOrMiss = VALID_CELL_CLASSES.MISS;
+        }
+        DOMManipulation.addClassToCell(idNumOfClickedCell, hitOrMiss, FRIEND_OR_FOE.FOE);
+        
         let gameShouldEnd = GameEngine.endGameCheck();
-
         if (gameShouldEnd) {
             // End of game logic
             self.disableSwapProcessButtonEventListeners();
@@ -104,7 +113,13 @@ function shotListener(event) {
             DOMManipulation.enableButton(DOMManipulation.BUTTON_NAMES.HIDE_BOARDS);
         }
     } else { // Invalid shot
-        alert("Invalid shot, try another cell!");
+        // Differ messages based on if the player has taken a shot or not
+        if (GameState.getShotTakenThisTurn()) {
+            alert("Shot already taken, switch to next player!");
+        } else {
+            alert("Invalid shot, try another cell!");
+        }
+        
     }
 }
 

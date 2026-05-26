@@ -30,10 +30,23 @@ const BUTTON_NAMES = Object.freeze({
     SELECT2: "select2LengthShipButton"
 });
 
+/**
+ * Holds the valid classes that can be added to cells
+ */
+const VALID_CELL_CLASSES = Object.freeze({
+    FRIEND: 'friend',
+    FOE: 'foe',
+    HIT: 'hit',
+    MISS: 'miss',
+    SHIP: 'ship',
+    PLACE_SHIP: 'placeShip'
+});
+
 const DOMManipulation = {
     FRIEND_OR_FOE,
     BOARD_NUMBER,
     BUTTON_NAMES,
+    VALID_CELL_CLASSES,
 
     /**
      * Gets one of the board elements from the DOM
@@ -510,6 +523,49 @@ const DOMManipulation = {
     },
 
     /**
+     * Adds a class to a cell on the board corresponding to friendOrFoe
+     * - This will only add classes to cells that haven't been altered yet
+     * - EG: Cells like 'friend ship' and 'foe hit' won't be affected if this function would target them
+     * - Will not add the 'ship' class to cells on the Foe board
+     * @param {Number} cellNumber The cell number to add the class to
+     * @param {DOMManipulation.VALID_CELL_CLASSES} classToAdd The class to add 
+     * @param {DOMManipulation.FRIEND_OR_FOE} friendOrFoe Which board the cell is located on
+     */
+    addClassToCell(cellNumber, classToAdd, friendOrFoe) {
+        // Get board based on friendOrFoe
+        DOMManipulation.friendOrFoeValidityCheck(friendOrFoe);
+        let board;
+        if (friendOrFoe === DOMManipulation.FRIEND_OR_FOE.FRIEND) {
+            board = grabBoardElement(1);
+        } else {
+            board = grabBoardElement(2);
+        }
+
+        // Verify the given class is a valid class
+        if (Object.values(DOMManipulation.VALID_CELL_CLASSES).includes(classToAdd) === false) {
+            throw new Error("Invalid class name given; see VALID_CLASSES for valid names");
+        }
+
+        // Ensure cell is within valid range
+        if (cellNumber < 0 || cellNumber > 99) {
+            throw new Error("Cell number out of bounds, only 0-99 are valid");
+        }
+
+        let cell = board.children[cellNumber];
+        // Only add if the cell is 'clean'
+        if (cell.className === "cell friend" || cell.className === "cell foe") {
+            
+            // Ensure the 'ship' class isn't added to cells on the foeBoard
+            if (classToAdd === DOMManipulation.VALID_CELL_CLASSES.SHIP && cell.className === "cell foe") {
+                return;
+            }
+
+            DOMManipulation.clearCellClassList(cell);
+            cell.classList.add(classToAdd);
+        }
+    },
+
+    /**
      * Checks whether friendOrFoe matches either entry in FRIEND_OR_FOE
      * @param {FRIEND_OR_FOE} friendOrFoe The string to check
      * @throws If friendOrFoe doesn't match a value in FRIEND_OR_FOE
@@ -524,9 +580,9 @@ const DOMManipulation = {
 
 // Exporting all the things inside the object by using the destructure syntax
 // Luckily, the order doesn't matter, JS does: thing = Object.thing
-export const {initializeBoardElements, resetBoardElements, initializePlayerButtons, fillBoardElementShots, fillBoardElementShips, grabBoardElement, grabButtonElement, enableButton, disableButton, enablePlaceShipHandlers, disablePlaceShipHandlers, addPlaceShipClassHandler, removePlaceShipClassHandler, wheelEventHandler, fillBoardElementsAll, addShipClassToIDList, removeShipClassFromIDList, resetCellClassList, friendOrFoeValidityCheck, incrementSelectLengthSpanValue, decrementSelectLengthSpanValue, addSelectedClassToButton, removeSelectedClassFromButton, getSpanFromUIState, initializeSpanValues} = DOMManipulation;
+export const {initializeBoardElements, resetBoardElements, initializePlayerButtons, fillBoardElementShots, fillBoardElementShips, grabBoardElement, grabButtonElement, enableButton, disableButton, enablePlaceShipHandlers, disablePlaceShipHandlers, addPlaceShipClassHandler, removePlaceShipClassHandler, wheelEventHandler, fillBoardElementsAll, addShipClassToIDList, removeShipClassFromIDList, resetCellClassList, friendOrFoeValidityCheck, incrementSelectLengthSpanValue, decrementSelectLengthSpanValue, addSelectedClassToButton, removeSelectedClassFromButton, getSpanFromUIState, initializeSpanValues, addClassToCell} = DOMManipulation;
 
-export {FRIEND_OR_FOE, BOARD_NUMBER, BUTTON_NAMES} // Named export the Enums as well
+export {FRIEND_OR_FOE, BOARD_NUMBER, BUTTON_NAMES, VALID_CELL_CLASSES} // Named export the Enums as well
 
 // Default export the DOMManipulation object
 export default DOMManipulation;

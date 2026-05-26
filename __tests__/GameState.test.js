@@ -1,4 +1,4 @@
-import {getShotsAndShipsArrays, initializeGameState} from "../src/GameState.js"
+import {getShotsAndShipsArrays, initializeGameState, setLastShotValue, getLastShotValue} from "../src/GameState.js"
 import GameBoard from "../src/GameBoard.js";
 import Ship from "../src/Ship.js";
 
@@ -59,4 +59,36 @@ describe("GameState tests", () => {
         });
         
     }); 
+
+    describe("setLastShotValue tests", () => {
+        describe("Pass tests", () => {
+            test("Base pass: 1 works", () => {
+                setLastShotValue(1);
+                expect(getLastShotValue()).toBe(1);
+            });
+
+            test("-1 works", () => {
+                setLastShotValue(-1);
+                expect(getLastShotValue()).toBe(-1);
+            });
+        });
+        
+        describe("Fail tests", () => {
+            test("Non-number throws", () => {
+                let badData = {};
+                expect(()=>{setLastShotValue(badData)}).toThrow();
+                badData = [];
+                expect(()=>{setLastShotValue(badData)}).toThrow();
+                badData = "a";
+                expect(()=>{setLastShotValue(badData)}).toThrow();
+            });
+
+            test("Number other than 1 or -1 throws", () => {
+                expect(()=>{setLastShotValue(0)}).toThrow();
+                expect(()=>{setLastShotValue(-2)}).toThrow();
+                expect(()=>{setLastShotValue(2)}).toThrow();
+            });
+        });
+        
+    });
 });
