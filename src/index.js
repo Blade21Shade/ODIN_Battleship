@@ -33,6 +33,7 @@ function initialize() {
     DOMManipulation.initializePlayerButtons();
     setCurrentState(SETUP_OR_GAMEPLAY.SETUP);
     enableSwapProcessButtonEventListeners();
+    enableDialogCloseButtons();
 }
 
 /** 
@@ -42,6 +43,9 @@ function initialize() {
 function testingNeeds() {
     GameSetup.enableSelectShipLengthButtonHandlers();
     GameSetup.enableShipPlacementHandlers();
+
+    let endGameDialog = UIState.getEndGameDialog();
+    endGameDialog.showModal();
 }
 
 /**
@@ -108,6 +112,8 @@ function shotListener(event) {
             // End of game logic
             self.disableSwapProcessButtonEventListeners();
             // Put up some kind of graphic showing game info !!!
+            let endGameDialog = UIState.getEndGameDialog();
+            endGameDialog.showModal();
         } else { // Game doesn't end
             // Enable the hide button so the players can start the swap process
             DOMManipulation.enableButton(DOMManipulation.BUTTON_NAMES.HIDE_BOARDS);
@@ -121,6 +127,20 @@ function shotListener(event) {
         }
         
     }
+}
+
+/**
+ * Enables the buttons needed to close dialogs
+ */
+function enableDialogCloseButtons() {
+    
+    // End game dialog
+    let playAgainButton = UIState.getPlayAgainButton();
+    playAgainButton.addEventListener("click", () => {
+        // Re-initialize all game stuff !!!
+        
+        playAgainButton.parentElement.close();
+    });
 }
 
 /**

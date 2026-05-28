@@ -109,3 +109,50 @@ body {
 .header button.selected {
     background-color: lightgreen;
 }
+
+dialog#endGameDialog {
+    height: 60%;
+    width: 70%;
+
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: 15% 70% 15%;
+}
+
+dialog #playerTitles {
+    display: grid;
+
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 100%;
+}
+
+dialog #playerStatsContainer {
+    border: 2px solid black;
+    
+    display: grid;
+
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 100%;
+}
+
+dialog #playerStatsContainer #player1Stats, dialog #playerStatsContainer #player2Stats{
+    box-sizing: border-box;
+    padding: 5px;
+    
+    display: grid;
+
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 100%;
+}
+
+dialog #playerStatsContainer #player1Stats {
+    border-right: 2px black solid;
+}
+
+dialog #playAgainButton {
+    align-self: center;
+    justify-self: center;
+    
+    width: 20%;
+    height: 50%;
+}

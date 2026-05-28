@@ -1,3 +1,11 @@
+// Dialogs
+/** @type {HTMLDialogElement} */
+let endGameDialog;
+
+// Buttons used to close dialogs
+/** @type {HTMLButtonElement} */
+let playAgainButton;
+
 // Buttons the user uses to select ship sizes
 /** @type {HTMLButtonElement} */
 let select2LengthShipButton;
@@ -42,6 +50,9 @@ let board2Element; // The opposing player's board without ships and the active p
  * Assigns each variable to the DOM element it refers to
  */
 function initializeUIState() {
+    endGameDialog = document.querySelector("#endGameDialog");
+    playAgainButton = document.querySelector("#playAgainButton");
+    
     board1Element = document.querySelector("#board1");
     board2Element = document.querySelector("#board2");
 
@@ -58,6 +69,14 @@ function initializeUIState() {
     hideBoardsButton = document.querySelector("#hideBoardsButton");
     swapPlayersButton = document.querySelector("#swapPlayersButton");
     revealBoardsButton = document.querySelector("#revealBoardsButton");
+}
+
+function getEndGameDialog() {
+    return endGameDialog;
+}
+
+function getPlayAgainButton() {
+    return playAgainButton;
 }
 
 function getHideBoardsButton() {
@@ -138,4 +157,4 @@ function setCurrentlySelectedXLengthShipButton(length) {
     currentlySelectedXLengthShipButton = setTo;
 }
 
-export {initializeUIState, getBoard1Element, getBoard2Element, getHideBoardsButton, getRevealBoardsButton, getSwapPlayersButton, getSelect2LengthShipButton, getSelect3LengthShipButton, getSelect4LengthShipButton, getSelect5LengthShipButton, getSelect2LengthShipSpan, getSelect3LengthShipSpan, getSelect4LengthShipSpan, getSelect5LengthShipSpan, getCurrentlySelectedXLengthShipButtonID, setCurrentlySelectedXLengthShipButton}
+export {initializeUIState, getBoard1Element, getBoard2Element, getHideBoardsButton, getRevealBoardsButton, getSwapPlayersButton, getSelect2LengthShipButton, getSelect3LengthShipButton, getSelect4LengthShipButton, getSelect5LengthShipButton, getSelect2LengthShipSpan, getSelect3LengthShipSpan, getSelect4LengthShipSpan, getSelect5LengthShipSpan, getCurrentlySelectedXLengthShipButtonID, setCurrentlySelectedXLengthShipButton, getEndGameDialog, getPlayAgainButton}
