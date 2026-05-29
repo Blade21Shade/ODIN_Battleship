@@ -110,7 +110,7 @@ body {
     background-color: lightgreen;
 }
 
-dialog#endGameDialog {
+dialog:open#endGameDialog {
     height: 60%;
     width: 70%;
 
@@ -119,14 +119,14 @@ dialog#endGameDialog {
     grid-template-rows: 15% 70% 15%;
 }
 
-dialog #playerTitles {
+dialog:open #playerTitles {
     display: grid;
 
     grid-template-columns: 50% 50%;
     grid-template-rows: 100%;
 }
 
-dialog #playerStatsContainer {
+dialog:open #playerStatsContainer {
     border: 2px solid black;
     
     display: grid;
@@ -135,7 +135,7 @@ dialog #playerStatsContainer {
     grid-template-rows: 100%;
 }
 
-dialog #playerStatsContainer #player1Stats, dialog #playerStatsContainer #player2Stats{
+dialog:open #playerStatsContainer #player1Stats, dialog:open #playerStatsContainer #player2Stats {
     box-sizing: border-box;
     padding: 5px;
     
@@ -145,11 +145,11 @@ dialog #playerStatsContainer #player1Stats, dialog #playerStatsContainer #player
     grid-template-rows: 100%;
 }
 
-dialog #playerStatsContainer #player1Stats {
+dialog:open #playerStatsContainer #player1Stats {
     border-right: 2px black solid;
 }
 
-dialog #playAgainButton {
+dialog:open #playAgainButton {
     align-self: center;
     justify-self: center;
     
