@@ -49,25 +49,6 @@ const DOMManipulation = {
     VALID_CELL_CLASSES,
 
     /**
-     * Gets one of the board elements from the DOM
-     * @param {BOARD_NUMBER} boardNumber Which board to grab, 1 or 2
-     * @returns The DOM element for that board
-     */
-    grabBoardElement(boardNumber) {
-        /** @type {HTMLDivElement} */
-        let boardEle;
-        if (boardNumber === BOARD_NUMBER.ONE) {
-            boardEle = UIState.getBoard1Element();
-        } else if (boardNumber === BOARD_NUMBER.TWO) {
-            boardEle = UIState.getBoard2Element();
-        } else {
-            throw new Error("Invalid board number given, must be 1 or 2");
-        }
-        return boardEle;
-    },
-
-
-    /**
      * Gets a button from the DOM with the given name
      * @param {BUTTON_NAMES} buttonName The name of the button to grab 
      * @returns The DOM element for that button
@@ -291,10 +272,9 @@ const DOMManipulation = {
      * Marks cells on the DOM board for boardNumber by entries in the board array with the "hit", "miss", "friend", or "foe" classes - Can be called before or after fillBoardElementShips
      * @param {[[number]]} boardArray The 2D array to parse to place shots on the board; entries should be 1 for hit, 0 for not-shot-at, -1 for miss; the array should be 10x10
      * @param {FRIEND_OR_FOE} friendOrFoe Whether this is for the friend or foe board
-     * @param {BOARD_NUMBER} boardNumber The board number for the DOM board which should be affected
+     * @param {HTMLDivElement} boardElement The board element to fill with shots
      */
-    fillBoardElementShots(boardArray, friendOrFoe, boardNumber) {
-        const boardElement = grabBoardElement(boardNumber);
+    fillBoardElementShots(boardArray, friendOrFoe, boardElement) {
         DOMManipulation.friendOrFoeValidityCheck(friendOrFoe);
 
         // Make sure boardArray is the right size
@@ -346,10 +326,9 @@ const DOMManipulation = {
      * Marks cells on the DOM board for boardNumber by entries in positionsOfShips with the the "ship" class - Can be called before or after fillBoardElementShots
      * @param {[[[number, number]]]} positionsOfShips A 3D array hold coordinates of ships; the outer array holds ships; each ship holds an array of coordinates; each coordinate is a pair of numbers
      * @param {FRIEND_OR_FOE} friendOrFoe Whether this is for the friend or foe board - NOTE: This method will only process when "friend" is given
-     * @param {BOARD_NUMBER} boardNumber The board number for the DOM board which should be affected
+     * @param {HTMLDivElement} boardElement The board element to be filled with ships
      */
-    fillBoardElementShips(positionsOfShips, friendOrFoe, boardNumber) {
-        const boardElement = grabBoardElement(boardNumber);
+    fillBoardElementShips(positionsOfShips, friendOrFoe, boardElement) {
         DOMManipulation.friendOrFoeValidityCheck(friendOrFoe);
 
         // Only fill ships on the friend board
@@ -389,14 +368,16 @@ const DOMManipulation = {
      * @param {[[[number, number]]]} friendShipsCoordinatesArray An array of friend ship's coordinates, correlates to fillBoardElementShips()'s positionsOfShips argument
      * @param {[[number]]} friendShotsCoordinatesArray An array of friend shots, correlates to fillBoardElementShots()'s boardArray
      * @param {[[number]]} foeShotsCoordinatesArray An array of foe shots, correlates to fillBoardElementShots()'s boardArray
+     * @param {HTMLDivElement} board1 The board to fill with shots and ships, the 'friend' board
+     * @param {HTMLDivElement} board2 The board to fill only shots, the 'foe' board
      */
-    fillBoardElementsAll(friendShipsCoordinatesArray, friendShotsCoordinatesArray, foeShotsCoordinatesArray) {
+    fillBoardElementsAll(friendShipsCoordinatesArray, friendShotsCoordinatesArray, foeShotsCoordinatesArray, board1, board2) {
         // Friend ships and shots
-        DOMManipulation.fillBoardElementShots(friendShotsCoordinatesArray, DOMManipulation.FRIEND_OR_FOE.FRIEND, 1);
-        DOMManipulation.fillBoardElementShips(friendShipsCoordinatesArray, DOMManipulation.FRIEND_OR_FOE.FRIEND, 1);
+        DOMManipulation.fillBoardElementShots(friendShotsCoordinatesArray, DOMManipulation.FRIEND_OR_FOE.FRIEND, board1);
+        DOMManipulation.fillBoardElementShips(friendShipsCoordinatesArray, DOMManipulation.FRIEND_OR_FOE.FRIEND, board1);
 
         // Foe shots
-        DOMManipulation.fillBoardElementShots(foeShotsCoordinatesArray, DOMManipulation.FRIEND_OR_FOE.FOE, 2);
+        DOMManipulation.fillBoardElementShots(foeShotsCoordinatesArray, DOMManipulation.FRIEND_OR_FOE.FOE, board2);
     },
 
     /**
@@ -536,9 +517,9 @@ const DOMManipulation = {
         DOMManipulation.friendOrFoeValidityCheck(friendOrFoe);
         let board;
         if (friendOrFoe === DOMManipulation.FRIEND_OR_FOE.FRIEND) {
-            board = grabBoardElement(1);
+            board = UIState.getBoard1Element();
         } else {
-            board = grabBoardElement(2);
+            board = UIState.getBoard2Element();
         }
 
         // Verify the given class is a valid class
@@ -580,7 +561,7 @@ const DOMManipulation = {
 
 // Exporting all the things inside the object by using the destructure syntax
 // Luckily, the order doesn't matter, JS does: thing = Object.thing
-export const {initializeBoardElements, resetBoardElements, initializePlayerButtons, fillBoardElementShots, fillBoardElementShips, grabBoardElement, grabButtonElement, enableButton, disableButton, enablePlaceShipHandlers, disablePlaceShipHandlers, addPlaceShipClassHandler, removePlaceShipClassHandler, wheelEventHandler, fillBoardElementsAll, addShipClassToIDList, removeShipClassFromIDList, resetCellClassList, friendOrFoeValidityCheck, incrementSelectLengthSpanValue, decrementSelectLengthSpanValue, addSelectedClassToButton, removeSelectedClassFromButton, getSpanFromUIState, initializeSpanValues, addClassToCell} = DOMManipulation;
+export const {initializeBoardElements, resetBoardElements, initializePlayerButtons, fillBoardElementShots, fillBoardElementShips, grabButtonElement, enableButton, disableButton, enablePlaceShipHandlers, disablePlaceShipHandlers, addPlaceShipClassHandler, removePlaceShipClassHandler, wheelEventHandler, fillBoardElementsAll, addShipClassToIDList, removeShipClassFromIDList, resetCellClassList, friendOrFoeValidityCheck, incrementSelectLengthSpanValue, decrementSelectLengthSpanValue, addSelectedClassToButton, removeSelectedClassFromButton, getSpanFromUIState, initializeSpanValues, addClassToCell} = DOMManipulation;
 
 export {FRIEND_OR_FOE, BOARD_NUMBER, BUTTON_NAMES, VALID_CELL_CLASSES} // Named export the Enums as well
 

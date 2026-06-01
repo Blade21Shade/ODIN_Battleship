@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { fillBoardElementShots, fillBoardElementShips, fillBoardElementsAll, FRIEND_OR_FOE, BOARD_NUMBER, BUTTON_NAMES, addPlaceShipClassHandler, removePlaceShipClassHandler, addShipClassToIDList, removeShipClassFromIDList, grabBoardElement, grabButtonElement, initializeBoardElements, resetBoardElements, initializePlayerButtons, enablePlaceShipHandlers, disablePlaceShipHandlers, wheelEventHandler, resetCellClassList, friendOrFoeValidityCheck, incrementSelectLengthSpanValue, decrementSelectLengthSpanValue, getSpanFromUIState, VALID_CELL_CLASSES, addClassToCell} from "../src/DOMManipulation";
+import { fillBoardElementShots, fillBoardElementShips, fillBoardElementsAll, FRIEND_OR_FOE, BOARD_NUMBER, BUTTON_NAMES, addPlaceShipClassHandler, removePlaceShipClassHandler, addShipClassToIDList, removeShipClassFromIDList, grabButtonElement, initializeBoardElements, resetBoardElements, initializePlayerButtons, enablePlaceShipHandlers, disablePlaceShipHandlers, wheelEventHandler, resetCellClassList, friendOrFoeValidityCheck, incrementSelectLengthSpanValue, decrementSelectLengthSpanValue, getSpanFromUIState, VALID_CELL_CLASSES, addClassToCell} from "../src/DOMManipulation";
 import DOMManipulation from "../src/DOMManipulation.js"; // This is so I can use spyOn() for testing fillBoardElementsAll
 import * as Tools from "../src/Tools.js";
 import * as UIState from "../src/UIState.js";
@@ -255,7 +255,7 @@ describe("DOMManipulation tests", () => {
             describe("Pass tests", () => {
                 describe("Friend board tests", () => {
                     test("Just Shots", () => {
-                        fillBoardElementShots(board1Array, FRIEND_OR_FOE.FRIEND, BOARD_NUMBER.ONE);
+                        fillBoardElementShots(board1Array, FRIEND_OR_FOE.FRIEND, board1);
 
                         // Left values in board1Array
                         expect(board1.children[0].className).toBe("cell hit");
@@ -271,7 +271,7 @@ describe("DOMManipulation tests", () => {
                     });
 
                     test("Just Ships", () => {
-                        fillBoardElementShips(shipCoordinates1, FRIEND_OR_FOE.FRIEND, BOARD_NUMBER.ONE);
+                        fillBoardElementShips(shipCoordinates1, FRIEND_OR_FOE.FRIEND, board1);
 
                         // Ships
                         expect(board1.children[1].className).toBe("cell ship");
@@ -285,8 +285,8 @@ describe("DOMManipulation tests", () => {
                     });
 
                     test("Shots then Ships", () => {
-                        fillBoardElementShots(board1Array, FRIEND_OR_FOE.FRIEND, BOARD_NUMBER.ONE);
-                        fillBoardElementShips(shipCoordinates1, FRIEND_OR_FOE.FRIEND, BOARD_NUMBER.ONE);
+                        fillBoardElementShots(board1Array, FRIEND_OR_FOE.FRIEND, board1);
+                        fillBoardElementShips(shipCoordinates1, FRIEND_OR_FOE.FRIEND, board1);
 
                         // Ships
                         expect(board1.children[1].className).toBe("cell ship");
@@ -301,8 +301,8 @@ describe("DOMManipulation tests", () => {
                     });
 
                     test("Ships then Shots", () => {
-                        fillBoardElementShots(board1Array, FRIEND_OR_FOE.FRIEND, BOARD_NUMBER.ONE);
-                        fillBoardElementShips(shipCoordinates1, FRIEND_OR_FOE.FRIEND, BOARD_NUMBER.ONE);
+                        fillBoardElementShots(board1Array, FRIEND_OR_FOE.FRIEND, board1);
+                        fillBoardElementShips(shipCoordinates1, FRIEND_OR_FOE.FRIEND, board1);
 
                         // Ships
                         expect(board1.children[1].className).toBe("cell ship");
@@ -319,7 +319,7 @@ describe("DOMManipulation tests", () => {
 
                 describe("Foe board tests", () => {
                     test("Just Shots", () => {
-                        fillBoardElementShots(board1Array, FRIEND_OR_FOE.FOE, BOARD_NUMBER.TWO);
+                        fillBoardElementShots(board1Array, FRIEND_OR_FOE.FOE, board2);
 
                         // Left values in board1Array
                         expect(board2.children[0].className).toBe("cell hit");
@@ -335,7 +335,7 @@ describe("DOMManipulation tests", () => {
                     });
 
                     test("Just Ships - don't show ships", () => {
-                        fillBoardElementShips(shipCoordinates1, FRIEND_OR_FOE.FOE, BOARD_NUMBER.TWO);
+                        fillBoardElementShips(shipCoordinates1, FRIEND_OR_FOE.FOE, board2);
 
                         // Ships - shouldn't show
                         expect(board2.children[1].className).toBe("cell foe");
@@ -349,8 +349,8 @@ describe("DOMManipulation tests", () => {
                     });
 
                     test("Shots then Ships - don't show ships", () => {
-                        fillBoardElementShots(board1Array, FRIEND_OR_FOE.FOE, BOARD_NUMBER.TWO);
-                        fillBoardElementShips(shipCoordinates1, FRIEND_OR_FOE.FOE, BOARD_NUMBER.TWO);
+                        fillBoardElementShots(board1Array, FRIEND_OR_FOE.FOE, board2);
+                        fillBoardElementShips(shipCoordinates1, FRIEND_OR_FOE.FOE, board2);
 
                         // Ships - since this is at the foe board, these shouldn't be marked with ship
                         expect(board2.children[1].className).toBe("cell foe");
@@ -365,8 +365,8 @@ describe("DOMManipulation tests", () => {
                     });
 
                     test("Ships then Shots - don't show ships", () => {
-                        fillBoardElementShots(board1Array, FRIEND_OR_FOE.FOE, BOARD_NUMBER.TWO);
-                        fillBoardElementShips(shipCoordinates1, FRIEND_OR_FOE.FOE, BOARD_NUMBER.TWO);
+                        fillBoardElementShots(board1Array, FRIEND_OR_FOE.FOE, board2);
+                        fillBoardElementShips(shipCoordinates1, FRIEND_OR_FOE.FOE, board2);
 
                         // Ships
                         expect(board2.children[1].className).toBe("cell foe");
@@ -385,7 +385,7 @@ describe("DOMManipulation tests", () => {
             describe("Fail tests: fillBoardElementShots", () => {
                 test("Invalid board size: outer array wrong size", () => {
                     let badBoard = []; // Invalid size
-                    expect(()=>{fillBoardElementShots(badBoard, FRIEND_OR_FOE.FRIEND, BOARD_NUMBER.ONE)}).toThrow();
+                    expect(()=>{fillBoardElementShots(badBoard, FRIEND_OR_FOE.FRIEND, board1)}).toThrow();
                 });
 
                 test("Invalid board size: any inner array wrong size", () => {
@@ -401,7 +401,7 @@ describe("DOMManipulation tests", () => {
                         [],
                         []
                     ]
-                    expect(()=>{fillBoardElementShots(badBoard, FRIEND_OR_FOE.FRIEND, BOARD_NUMBER.ONE)}).toThrow();
+                    expect(()=>{fillBoardElementShots(badBoard, FRIEND_OR_FOE.FRIEND, board1)}).toThrow();
                 });
 
                 test("Invalid shot value: any inner array value is not a valid shot value", () => {
@@ -418,7 +418,7 @@ describe("DOMManipulation tests", () => {
                         [0,0,0,0,0,0,0,0,0,0]
                     ];
 
-                    expect(()=>{fillBoardElementShots(badBoard, FRIEND_OR_FOE.FRIEND, BOARD_NUMBER.ONE)}).toThrow();
+                    expect(()=>{fillBoardElementShots(badBoard, FRIEND_OR_FOE.FRIEND, board1)}).toThrow();
                 });
             });
 
@@ -432,7 +432,7 @@ describe("DOMManipulation tests", () => {
                 test("Positions of ships contains a coordinate that produces an invalid cellNumber", () => {
                     jest.spyOn(Tools, "createIDNumberFromCoordinate").mockReturnValue(1000);
 
-                    expect(()=>{fillBoardElementShips(board1Array, FRIEND_OR_FOE.FRIEND, BOARD_NUMBER.ONE)}).toThrow();
+                    expect(()=>{fillBoardElementShips(board1Array, FRIEND_OR_FOE.FRIEND, board1)}).toThrow();
                 });
             });
             
@@ -682,25 +682,6 @@ describe("DOMManipulation tests", () => {
     });
 
     describe("Grab/Get element tests", () => {
-        describe("grabBoardElement tests", () => {
-            describe("Pass tests", () => {
-                test("board1", () => {
-                    let ele = grabBoardElement(BOARD_NUMBER.ONE);
-                    expect(ele).toBe(board1);
-                });
-
-                test("board2", () => {
-                    let ele = grabBoardElement(BOARD_NUMBER.TWO);
-                    expect(ele).toBe(board2);
-                });
-            });
-            
-            describe("Fail test", () => {
-                test("invalid board number throws", () => {
-                    expect(()=>{grabBoardElement(3)}).toThrow();
-                });
-            });
-        });
 
         describe("grabButtonElement tests", () => {
             describe("Pass tests", () => {

@@ -23,8 +23,13 @@ board1.id = "board1";
 const board2 = document.createElement("div");
 board2.id = "board2";
 
+const player1EndBoard = document.createElement("div");
+const player2EndBoard = document.createElement("div");
+
 document.body.appendChild(board1);
 document.body.appendChild(board2);
+document.body.appendChild(player1EndBoard);
+document.body.appendChild(player2EndBoard);
 
 // Player-step buttons
 const hideButton = document.createElement("button");
@@ -38,12 +43,42 @@ document.body.appendChild(hideButton);
 document.body.appendChild(swapButton);
 document.body.appendChild(revealButton);
 
+// Dialog isn't natively supported in Jest, this fixes that issue
+// Comment by: RSeidelsohn on Jul 2, 2024
+// https://github.com/jsdom/jsdom/issues/3294
+HTMLDialogElement.prototype.show = jest.fn(function () {
+	this.open = true;
+});
+
+HTMLDialogElement.prototype.showModal = jest.fn(function () {
+	this.open = true;
+});
+
+HTMLDialogElement.prototype.close = jest.fn(function () {
+	this.open = false;
+});
+
+// Dialog
+const playAgainButton = document.createElement("button");
+const endGameDialog = document.createElement("dialog");
+
+jest.spyOn(endGameDialog, "showModal");
+jest.spyOn(playAgainButton, "addEventListener");
+
+endGameDialog.appendChild(playAgainButton);
+document.body.appendChild(endGameDialog);
+
 // Mocking for UIstate
 UIState.getHideBoardsButton.mockReturnValue(hideButton);
 UIState.getRevealBoardsButton.mockReturnValue(revealButton);
 UIState.getSwapPlayersButton.mockReturnValue(swapButton);
 
 UIState.getBoard2Element.mockReturnValue(board2);
+UIState.getPlayer1EndBoard.mockReturnValue(player1EndBoard);
+UIState.getPlayer2EndBoard.mockReturnValue(player2EndBoard);
+
+UIState.getPlayAgainButton.mockReturnValue(playAgainButton);
+UIState.getEndGameDialog.mockReturnValue(endGameDialog);
 
 describe("index tests", () => {
 
@@ -306,6 +341,44 @@ describe("index tests", () => {
                 });
             });
 
+        });
+    });
+
+    describe("Dialog tests", () => {
+        describe("Shared function tests", () => {
+            // Remove the children
+            afterEach(() => {
+                player1EndBoard.replaceChildren();
+                player2EndBoard.replaceChildren();
+            });
+            
+            describe("initializeDialogSubElements test", () => {
+                test("Base pass", ()=> {
+                    index.initializeDialogSubElements();
+
+                    // Check boards are the right size
+                    expect(player1EndBoard.childElementCount).toBe(100);
+                    expect(player2EndBoard.childElementCount).toBe(100);
+
+                    // Buttons
+                });
+            });
+        });
+        
+        describe("End of game dialog tests", () => {
+            GameState.getShotsAndShipsArrays.mockReturnValue({friendShipsPositionsArray: [], friendShotsPositionsArray: [], foeShotsPositionsArray: []});
+            
+            describe("fillEndGameDialog tests", () => {
+                test("Base pass", () => {
+                    index.fillEndGameDialog();
+
+                    expect(DOMManipulation.fillBoardElementShots.mock.calls[0][2]).toEqual(player1EndBoard);
+                    expect(DOMManipulation.fillBoardElementShips.mock.calls[0][2]).toEqual(player1EndBoard);
+
+                    expect(DOMManipulation.fillBoardElementShots.mock.calls[0][2]).toEqual(player2EndBoard);
+                    expect(DOMManipulation.fillBoardElementShips.mock.calls[0][2]).toEqual(player2EndBoard);
+                });
+            });
         });
     });
 });

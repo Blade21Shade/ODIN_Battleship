@@ -33,7 +33,7 @@ function initialize() {
     DOMManipulation.initializePlayerButtons();
     setCurrentState(SETUP_OR_GAMEPLAY.SETUP);
     enableSwapProcessButtonEventListeners();
-    enableDialogCloseButtons();
+    initializeDialogSubElements();
 }
 
 /** 
@@ -113,6 +113,7 @@ function shotListener(event) {
             self.disableSwapProcessButtonEventListeners();
             // Put up some kind of graphic showing game info !!!
             let endGameDialog = UIState.getEndGameDialog();
+            fillEndGameDialog();
             endGameDialog.showModal();
         } else { // Game doesn't end
             // Enable the hide button so the players can start the swap process
@@ -130,16 +131,61 @@ function shotListener(event) {
 }
 
 /**
- * Enables the buttons needed to close dialogs
+ * Fills the end of game dialog with all the stats for players to see
  */
-function enableDialogCloseButtons() {
+function fillEndGameDialog() {
+    let player1Board = UIState.getPlayer1EndBoard();
+    let player2Board = UIState.getPlayer2EndBoard();
     
+    let boardToFill;
+
+    for (let i = 1; i <= 2; i++) {
+        if (i === 1) {
+            boardToFill = player1Board;
+        } else {
+            boardToFill = player2Board;
+        }
+
+        let {friendShipsPositionsArray, friendShotsPositionsArray, foeShotsPositionsArray} = GameState.getShotsAndShipsArrays(i);
+
+        DOMManipulation.fillBoardElementShots(friendShotsPositionsArray, DOMManipulation.FRIEND_OR_FOE.FRIEND, boardToFill);
+        DOMManipulation.fillBoardElementShips(friendShipsPositionsArray, DOMManipulation.FRIEND_OR_FOE.FRIEND, boardToFill);
+    }
+}
+
+/**
+ * Initializes elements inside Dialogs
+ * - This will setup both the pre-game and end-of-game dialogs, and therefore should be called before player's place ships
+ */
+function initializeDialogSubElements() {
+    
+    // Create board elements
+    let player1Board = UIState.getPlayer1EndBoard();
+    let player2Board = UIState.getPlayer2EndBoard();
+
+    const cell = document.createElement("div");
+    cell.classList.toggle("cell");
+
+    for (let i = 0; i < 100; i++) {
+        let clone = cell.cloneNode();
+        clone.classList.toggle("friend");
+        clone.id = `endGameBoard1-cell${i}`;
+        player1Board.appendChild(clone);
+
+        clone = cell.cloneNode();
+        clone.classList.toggle("friend");
+        clone.id = `endGameBoard2-cell${i}`;
+        player2Board.appendChild(clone);
+    }
+
+    /* Initialize buttons */
     // End game dialog
     let playAgainButton = UIState.getPlayAgainButton();
+    let endGameDialog = UIState.getEndGameDialog();
     playAgainButton.addEventListener("click", () => {
         // Re-initialize all game stuff !!!
         
-        playAgainButton.parentElement.close();
+        endGameDialog.close();
     });
 }
 
@@ -214,7 +260,9 @@ function revealBoardsCallback() {
     } else if (currentState === SETUP_OR_GAMEPLAY.GAMEPLAY) {
         // Get the board information from GameState and pass it to DOMManipulation so the user can see the boards
         let {friendShipsPositionsArray, friendShotsPositionsArray, foeShotsPositionsArray} = GameState.getShotsAndShipsArrays();
-        DOMManipulation.fillBoardElementsAll(friendShipsPositionsArray, friendShotsPositionsArray, foeShotsPositionsArray);
+        let board1 = UIState.getBoard1Element();
+        let board2 = UIState.getBoard2Element();
+        DOMManipulation.fillBoardElementsAll(friendShipsPositionsArray, friendShotsPositionsArray, foeShotsPositionsArray, board1, board2);
         GameState.setShotTakenThisTurn(false);
     } else {
         invalidStateThrow();
@@ -224,4 +272,4 @@ function revealBoardsCallback() {
     DOMManipulation.disableButton(DOMManipulation.BUTTON_NAMES.REVEAL_BOARDS);
 }
 
-export {initialize, testingNeeds, shotListener, enableShotListener, disableShotListener, enableSwapProcessButtonEventListeners, disableSwapProcessButtonEventListeners, SETUP_OR_GAMEPLAY, hideBoardsCallback, swapPlayersCallback, revealBoardsCallback, setCurrentState, getCurrentState}
+export {initialize, testingNeeds, shotListener, enableShotListener, disableShotListener, enableSwapProcessButtonEventListeners, disableSwapProcessButtonEventListeners, SETUP_OR_GAMEPLAY, hideBoardsCallback, swapPlayersCallback, revealBoardsCallback, setCurrentState, getCurrentState, fillEndGameDialog, initializeDialogSubElements}

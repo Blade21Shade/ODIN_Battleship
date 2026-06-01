@@ -151,17 +151,30 @@ function setShotTakenThisTurn(taken) {
 
 /**
  * Gets arrays holding the 'friend' board's ship positions and shots, as well as the 'foe' board's shots
+ * @param {number} playerNumber The player you wish to get the arrays for
+ * - Must be 1 or 2 to get a specific player
+ * - A value of 0 will get arrays for the the current player
  * @returns {{[[[number, number]]], [[number, number]], [[number, number]]}} Object containing: 3D array friendShipPositions, 2D array friendShotPositions, 2D array foeShotsPositions
+ * @throws If playerNumber isn't 0, 1, or 2
  */
-function getShotsAndShipsArrays() {
+function getShotsAndShipsArrays(playerNumber = 0) {
     // Get the shots and ships needed to fill the DOM
     let ships = [];
     let friendShipsPositionsArray = []; // The current player's ships array
     let friendShotsPositionsArray = []; // The shot board of the current player; shots at the current player
     let foeShotsPositionsArray = []; // The shot board of the opposing player; shots at the opposing player
-
+    
     // Get the data needed depending on turn
-    if (playerTurn === 1) {
+    if (playerNumber == 0 ) { // If a player number isn't given, get data for the current player
+        playerNumber = getPlayerTurn();
+    }
+
+    // Throw if an invalid player number was given
+    if (playerNumber !== 1 && playerNumber !== 2) {
+        throw new Error("Invalid player number given: must be 1 or 2");
+    }
+
+    if (playerNumber === 1) {
         ships = player1Board.getShipList();
         friendShotsPositionsArray = player1Board.getBoard();
         foeShotsPositionsArray = player2Board.getBoard();
