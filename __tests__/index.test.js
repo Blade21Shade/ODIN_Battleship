@@ -26,10 +26,70 @@ board2.id = "board2";
 const player1EndBoard = document.createElement("div");
 const player2EndBoard = document.createElement("div");
 
+function resetPlayerEndBoards() {
+    player1EndBoard.replaceChildren();
+    player2EndBoard.replaceChildren();
+
+    const cell = document.createElement("div");
+    cell.classList.toggle("cell");
+
+    for (let i = 0; i < 100; i++) {
+        let clone = cell.cloneNode();
+        clone.classList.toggle("friend");
+        clone.id = `endGameBoard1-cell${i}`;
+        player1EndBoard.appendChild(clone);
+
+        clone = cell.cloneNode();
+        clone.classList.toggle("friend");
+        clone.id = `endGameBoard2-cell${i}`;
+        player2EndBoard.appendChild(clone);
+    }
+}
+
+const shotsStatsPlayer1 = document.createElement("div");
+shotsStatsPlayer1.title = "";
+const shotsSpanPlayer1 = document.createElement("span");
+shotsSpanPlayer1.innerText = "";
+const hitsSpanPlayer1 = document.createElement("span");
+hitsSpanPlayer1.innerText = "";
+const missesSpanPlayer1 = document.createElement("span");
+missesSpanPlayer1.innerText = "";
+const hitPercentSpanPlayer1 = document.createElement("span");
+hitPercentSpanPlayer1.innerText = "";
+const hitsToWinSpanPlayer1 = document.createElement("span");
+hitsToWinSpanPlayer1.innerText = "";
+
+const shotsStatsPlayer2 = document.createElement("div");
+shotsStatsPlayer2.title = "";
+const shotsSpanPlayer2 = document.createElement("span");
+shotsSpanPlayer2.innerText = "";
+const hitsSpanPlayer2 = document.createElement("span");
+hitsSpanPlayer2.innerText = "";
+const missesSpanPlayer2 = document.createElement("span");
+missesSpanPlayer2.innerText = "";
+const hitPercentSpanPlayer2 = document.createElement("span");
+hitPercentSpanPlayer2.innerText = "";
+const hitsToWinSpanPlayer2 = document.createElement("span");
+hitsToWinSpanPlayer2.innerText = "";
+
 document.body.appendChild(board1);
 document.body.appendChild(board2);
 document.body.appendChild(player1EndBoard);
 document.body.appendChild(player2EndBoard);
+
+document.body.appendChild(shotsStatsPlayer1);
+document.body.appendChild(shotsSpanPlayer1);
+document.body.appendChild(hitsSpanPlayer1);
+document.body.appendChild(missesSpanPlayer1);
+document.body.appendChild(hitPercentSpanPlayer1);
+document.body.appendChild(hitsToWinSpanPlayer1);
+
+document.body.appendChild(shotsStatsPlayer2);
+document.body.appendChild(shotsSpanPlayer2);
+document.body.appendChild(hitsSpanPlayer2);
+document.body.appendChild(missesSpanPlayer2);
+document.body.appendChild(hitPercentSpanPlayer2);
+document.body.appendChild(hitsToWinSpanPlayer2);
 
 // Player-step buttons
 const hideButton = document.createElement("button");
@@ -80,6 +140,20 @@ UIState.getPlayer2EndBoard.mockReturnValue(player2EndBoard);
 UIState.getPlayAgainButton.mockReturnValue(playAgainButton);
 UIState.getEndGameDialog.mockReturnValue(endGameDialog);
 
+UIState.getShotsStatsPlayer1.mockReturnValue(shotsStatsPlayer1);
+UIState.getShotsSpanPlayer1.mockReturnValue(shotsSpanPlayer1);
+UIState.getHitsSpanPlayer1.mockReturnValue(hitsSpanPlayer1);
+UIState.getMissesSpanPlayer1.mockReturnValue(missesSpanPlayer1);
+UIState.getHitPercentSpanPlayer1.mockReturnValue(hitPercentSpanPlayer1);
+UIState.getHitsToWinSpanPlayer1.mockReturnValue(hitsToWinSpanPlayer1);
+
+UIState.getShotsStatsPlayer2.mockReturnValue(shotsStatsPlayer2);
+UIState.getShotsSpanPlayer2.mockReturnValue(shotsSpanPlayer2);
+UIState.getHitsSpanPlayer2.mockReturnValue(hitsSpanPlayer2);
+UIState.getMissesSpanPlayer2.mockReturnValue(missesSpanPlayer2);
+UIState.getHitPercentSpanPlayer2.mockReturnValue(hitPercentSpanPlayer2);
+UIState.getHitsToWinSpanPlayer2.mockReturnValue(hitsToWinSpanPlayer2);
+
 describe("index tests", () => {
 
     describe("Shot listener tests", () => {
@@ -122,6 +196,7 @@ describe("index tests", () => {
             }
 
             let disableSwapSpy;
+            let fillDialog;
             
             beforeAll(() => {
                 Tools.getIDNumberFromIDString.mockReturnValue(25);
@@ -132,7 +207,8 @@ describe("index tests", () => {
                 GameEngine.shootAtCoordinate.mockReturnValue(true);
                 GameEngine.endGameCheck.mockReturnValue(false);
 
-                disableSwapSpy = jest.spyOn(index, "disableSwapProcessButtonEventListeners");
+                disableSwapSpy = jest.spyOn(index, "disableSwapProcessButtonEventListeners").mockImplementation(()=>{return});
+                fillDialog = jest.spyOn(index, "fillEndGameDialog").mockImplementation(()=>{return});
             });
 
             afterEach(() => {
@@ -141,6 +217,7 @@ describe("index tests", () => {
 
             afterAll(()=>{
                 disableSwapSpy.mockRestore();
+                fillDialog.mockRestore();
             });
 
             describe("Pass tests", () => {
@@ -176,6 +253,7 @@ describe("index tests", () => {
 
                     // Game should end
                     expect(DOMManipulation.enableButton.mock.calls).toHaveLength(0);
+                    expect(fillDialog.mock.calls).toHaveLength(1);
 
                     // Game ends so the disable call should happen
                     expect(index.disableSwapProcessButtonEventListeners.mock.calls).toHaveLength(1);
@@ -368,15 +446,149 @@ describe("index tests", () => {
         describe("End of game dialog tests", () => {
             GameState.getShotsAndShipsArrays.mockReturnValue({friendShipsPositionsArray: [], friendShotsPositionsArray: [], foeShotsPositionsArray: []});
             
+            beforeEach(()=>{
+                resetPlayerEndBoards();
+            });
+
+            afterEach(()=>{
+                jest.clearAllMocks();
+            });
+
             describe("fillEndGameDialog tests", () => {
+                let boardSpy = jest.spyOn(index, "fillEndGameDialogBoard").mockImplementation(()=>{return});
+                let statsSpy = jest.spyOn(index, "fillEndGameDialogStats").mockImplementation(()=>{return});
+
+                afterAll(()=> {
+                    boardSpy.mockRestore();
+                    statsSpy.mockRestore();
+                });
+                
                 test("Base pass", () => {
                     index.fillEndGameDialog();
 
+                    expect(boardSpy.mock.calls[0][0]).toBe(1);
+                    expect(boardSpy.mock.calls[1][0]).toBe(2);
+
+                    expect(statsSpy.mock.calls[0][0]).toBe(1);
+                    expect(statsSpy.mock.calls[1][0]).toBe(2);
+
+                    // Ensure board filling occurs before stats filling
+                    expect(boardSpy.mock.invocationCallOrder[0]).toBeLessThan(statsSpy.mock.invocationCallOrder[0]);
+                    expect(boardSpy.mock.invocationCallOrder[0]).toBeLessThan(statsSpy.mock.invocationCallOrder[1]);
+
+                    expect(boardSpy.mock.invocationCallOrder[1]).toBeLessThan(statsSpy.mock.invocationCallOrder[0]);
+                    expect(boardSpy.mock.invocationCallOrder[1]).toBeLessThan(statsSpy.mock.invocationCallOrder[1]);
+                });
+            });
+
+            describe("fillEndGameDialogBoard tests", () => {
+                test("Base pass: 1 affects player 1 board", () => {
+                    index.fillEndGameDialogBoard(1);
+                    
                     expect(DOMManipulation.fillBoardElementShots.mock.calls[0][2]).toEqual(player1EndBoard);
                     expect(DOMManipulation.fillBoardElementShips.mock.calls[0][2]).toEqual(player1EndBoard);
+                });
 
+                test("2 affects player 2 board", () => {
+                    index.fillEndGameDialogBoard(2);
+                    
                     expect(DOMManipulation.fillBoardElementShots.mock.calls[0][2]).toEqual(player2EndBoard);
                     expect(DOMManipulation.fillBoardElementShips.mock.calls[0][2]).toEqual(player2EndBoard);
+                });
+
+                test("Number other than 1 or 2 throws", () => {
+                    expect(()=>{index.fillEndGameDialogBoard(0)}).toThrow();
+                    expect(()=>{index.fillEndGameDialogBoard(3)}).toThrow();
+                });
+            });
+
+            describe("fillEndGameDialogStats tests", () => {
+                test("Base pass: Passing 1 targets player 1", () => {
+                    index.fillEndGameDialogStats(1);
+
+                    // Player 1 stuff is called
+                    expect(UIState.getShotsStatsPlayer1.mock.calls).toHaveLength(1);
+                    expect(UIState.getShotsSpanPlayer1.mock.calls).toHaveLength(1);
+                    expect(UIState.getHitsSpanPlayer1.mock.calls).toHaveLength(1);
+                    expect(UIState.getMissesSpanPlayer1.mock.calls).toHaveLength(1);
+                    expect(UIState.getHitPercentSpanPlayer1.mock.calls).toHaveLength(1);
+                    expect(UIState.getHitsToWinSpanPlayer1.mock.calls).toHaveLength(1);
+                    expect(UIState.getPlayer2EndBoard.mock.calls).toHaveLength(1);
+
+                    // Player 2 stuff is not called
+                    expect(UIState.getShotsStatsPlayer2.mock.calls).toHaveLength(0);
+                    expect(UIState.getShotsSpanPlayer2.mock.calls).toHaveLength(0);
+                    expect(UIState.getHitsSpanPlayer2.mock.calls).toHaveLength(0);
+                    expect(UIState.getMissesSpanPlayer2.mock.calls).toHaveLength(0);
+                    expect(UIState.getHitPercentSpanPlayer2.mock.calls).toHaveLength(0);
+                    expect(UIState.getHitsToWinSpanPlayer2.mock.calls).toHaveLength(0);
+                    expect(UIState.getPlayer1EndBoard.mock.calls).toHaveLength(0);
+
+                    // Expect player 1 stuff to have information filled correctly
+                    /* In this test everything will be 0, another test will check actual values*/
+
+                    expect(shotsStatsPlayer1.title).toEqual("Stats are for shots at opponent's board");
+                    expect(shotsSpanPlayer1.innerText).toEqual(0);
+                    expect(hitsSpanPlayer1.innerText).toEqual(0);
+                    expect(missesSpanPlayer1.innerText).toEqual(0);
+                    expect(hitPercentSpanPlayer1.innerText).toEqual(NaN); // There is a /0 here, so NaN is produced
+                    expect(hitsToWinSpanPlayer1.innerText).toEqual(17); // 17 is the sum of the length of all ships; 0 hits would need 17 more to win
+                });
+
+                test("Passing 2 targets player 2", () => {
+                    index.fillEndGameDialogStats(2);
+
+                    // Player 1 stuff is not called
+                    expect(UIState.getShotsStatsPlayer1.mock.calls).toHaveLength(0);
+                    expect(UIState.getShotsSpanPlayer1.mock.calls).toHaveLength(0);
+                    expect(UIState.getHitsSpanPlayer1.mock.calls).toHaveLength(0);
+                    expect(UIState.getMissesSpanPlayer1.mock.calls).toHaveLength(0);
+                    expect(UIState.getHitPercentSpanPlayer1.mock.calls).toHaveLength(0);
+                    expect(UIState.getHitsToWinSpanPlayer1.mock.calls).toHaveLength(0);
+                    expect(UIState.getPlayer2EndBoard.mock.calls).toHaveLength(0);
+
+                    // Player 2 stuff is called
+                    expect(UIState.getShotsStatsPlayer2.mock.calls).toHaveLength(1);
+                    expect(UIState.getShotsSpanPlayer2.mock.calls).toHaveLength(1);
+                    expect(UIState.getHitsSpanPlayer2.mock.calls).toHaveLength(1);
+                    expect(UIState.getMissesSpanPlayer2.mock.calls).toHaveLength(1);
+                    expect(UIState.getHitPercentSpanPlayer2.mock.calls).toHaveLength(1);
+                    expect(UIState.getHitsToWinSpanPlayer2.mock.calls).toHaveLength(1);
+                    expect(UIState.getPlayer1EndBoard.mock.calls).toHaveLength(1);
+
+                    // Expect player 1 stuff to have information filled correctly
+                    /* In this test everything will be 0, another test will check actual values*/
+
+                    expect(shotsStatsPlayer2.title).toEqual("Stats are for shots at opponent's board");
+                    expect(shotsSpanPlayer2.innerText).toEqual(0);
+                    expect(hitsSpanPlayer2.innerText).toEqual(0);
+                    expect(missesSpanPlayer2.innerText).toEqual(0);
+                    expect(hitPercentSpanPlayer2.innerText).toEqual(NaN);
+                    expect(hitsToWinSpanPlayer2.innerText).toEqual(17); // 17 is the sum of the length of all ships; 0 hits would need 17 more to win
+                });
+
+                test("Shot-at board cells math is correct", () => {
+                    player2EndBoard.children[0].classList.add("hit");
+                    player2EndBoard.children[1].classList.add("hit");
+                    player2EndBoard.children[2].classList.add("hit");
+                    player2EndBoard.children[3].classList.add("hit");
+                    player2EndBoard.children[4].classList.add("hit");
+                    player2EndBoard.children[5].classList.add("hit");
+                    player2EndBoard.children[6].classList.add("hit");
+
+                    player2EndBoard.children[7].classList.add("miss");
+                    player2EndBoard.children[8].classList.add("miss");
+                    player2EndBoard.children[9].classList.add("miss");
+                    
+                    index.fillEndGameDialogStats(1);
+
+                    // Expect player 1 stuff to have information filled correctly
+                    expect(shotsStatsPlayer1.title).toEqual("Stats are for shots at opponent's board");
+                    expect(shotsSpanPlayer1.innerText).toEqual(10);
+                    expect(hitsSpanPlayer1.innerText).toEqual(7);
+                    expect(missesSpanPlayer1.innerText).toEqual(3);
+                    expect(hitPercentSpanPlayer1.innerText).toEqual(70);
+                    expect(hitsToWinSpanPlayer1.innerText).toEqual(10); // 17 - 7 = 10
                 });
             });
         });

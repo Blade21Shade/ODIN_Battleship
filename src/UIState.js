@@ -12,6 +12,33 @@ let player1EndBoard;
 /** @type {HTMLDivElement} */
 let player2EndBoard;
 
+// Shot statistics inside endGameDialog
+/** @type {HTMLDivElement} */
+let shotStatsPlayer1;
+/** @type {HTMLSpanElement} */
+let shotsSpanPlayer1;
+/** @type {HTMLSpanElement} */
+let hitsSpanPlayer1;
+/** @type {HTMLSpanElement} */
+let missesSpanPlayer1;
+/** @type {HTMLSpanElement} */
+let hitPercentSpanPlayer1;
+/** @type {HTMLSpanElement} */
+let hitsToWinSpanPlayer1;
+
+/** @type {HTMLDivElement} */
+let shotStatsPlayer2;
+/** @type {HTMLSpanElement} */
+let shotsSpanPlayer2;
+/** @type {HTMLSpanElement} */
+let hitsSpanPlayer2;
+/** @type {HTMLSpanElement} */
+let missesSpanPlayer2;
+/** @type {HTMLSpanElement} */
+let hitPercentSpanPlayer2;
+/** @type {HTMLSpanElement} */
+let hitsToWinSpanPlayer2;
+
 // Buttons the user uses to select ship sizes
 /** @type {HTMLButtonElement} */
 let select2LengthShipButton;
@@ -56,14 +83,31 @@ let board2Element; // The opposing player's board without ships and the active p
  * Assigns each variable to the DOM element it refers to
  */
 function initializeUIState() {
+    // End Game Dialog
     endGameDialog = document.querySelector("#endGameDialog");
     playAgainButton = document.querySelector("#playAgainButton");
     player1EndBoard = document.querySelector("#endGameDialog #playerStatsContainer #player1Stats .board");
     player2EndBoard = document.querySelector("#endGameDialog #playerStatsContainer #player2Stats .board");
-    
+
+    shotStatsPlayer1 = document.querySelector("#endGameDialog #playerStatsContainer #player1Stats .shotStats");
+    shotsSpanPlayer1 = document.querySelector("#endGameDialog #playerStatsContainer #player1Stats .shotStats .shotsP span");
+    hitsSpanPlayer1 = document.querySelector("#endGameDialog #playerStatsContainer #player1Stats .shotStats .hitsMissesP .hits");
+    missesSpanPlayer1 = document.querySelector("#endGameDialog #playerStatsContainer #player1Stats .shotStats .hitsMissesP .misses");
+    hitPercentSpanPlayer1 = document.querySelector("#endGameDialog #playerStatsContainer #player1Stats .shotStats .hitPercentP span");
+    hitsToWinSpanPlayer1 = document.querySelector("#endGameDialog #playerStatsContainer #player1Stats .shotStats .shotsToWinP span");
+
+    shotStatsPlayer2 = document.querySelector("#endGameDialog #playerStatsContainer #player2Stats .shotStats");
+    shotsSpanPlayer2 = document.querySelector("#endGameDialog #playerStatsContainer #player2Stats .shotStats .shotsP span");
+    hitsSpanPlayer2 = document.querySelector("#endGameDialog #playerStatsContainer #player2Stats .shotStats .hitsMissesP .hits");
+    missesSpanPlayer2 = document.querySelector("#endGameDialog #playerStatsContainer #player2Stats .shotStats .hitsMissesP .misses");
+    hitPercentSpanPlayer2 = document.querySelector("#endGameDialog #playerStatsContainer #player2Stats .shotStats .hitPercentP span");
+    hitsToWinSpanPlayer2 = document.querySelector("#endGameDialog #playerStatsContainer #player2Stats .shotStats .shotsToWinP span");
+
+    // Boards
     board1Element = document.querySelector("#board1");
     board2Element = document.querySelector("#board2");
 
+    // Select X length ship buttons
     select2LengthShipButton = document.querySelector("#select2LengthShipButton");
     select3LengthShipButton = document.querySelector("#select3LengthShipButton");
     select4LengthShipButton = document.querySelector("#select4LengthShipButton");
@@ -74,6 +118,7 @@ function initializeUIState() {
     select4LengthShipSpan = document.querySelector("#select4LengthShipSpan");
     select5LengthShipSpan = document.querySelector("#select5LengthShipSpan");
 
+    // Swap-player-process buttons
     hideBoardsButton = document.querySelector("#hideBoardsButton");
     swapPlayersButton = document.querySelector("#swapPlayersButton");
     revealBoardsButton = document.querySelector("#revealBoardsButton");
@@ -89,6 +134,54 @@ function getPlayer1EndBoard() {
 
 function getPlayer2EndBoard() {
     return player2EndBoard;
+}
+
+function getShotsStatsPlayer1() {
+    return shotStatsPlayer1;
+}
+
+function getShotsSpanPlayer1() {
+    return shotsSpanPlayer1;
+}
+
+function getHitsSpanPlayer1() {
+    return hitsSpanPlayer1;
+}
+
+function getMissesSpanPlayer1() {
+    return missesSpanPlayer1;
+}
+
+function getHitPercentSpanPlayer1() {
+    return hitPercentSpanPlayer1;
+}
+
+function getHitsToWinSpanPlayer1() {
+    return hitsToWinSpanPlayer1;
+}
+
+function getShotsStatsPlayer2() {
+    return shotStatsPlayer2;
+}
+
+function getShotsSpanPlayer2() {
+    return shotsSpanPlayer2;
+}
+
+function getHitsSpanPlayer2() {
+    return hitsSpanPlayer2;
+}
+
+function getMissesSpanPlayer2() {
+    return missesSpanPlayer2;
+}
+
+function getHitPercentSpanPlayer2() {
+    return hitPercentSpanPlayer2;
+}
+
+function getHitsToWinSpanPlayer2() {
+    return hitsToWinSpanPlayer2;
 }
 
 function getPlayAgainButton() {
@@ -173,4 +266,4 @@ function setCurrentlySelectedXLengthShipButton(length) {
     currentlySelectedXLengthShipButton = setTo;
 }
 
-export {initializeUIState, getBoard1Element, getBoard2Element, getHideBoardsButton, getRevealBoardsButton, getSwapPlayersButton, getSelect2LengthShipButton, getSelect3LengthShipButton, getSelect4LengthShipButton, getSelect5LengthShipButton, getSelect2LengthShipSpan, getSelect3LengthShipSpan, getSelect4LengthShipSpan, getSelect5LengthShipSpan, getCurrentlySelectedXLengthShipButtonID, setCurrentlySelectedXLengthShipButton, getEndGameDialog, getPlayAgainButton, getPlayer1EndBoard, getPlayer2EndBoard}
+export {initializeUIState, getBoard1Element, getBoard2Element, getHideBoardsButton, getRevealBoardsButton, getSwapPlayersButton, getSelect2LengthShipButton, getSelect3LengthShipButton, getSelect4LengthShipButton, getSelect5LengthShipButton, getSelect2LengthShipSpan, getSelect3LengthShipSpan, getSelect4LengthShipSpan, getSelect5LengthShipSpan, getCurrentlySelectedXLengthShipButtonID, setCurrentlySelectedXLengthShipButton, getEndGameDialog, getPlayAgainButton, getPlayer1EndBoard, getPlayer2EndBoard, getHitPercentSpanPlayer1, getHitPercentSpanPlayer2, getHitsSpanPlayer1, getHitsSpanPlayer2, getMissesSpanPlayer1, getMissesSpanPlayer2, getShotsSpanPlayer1, getShotsSpanPlayer2, getHitsToWinSpanPlayer1, getHitsToWinSpanPlayer2, getShotsStatsPlayer1, getShotsStatsPlayer2}
