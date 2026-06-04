@@ -24,6 +24,7 @@ let currentState;
 
 /** 
  * Initialize the game state and DOM
+ * - This should be called for the first game, and reset() for all others
  */
 function initialize() {
     GameState.initializeGameState();
@@ -31,9 +32,24 @@ function initialize() {
     GameSetup.initializeOrReset();
     DOMManipulation.initializeBoardElements();
     DOMManipulation.initializePlayerButtons();
-    setCurrentState(SETUP_OR_GAMEPLAY.SETUP);
-    enableSwapProcessButtonEventListeners();
-    initializeDialogSubElements();
+    self.setCurrentState(SETUP_OR_GAMEPLAY.SETUP);
+    self.enableSwapProcessButtonEventListeners();
+    self.initializeDialogSubElements();
+}
+
+/**
+ * Resets the program to a fresh game state
+ * - initialize() should be called for the first game, and this for all others
+ */
+function reset() {
+    GameState.initializeGameState();
+    GameSetup.initializeOrReset();
+    GameSetup.resetNumberOfPlayersThatHavePlacedAllShips();
+    DOMManipulation.resetBoardElements();
+    self.setCurrentState(SETUP_OR_GAMEPLAY.SETUP);
+    self.resetEndGameDialogBoards();
+    self.disableShotListener();
+    self.enableSwapProcessButtonEventListeners();
 }
 
 /** 
@@ -43,9 +59,6 @@ function initialize() {
 function testingNeeds() {
     GameSetup.enableSelectShipLengthButtonHandlers();
     GameSetup.enableShipPlacementHandlers();
-
-    let endGameDialog = UIState.getEndGameDialog();
-    endGameDialog.showModal();
 }
 
 /**
@@ -162,7 +175,19 @@ function fillEndGameDialogBoard(playerNumber) {
     let {friendShipsPositionsArray, friendShotsPositionsArray, foeShotsPositionsArray} = GameState.getShotsAndShipsArrays(playerNumber);
     DOMManipulation.fillBoardElementShots(friendShotsPositionsArray, DOMManipulation.FRIEND_OR_FOE.FRIEND, workingBoard);
     DOMManipulation.fillBoardElementShips(friendShipsPositionsArray, DOMManipulation.FRIEND_OR_FOE.FRIEND, workingBoard);
-    
+}
+
+/**
+ * Resets the End of Game dialog boards
+ */
+function resetEndGameDialogBoards() {
+    let board1 = UIState.getPlayer1EndBoard();
+    let board2 = UIState.getPlayer2EndBoard();
+
+    for (let i = 0; i < 100; i++) {
+        board1.children[i].className = "cell";
+        board2.children[i].className = "cell";
+    }
 }
 
 /**
@@ -245,12 +270,10 @@ function initializeDialogSubElements() {
 
     for (let i = 0; i < 100; i++) {
         let clone = cell.cloneNode();
-        clone.classList.toggle("friend");
         clone.id = `endGameBoard1-cell${i}`;
         player1Board.appendChild(clone);
 
         clone = cell.cloneNode();
-        clone.classList.toggle("friend");
         clone.id = `endGameBoard2-cell${i}`;
         player2Board.appendChild(clone);
     }
@@ -260,8 +283,7 @@ function initializeDialogSubElements() {
     let playAgainButton = UIState.getPlayAgainButton();
     let endGameDialog = UIState.getEndGameDialog();
     playAgainButton.addEventListener("click", () => {
-        // Re-initialize all game stuff !!!
-        
+        self.reset();
         endGameDialog.close();
     });
 }
@@ -349,4 +371,4 @@ function revealBoardsCallback() {
     DOMManipulation.disableButton(DOMManipulation.BUTTON_NAMES.REVEAL_BOARDS);
 }
 
-export {initialize, testingNeeds, shotListener, enableShotListener, disableShotListener, enableSwapProcessButtonEventListeners, disableSwapProcessButtonEventListeners, SETUP_OR_GAMEPLAY, hideBoardsCallback, swapPlayersCallback, revealBoardsCallback, setCurrentState, getCurrentState, fillEndGameDialog, initializeDialogSubElements, fillEndGameDialogBoard, fillEndGameDialogStats}
+export {initialize, testingNeeds, shotListener, enableShotListener, disableShotListener, enableSwapProcessButtonEventListeners, disableSwapProcessButtonEventListeners, SETUP_OR_GAMEPLAY, hideBoardsCallback, swapPlayersCallback, revealBoardsCallback, setCurrentState, getCurrentState, fillEndGameDialog, initializeDialogSubElements, fillEndGameDialogBoard, fillEndGameDialogStats, reset, resetEndGameDialogBoards}

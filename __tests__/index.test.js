@@ -35,12 +35,10 @@ function resetPlayerEndBoards() {
 
     for (let i = 0; i < 100; i++) {
         let clone = cell.cloneNode();
-        clone.classList.toggle("friend");
         clone.id = `endGameBoard1-cell${i}`;
         player1EndBoard.appendChild(clone);
 
         clone = cell.cloneNode();
-        clone.classList.toggle("friend");
         clone.id = `endGameBoard2-cell${i}`;
         player2EndBoard.appendChild(clone);
     }
@@ -155,6 +153,59 @@ UIState.getHitPercentSpanPlayer2.mockReturnValue(hitPercentSpanPlayer2);
 UIState.getHitsToWinSpanPlayer2.mockReturnValue(hitsToWinSpanPlayer2);
 
 describe("index tests", () => {
+
+    afterEach(()=>{
+        jest.clearAllMocks();
+    });
+
+    describe("Initialize and reset tests", () => {
+        test("initialize pass", () => {
+            let setState = jest.spyOn(index, "setCurrentState").mockImplementation(()=>{return});
+            let enableSwap = jest.spyOn(index, "enableSwapProcessButtonEventListeners").mockImplementation(()=>{return});
+            let initDialog = jest.spyOn(index, "initializeDialogSubElements").mockImplementation(()=>{return});
+
+            index.initialize();
+
+            // Outside index.js calls
+            expect(UIState.initializeUIState.mock.calls).toHaveLength(1);
+            expect(GameState.initializeGameState.mock.calls).toHaveLength(1);
+            expect(GameSetup.initializeOrReset.mock.calls).toHaveLength(1);
+            expect(DOMManipulation.initializeBoardElements.mock.calls).toHaveLength(1);
+            expect(DOMManipulation.initializePlayerButtons.mock.calls).toHaveLength(1);
+
+            // Inside index.js calls
+            expect(setState.mock.calls[0][0]).toEqual(index.SETUP_OR_GAMEPLAY.SETUP);
+            expect(enableSwap.mock.calls).toHaveLength(1);
+            expect(initDialog.mock.calls).toHaveLength(1);
+
+            setState.mockRestore();
+            enableSwap.mockRestore();
+            initDialog.mockRestore();
+        });
+
+        test("reset pass", () => {
+            let setState = jest.spyOn(index, "setCurrentState").mockImplementation(()=>{return});
+            let resetDialogBoards = jest.spyOn(index, "resetEndGameDialogBoards").mockImplementation(()=>{return});
+            let disableShot = jest.spyOn(index, "disableShotListener").mockImplementation(()=>{return});
+            let enableSwap = jest.spyOn(index, "enableSwapProcessButtonEventListeners").mockImplementation(()=>{return});
+
+            index.reset();
+
+            // Outside index.js
+            expect(GameState.initializeGameState.mock.calls).toHaveLength(1);
+            expect(GameSetup.initializeOrReset.mock.calls).toHaveLength(1);
+            expect(GameSetup.resetNumberOfPlayersThatHavePlacedAllShips.mock.calls).toHaveLength(1);
+            expect(DOMManipulation.resetBoardElements.mock.calls).toHaveLength(1);
+
+            // Inside index.js
+            expect(setState.mock.calls[0][0]).toEqual(index.SETUP_OR_GAMEPLAY.SETUP);
+
+            setState.mockRestore();
+            resetDialogBoards.mockRestore();
+            disableShot.mockRestore();
+            enableSwap.mockRestore();
+        });
+    });
 
     describe("Shot listener tests", () => {
         describe("Enabling/disabling the shot listener tests", () => {
@@ -589,6 +640,22 @@ describe("index tests", () => {
                     expect(missesSpanPlayer1.innerText).toEqual(3);
                     expect(hitPercentSpanPlayer1.innerText).toEqual(70);
                     expect(hitsToWinSpanPlayer1.innerText).toEqual(10); // 17 - 7 = 10
+                });
+            });
+
+            describe("resetEndGameDialogBoards tests", () => {
+                test("Base Pass", () => {
+                    for (let i = 0; i < 10; i++) {
+                        player1EndBoard.children[i].className = "bad";
+                        player2EndBoard.children[i].className = "bad";
+                    }
+
+                    index.resetEndGameDialogBoards();
+
+                    for (let i = 0; i < 10; i++) {
+                        expect(player1EndBoard.children[i].className).toEqual("cell");
+                        expect(player2EndBoard.children[i].className).toEqual("cell");
+                    }
                 });
             });
         });
