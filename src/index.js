@@ -299,6 +299,26 @@ function initializeDialogSubElements() {
     });
 
     // Buttons to navigate the 'How to Play' dialog
+    let aboutButton = UIState.getAboutButton();
+    let placingShipsButton = UIState.getPlacingShipsButton();
+    let firingShotsBUtton = UIState.getFiringShotsButton();
+    let takingTurnsButton = UIState.getTakingTurnsButton();
+
+    aboutButton.addEventListener("click", () => {
+        DOMManipulation.switchHowToPlayDialogContents(BUTTON_NAMES.ABOUT);
+    });
+
+    placingShipsButton.addEventListener("click", () => {
+        DOMManipulation.switchHowToPlayDialogContents(BUTTON_NAMES.PLACING_SHIPS);
+    });
+    
+    firingShotsBUtton.addEventListener("click", () => {
+        DOMManipulation.switchHowToPlayDialogContents(BUTTON_NAMES.FIRING_SHOTS);
+    });
+
+    takingTurnsButton.addEventListener("click", () => {
+        DOMManipulation.switchHowToPlayDialogContents(BUTTON_NAMES.TAKING_TURNS);
+    });
 }
 
 /**

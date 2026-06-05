@@ -125,8 +125,8 @@ function initializeUIState() {
     placingShipsButton = document.querySelector("#howToPlayDialog #buttonContainer #placing");
     takingTurnsButton = document.querySelector("#howToPlayDialog #buttonContainer #turns");
 
-    howToPlayContentContainer = document.querySelector("#howToPlayDialog #howToPlayContentContainer");
-    howToPlayContent = document.querySelector("#howToPlayDialog #howToPlayContentContainer #howToPlayContent");
+    howToPlayContentContainer = document.querySelector("#howToPlayDialog #contentContainer");
+    howToPlayContent = document.querySelector("#howToPlayDialog #contentContainer #content");
 
     // Boards
     board1Element = document.querySelector("#board1");

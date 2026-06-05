@@ -27,7 +27,11 @@ const BUTTON_NAMES = Object.freeze({
     SELECT5: "select5LengthShipButton",
     SELECT4: "select4LengthShipButton",
     SELECT3: "select3LengthShipButton",
-    SELECT2: "select2LengthShipButton"
+    SELECT2: "select2LengthShipButton",
+    ABOUT: "about",
+    PLACING_SHIPS: "placingShips",
+    FIRING_SHOTS: "firingShots",
+    TAKING_TURNS: "takingTurns"
 });
 
 /**
@@ -266,6 +270,32 @@ const DOMManipulation = {
         }
 
         return span;
+    },
+
+    /**
+     * Switches the content inside the How to Play dialog to the content associated with that button
+     * @param {BUTTON_NAMES} clickedButton The button that was clicked to cause the content switch
+     * - Only ABOUT, PLACING_SHIPS, FIRING_SHOTS, and TAKING_TURNS are valid
+     * @throws If clickedButton isn't a valid value
+     */
+    switchHowToPlayDialogContents(clickedButton) {
+        let content = UIState.getHowToPlayContent();
+        switch(clickedButton) {
+            case BUTTON_NAMES.ABOUT:
+                content.innerText = `About`;
+                break;
+            case BUTTON_NAMES.PLACING_SHIPS:
+                content.innerText = `Placing Ships`;
+                break;
+            case BUTTON_NAMES.FIRING_SHOTS:
+                content.innerText = `Firing Shots`;
+                break;
+            case BUTTON_NAMES.TAKING_TURNS:
+                content.innerText = `Taking turns`;
+                break;
+            default:
+                throw new Error("Invalid name given: Must be DOMManipulation's BUTTON_NAMES' ABOUT, PLACING_SHIPS, FIRING_SHOTS, or TAKING_TURNS");
+        }
     },
 
     /**
@@ -561,7 +591,7 @@ const DOMManipulation = {
 
 // Exporting all the things inside the object by using the destructure syntax
 // Luckily, the order doesn't matter, JS does: thing = Object.thing
-export const {initializeBoardElements, resetBoardElements, initializePlayerButtons, fillBoardElementShots, fillBoardElementShips, grabButtonElement, enableButton, disableButton, enablePlaceShipHandlers, disablePlaceShipHandlers, addPlaceShipClassHandler, removePlaceShipClassHandler, wheelEventHandler, fillBoardElementsAll, addShipClassToIDList, removeShipClassFromIDList, resetCellClassList, friendOrFoeValidityCheck, incrementSelectLengthSpanValue, decrementSelectLengthSpanValue, addSelectedClassToButton, removeSelectedClassFromButton, getSpanFromUIState, initializeSpanValues, addClassToCell} = DOMManipulation;
+export const {initializeBoardElements, resetBoardElements, initializePlayerButtons, fillBoardElementShots, fillBoardElementShips, grabButtonElement, enableButton, disableButton, enablePlaceShipHandlers, disablePlaceShipHandlers, addPlaceShipClassHandler, removePlaceShipClassHandler, wheelEventHandler, fillBoardElementsAll, addShipClassToIDList, removeShipClassFromIDList, resetCellClassList, friendOrFoeValidityCheck, incrementSelectLengthSpanValue, decrementSelectLengthSpanValue, addSelectedClassToButton, removeSelectedClassFromButton, getSpanFromUIState, initializeSpanValues, addClassToCell, switchHowToPlayDialogContents} = DOMManipulation;
 
 export {FRIEND_OR_FOE, BOARD_NUMBER, BUTTON_NAMES, VALID_CELL_CLASSES} // Named export the Enums as well
 
