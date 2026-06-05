@@ -12,14 +12,22 @@ body {
 }
 
 .header {
+    position: relative;
+    
     display: grid;
 
-    grid-template-columns: repeat(4, 8%);
+    grid-template-columns: 0% repeat(4, 8%); /* 0% is for the howToPlay button */
     grid-template-rows: 100%;
     gap: 3%;
 
     align-items: center;
     justify-content: center;
+}
+
+.header #howToPlayButton {
+    position: absolute;
+
+    left: 21%;
 }
 
 .header div {
