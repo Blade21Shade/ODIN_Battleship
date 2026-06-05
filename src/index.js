@@ -286,6 +286,19 @@ function initializeDialogSubElements() {
         self.reset();
         endGameDialog.close();
     });
+
+    // How to play dialog
+    let howToPlayButton = UIState.getHowToPlayButton();
+    let howToPlayDialog = UIState.getHowToPlayDialog();
+    let closeHowToPlay = UIState.getCloseHowToPlayButton();
+    howToPlayButton.addEventListener("click", () => {
+        howToPlayDialog.showModal();
+    });
+    closeHowToPlay.addEventListener("click", () => {
+        howToPlayDialog.close();
+    });
+
+    // Buttons to navigate the 'How to Play' dialog
 }
 
 /**

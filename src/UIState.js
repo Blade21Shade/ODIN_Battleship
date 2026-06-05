@@ -1,10 +1,21 @@
 // Dialogs
 /** @type {HTMLDialogElement} */
-let endGameDialog;
+let endGameDialog, howToPlayDialog;
 
-// Buttons used to close dialogs
+// Buttons used for opening and/or closing dialogs
 /** @type {HTMLButtonElement} */
-let playAgainButton;
+let playAgainButton, howToPlayButton, closeHowToPlayButton;
+
+// Close How to Play button container
+/** @type {HTMLDivElement} */
+let closeHowToPlayButtonContainer;
+
+// Buttons for navigating the How to Play dialog
+/** @type {HTMLButtonElement} */
+let aboutButton, placingShipsButton, firingShotsButton, takingTurnsButton;
+
+// Content inside How to Play dialog
+let howToPlayContent, howToPlayContentContainer;
 
 // Boards inside the endGameDialog
 /** @type {HTMLDivElement} */
@@ -103,6 +114,20 @@ function initializeUIState() {
     hitPercentSpanPlayer2 = document.querySelector("#endGameDialog #playerStatsContainer #player2Stats .shotStats .hitPercentP span");
     hitsToWinSpanPlayer2 = document.querySelector("#endGameDialog #playerStatsContainer #player2Stats .shotStats .shotsToWinP span");
 
+    // How to Play dialog
+    howToPlayButton = document.querySelector("#howToPlayButton");
+    howToPlayDialog = document.querySelector("#howToPlayDialog");
+    closeHowToPlayButton = document.querySelector("#howToPlayDialog #closeHowToPlayButtonContainer #closeHowToPlayButton");
+    closeHowToPlayButtonContainer = document.querySelector("#howToPlayDialog #closeHowToPlayButtonContainer");
+
+    aboutButton = document.querySelector("#howToPlayDialog #buttonContainer #about");
+    firingShotsButton = document.querySelector("#howToPlayDialog #buttonContainer #firing");
+    placingShipsButton = document.querySelector("#howToPlayDialog #buttonContainer #placing");
+    takingTurnsButton = document.querySelector("#howToPlayDialog #buttonContainer #turns");
+
+    howToPlayContentContainer = document.querySelector("#howToPlayDialog #howToPlayContentContainer");
+    howToPlayContent = document.querySelector("#howToPlayDialog #howToPlayContentContainer #howToPlayContent");
+
     // Boards
     board1Element = document.querySelector("#board1");
     board2Element = document.querySelector("#board2");
@@ -122,6 +147,42 @@ function initializeUIState() {
     hideBoardsButton = document.querySelector("#hideBoardsButton");
     swapPlayersButton = document.querySelector("#swapPlayersButton");
     revealBoardsButton = document.querySelector("#revealBoardsButton");
+}
+
+function getHowToPlayDialog() {
+    return howToPlayDialog;
+}
+
+function getHowToPlayButton() {
+    return howToPlayButton;
+}
+
+function getCloseHowToPlayButton() {
+    return closeHowToPlayButton;
+}
+
+function getAboutButton() {
+    return aboutButton;
+}
+
+function getPlacingShipsButton() {
+    return placingShipsButton;
+}
+
+function getFiringShotsButton() {
+    return firingShotsButton;
+}
+
+function getTakingTurnsButton() {
+    return takingTurnsButton;
+}
+
+function getHowToPlayContentContainer() {
+    return howToPlayContentContainer;
+}
+
+function getHowToPlayContent() {
+    return howToPlayContent;
 }
 
 function getEndGameDialog() {
@@ -266,4 +327,4 @@ function setCurrentlySelectedXLengthShipButton(length) {
     currentlySelectedXLengthShipButton = setTo;
 }
 
-export {initializeUIState, getBoard1Element, getBoard2Element, getHideBoardsButton, getRevealBoardsButton, getSwapPlayersButton, getSelect2LengthShipButton, getSelect3LengthShipButton, getSelect4LengthShipButton, getSelect5LengthShipButton, getSelect2LengthShipSpan, getSelect3LengthShipSpan, getSelect4LengthShipSpan, getSelect5LengthShipSpan, getCurrentlySelectedXLengthShipButtonID, setCurrentlySelectedXLengthShipButton, getEndGameDialog, getPlayAgainButton, getPlayer1EndBoard, getPlayer2EndBoard, getHitPercentSpanPlayer1, getHitPercentSpanPlayer2, getHitsSpanPlayer1, getHitsSpanPlayer2, getMissesSpanPlayer1, getMissesSpanPlayer2, getShotsSpanPlayer1, getShotsSpanPlayer2, getHitsToWinSpanPlayer1, getHitsToWinSpanPlayer2, getShotsStatsPlayer1, getShotsStatsPlayer2}
+export {initializeUIState, getBoard1Element, getBoard2Element, getHideBoardsButton, getRevealBoardsButton, getSwapPlayersButton, getSelect2LengthShipButton, getSelect3LengthShipButton, getSelect4LengthShipButton, getSelect5LengthShipButton, getSelect2LengthShipSpan, getSelect3LengthShipSpan, getSelect4LengthShipSpan, getSelect5LengthShipSpan, getCurrentlySelectedXLengthShipButtonID, setCurrentlySelectedXLengthShipButton, getEndGameDialog, getPlayAgainButton, getPlayer1EndBoard, getPlayer2EndBoard, getHitPercentSpanPlayer1, getHitPercentSpanPlayer2, getHitsSpanPlayer1, getHitsSpanPlayer2, getMissesSpanPlayer1, getMissesSpanPlayer2, getShotsSpanPlayer1, getShotsSpanPlayer2, getHitsToWinSpanPlayer1, getHitsToWinSpanPlayer2, getShotsStatsPlayer1, getShotsStatsPlayer2, getCloseHowToPlayButton, getHowToPlayButton, getHowToPlayDialog, getAboutButton, getFiringShotsButton, getPlacingShipsButton, getTakingTurnsButton, getHowToPlayContent, getHowToPlayContentContainer}

@@ -175,3 +175,53 @@ dialog:open #playAgainButton {
     width: 20%;
     height: 50%;
 }
+
+dialog:open#howToPlayDialog {
+    height: 60%;
+    width: 40%;
+
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: 15% 70% 15%;
+}
+
+dialog:open#howToPlayDialog #buttonContainer {
+    display: grid;
+    grid-template-columns: repeat(4, 10%);
+    grid-template-rows: 100%;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 5%;
+}
+
+dialog:open#howToPlayDialog #buttonContainer button {
+    height: 70%;
+}
+
+dialog:open#howToPlayDialog #buttonContainer, dialog:open#howToPlayDialog #closeHowToPlayButtonContainer {
+    border: 2px black solid;
+}
+
+dialog:open#howToPlayDialog #contentContainer {
+    border-left: 2px black solid;
+    border-right: 2px black solid;
+
+    box-sizing: border-box;
+    padding: 5px;
+}
+
+dialog:open#howToPlayDialog #closeHowToPlayButtonContainer {
+    display: grid;
+
+    grid-template-columns: 30%;
+    grid-template-rows: 100%;
+    
+    align-items: center;
+    justify-content: center;
+}
+
+dialog:open#howToPlayDialog #closeHowToPlayButtonContainer #closeHowToPlayButton {
+    height: 50%
+}
